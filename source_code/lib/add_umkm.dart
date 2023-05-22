@@ -496,7 +496,7 @@ class MyAppState extends State<MyApp> {
                                 child: Text(
                                   'Submit',
                                   style: GoogleFonts.rubik(
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w500,
                                     color: Color(0xFFFFFFFF),
                                     fontSize: 13,
                                   ),

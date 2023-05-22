@@ -22,17 +22,24 @@ class MyAppState extends State<MyApp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // Controller buat text
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Form is valid, perform desired action
+      String email = _emailController.text;
       String username = _usernameController.text;
       String password = _passwordController.text;
+      String confirmPassword = _confirmPasswordController.text;
       // Process the input data or perform other operations
+      print('Submitted Name: $email');
       print('Submitted Name: $username');
       print('Submitted Name: $password');
+      print('Submitted Link YT: $confirmPassword');
     }
   }
 
@@ -97,6 +104,45 @@ class MyAppState extends State<MyApp> {
                         key: _formKey,
                         child: Column(
                           children: [
+                            // Field Email User
+                            Container(
+                              height: 32,
+                              width: 224,
+                              child: TextFormField(
+                                controller: _emailController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Masukkan email user';
+                                  }
+                                  return null;
+                                },
+                                style: GoogleFonts.rubik(
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFFFFFFFF),
+                                  fontSize: 13,
+                                ),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Color(0x7FF0EFF4),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(26),
+                                  ),
+                                  labelText: 'Email',
+                                  labelStyle: GoogleFonts.rubik(
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFFFFFFFF),
+                                    fontSize: 13,
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10.0,
+                                    horizontal: 18.0,
+                                  ), // Adjust vertical value padding
+                                  floatingLabelBehavior: FloatingLabelBehavior
+                                      .never, // Remove label animation
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20.0),
                             // Field Username User
                             Container(
                               height: 32,
@@ -135,81 +181,87 @@ class MyAppState extends State<MyApp> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 13.0),
+                            SizedBox(height: 20.0),
                             // Field Password User
                             Container(
-                              height: 55,
+                              height: 32,
                               width: 224,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 32,
-                                    child: TextFormField(
-                                      controller: _passwordController,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Masukkan password user';
-                                        }
-                                        return null;
-                                      },
-                                      obscureText: true,
-                                      style: GoogleFonts.rubik(
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFFFFFFFF),
-                                        fontSize: 13,
-                                      ),
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Color(0x7FF0EFF4),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(26),
-                                        ),
-                                        labelText: 'Password',
-                                        labelStyle: GoogleFonts.rubik(
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 13,
-                                        ),
-                                        contentPadding: EdgeInsets.symmetric(
-                                          vertical: 10.0,
-                                          horizontal: 18.0,
-                                        ), // Adjust vertical value padding
-                                        floatingLabelBehavior:
-                                            FloatingLabelBehavior
-                                                .never, // Remove label animation
-                                      ),
-                                    ),
+                              child: TextFormField(
+                                controller: _passwordController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Masukkan password user';
+                                  }
+                                  return null;
+                                },
+                                obscureText: true,
+                                style: GoogleFonts.rubik(
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFFFFFFFF),
+                                  fontSize: 13,
+                                ),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Color(0x7FF0EFF4),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(26),
                                   ),
-                                  SizedBox(height: 5.0),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Navigate to the login page
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) => LoginPage(),
-                                        //   ),
-                                        // );
-                                        print(
-                                            "Forgot Password button clicked!");
-                                      },
-                                      child: Text(
-                                        'Lupa Password?',
-                                        style: GoogleFonts.rubik(
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFFDA4167),
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
+                                  labelText: 'Password',
+                                  labelStyle: GoogleFonts.rubik(
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFFFFFFFF),
+                                    fontSize: 13,
                                   ),
-                                ],
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10.0,
+                                    horizontal: 18.0,
+                                  ), // Adjust vertical value padding
+                                  floatingLabelBehavior: FloatingLabelBehavior
+                                      .never, // Remove label animation
+                                ),
                               ),
                             ),
-                            SizedBox(height: 31.0),
+                            SizedBox(height: 20.0),
+                            // Field Confirm Password User
+                            Container(
+                              height: 32,
+                              width: 224,
+                              child: TextFormField(
+                                controller: _confirmPasswordController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Masukkan password yang sama';
+                                  }
+                                  return null;
+                                },
+                                obscureText: true,
+                                style: GoogleFonts.rubik(
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFFFFFFFF),
+                                  fontSize: 13,
+                                ),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Color(0x7FF0EFF4),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(26),
+                                  ),
+                                  labelText: 'Confirm Password',
+                                  labelStyle: GoogleFonts.rubik(
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFFFFFFFF),
+                                    fontSize: 13,
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10.0,
+                                    horizontal: 18.0,
+                                  ), // Adjust vertical value padding
+                                  floatingLabelBehavior: FloatingLabelBehavior
+                                      .never, // Remove label animation
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 25.0),
                             SizedBox(
                               width: 151,
                               height: 27,
@@ -222,21 +274,21 @@ class MyAppState extends State<MyApp> {
                                 ),
                                 onPressed: _submitForm,
                                 child: Text(
-                                  'Login',
+                                  'Register',
                                   style: GoogleFonts.rubik(
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w500,
                                     color: Color(0xFFFFFFFF),
                                     fontSize: 13,
                                   ),
                                 ),
                               ),
                             ),
-                            SizedBox(height: 40.0),
+                            SizedBox(height: 15.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Belum punya akun? ',
+                                  'Sudah punya akun? ',
                                   style: GoogleFonts.rubik(
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xFFFFFFFF),
@@ -255,7 +307,7 @@ class MyAppState extends State<MyApp> {
                                     print("Login button clicked!");
                                   },
                                   child: Text(
-                                    'Daftar sekarang!',
+                                    'Login!',
                                     style: GoogleFonts.rubik(
                                       fontWeight: FontWeight.w400,
                                       color: Color(0xFFDA4167),

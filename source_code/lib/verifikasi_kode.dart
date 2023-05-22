@@ -22,17 +22,15 @@ class MyAppState extends State<MyApp> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // Controller buat text
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _verifikasiKodeController =
+      TextEditingController();
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Form is valid, perform desired action
-      String username = _usernameController.text;
-      String password = _passwordController.text;
+      String verifikasiKode = _verifikasiKodeController.text;
       // Process the input data or perform other operations
-      print('Submitted Name: $username');
-      print('Submitted Name: $password');
+      print('Submitted Kode: $verifikasiKode');
     }
   }
 
@@ -81,7 +79,7 @@ class MyAppState extends State<MyApp> {
                     children: [
                       // Menampilkan Logo
                       Container(
-                        margin: EdgeInsets.only(bottom: 48.0),
+                        margin: EdgeInsets.only(bottom: 56.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(14.0),
                           child: Image.asset(
@@ -92,20 +90,29 @@ class MyAppState extends State<MyApp> {
                           ),
                         ),
                       ),
-                      // Form penambahan UMKM
+                      // Form Verifikasi Kode User
                       Form(
                         key: _formKey,
                         child: Column(
                           children: [
-                            // Field Username User
+                            Text(
+                              "Masukkan kode verifikasi",
+                              style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFFFFFFFF),
+                                fontSize: 14,
+                              ),
+                            ),
+                            SizedBox(height: 12.0),
+                            // Field Verifikasi Kode User
                             Container(
                               height: 32,
                               width: 224,
                               child: TextFormField(
-                                controller: _usernameController,
+                                controller: _verifikasiKodeController,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Masukkan username user';
+                                    return 'Masukkan kode verifikasi';
                                   }
                                   return null;
                                 },
@@ -120,7 +127,7 @@ class MyAppState extends State<MyApp> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(26),
                                   ),
-                                  labelText: 'Username',
+                                  labelText: 'Verification Code',
                                   labelStyle: GoogleFonts.rubik(
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xFFFFFFFF),
@@ -135,81 +142,17 @@ class MyAppState extends State<MyApp> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 13.0),
-                            // Field Password User
-                            Container(
-                              height: 55,
-                              width: 224,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 32,
-                                    child: TextFormField(
-                                      controller: _passwordController,
-                                      validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Masukkan password user';
-                                        }
-                                        return null;
-                                      },
-                                      obscureText: true,
-                                      style: GoogleFonts.rubik(
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFFFFFFFF),
-                                        fontSize: 13,
-                                      ),
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: Color(0x7FF0EFF4),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(26),
-                                        ),
-                                        labelText: 'Password',
-                                        labelStyle: GoogleFonts.rubik(
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFFFFFFFF),
-                                          fontSize: 13,
-                                        ),
-                                        contentPadding: EdgeInsets.symmetric(
-                                          vertical: 10.0,
-                                          horizontal: 18.0,
-                                        ), // Adjust vertical value padding
-                                        floatingLabelBehavior:
-                                            FloatingLabelBehavior
-                                                .never, // Remove label animation
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 5.0),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Navigate to the login page
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) => LoginPage(),
-                                        //   ),
-                                        // );
-                                        print(
-                                            "Forgot Password button clicked!");
-                                      },
-                                      child: Text(
-                                        'Lupa Password?',
-                                        style: GoogleFonts.rubik(
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFFDA4167),
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                            SizedBox(height: 12.0),
+                            Text(
+                              "Kami telah mengirimkan\nemail konfirmasi ke email@mai.com\nberisi kode verifikasi",
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.rubik(
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xFFFFFFFF),
+                                fontSize: 14,
                               ),
                             ),
-                            SizedBox(height: 31.0),
+                            SizedBox(height: 59.0),
                             SizedBox(
                               width: 151,
                               height: 27,
@@ -222,7 +165,7 @@ class MyAppState extends State<MyApp> {
                                 ),
                                 onPressed: _submitForm,
                                 child: Text(
-                                  'Login',
+                                  'Next',
                                   style: GoogleFonts.rubik(
                                     fontWeight: FontWeight.w500,
                                     color: Color(0xFFFFFFFF),
@@ -231,12 +174,12 @@ class MyAppState extends State<MyApp> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 40.0),
+                            SizedBox(height: 14.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Belum punya akun? ',
+                                  'Salah email? ',
                                   style: GoogleFonts.rubik(
                                     fontWeight: FontWeight.w400,
                                     color: Color(0xFFFFFFFF),
@@ -255,7 +198,7 @@ class MyAppState extends State<MyApp> {
                                     print("Login button clicked!");
                                   },
                                   child: Text(
-                                    'Daftar sekarang!',
+                                    'Klik disini!',
                                     style: GoogleFonts.rubik(
                                       fontWeight: FontWeight.w400,
                                       color: Color(0xFFDA4167),
