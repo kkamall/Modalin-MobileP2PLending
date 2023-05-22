@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as path;
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -27,6 +23,10 @@ class MyAppState extends State<MyApp> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+
+  // Dropdown Role
+  List<String> listRoleUser = ['Borrower', 'Lender'];
+  String? roleUser;
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -76,7 +76,7 @@ class MyAppState extends State<MyApp> {
                   child: Text(
                     "MODALIN",
                     style: GoogleFonts.outfit(
-                      color: Color(0xFFF0EFF4),
+                      color: Color(0xFFFFFFFF),
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                     ),
@@ -259,6 +259,57 @@ class MyAppState extends State<MyApp> {
                                   floatingLabelBehavior: FloatingLabelBehavior
                                       .never, // Remove label animation
                                 ),
+                              ),
+                            ),
+                            SizedBox(height: 20.0),
+                            // Dropdown Kategori UMKM
+                            Container(
+                              height: 32,
+                              width: 224,
+                              child: DropdownButtonFormField<String>(
+                                value: roleUser,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    roleUser = newValue;
+                                  });
+                                },
+                                items: listRoleUser.map((roleUser) {
+                                  return DropdownMenuItem(
+                                    value: roleUser,
+                                    child: Text(roleUser),
+                                  );
+                                }).toList(),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please select a role';
+                                  }
+                                  return null;
+                                },
+                                style: GoogleFonts.rubik(
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFFFFFFFF),
+                                  fontSize: 13,
+                                ),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Color(0x7FF0EFF4),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(26),
+                                  ),
+                                  labelText: 'Role User',
+                                  labelStyle: GoogleFonts.rubik(
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFFFFFFFF),
+                                    fontSize: 13,
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10.0,
+                                    horizontal: 18.0,
+                                  ), // Adjust vertical value padding
+                                  floatingLabelBehavior: FloatingLabelBehavior
+                                      .never, // Remove label animation
+                                ),
+                                dropdownColor: Color(0xFF8A828E),
                               ),
                             ),
                             SizedBox(height: 25.0),

@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as path;
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -26,8 +22,7 @@ class MyAppState extends State<MyApp> {
   final TextEditingController _tahunBerdiriController = TextEditingController();
   final TextEditingController _lokasiController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
-  final TextEditingController _linkVideoYoutubeController =
-      TextEditingController();
+  final TextEditingController _omsetController = TextEditingController();
 
   // Dropdown Kategori
   List<String> listKategori = ['Properti', 'Makanan', 'Saham'];
@@ -37,14 +32,6 @@ class MyAppState extends State<MyApp> {
   List<String> listKelas = ['Mikro', 'Makro'];
   String? kelas;
 
-  // Upload Video
-  // String? filePath;
-  // FilePickerResult? result;
-  // String? fileName;
-  // PlatformFile? pickedFile;
-  // bool isLoading = false;
-  // File? fileToDisplay;
-
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Form is valid, perform desired action
@@ -52,7 +39,7 @@ class MyAppState extends State<MyApp> {
       String tahunBerdiri = _tahunBerdiriController.text;
       String lokasi = _lokasiController.text;
       String deskripsi = _deskripsiController.text;
-      String linkVideoYoutube = _linkVideoYoutubeController.text;
+      String omset = _omsetController.text;
       // Process the input data or perform other operations
       print('Submitted Name: $name');
       print('Submitted Name: $tahunBerdiri');
@@ -60,7 +47,7 @@ class MyAppState extends State<MyApp> {
       print('Submitted Name: $deskripsi');
       print('Selected Kategori: $kategori');
       print('Selected Kelas: $kelas');
-      print('Submitted Link YT: $linkVideoYoutube');
+      print('Submitted Link YT: $omset');
     }
   }
 
@@ -142,7 +129,7 @@ class MyAppState extends State<MyApp> {
                   child: Text(
                     "MODALIN",
                     style: GoogleFonts.outfit(
-                      color: Color(0xFFF0EFF4),
+                      color: Color(0xFFFFFFFF),
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                     ),
@@ -154,7 +141,7 @@ class MyAppState extends State<MyApp> {
                     children: [
                       // Menampilkan Logo
                       Container(
-                        margin: EdgeInsets.only(bottom: 48.0),
+                        margin: EdgeInsets.only(bottom: 25.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(14.0),
                           child: Image.asset(
@@ -327,6 +314,45 @@ class MyAppState extends State<MyApp> {
                               ),
                             ),
                             SizedBox(height: 20.0),
+                            // Field Omset UMKM Per Tahun
+                            Container(
+                              height: 32,
+                              width: 224,
+                              child: TextFormField(
+                                controller: _omsetController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Masukkan omset UMKM per tahun';
+                                  }
+                                  return null;
+                                },
+                                style: GoogleFonts.rubik(
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFFFFFFFF),
+                                  fontSize: 13,
+                                ),
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Color(0x7FF0EFF4),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(26),
+                                  ),
+                                  labelText: 'Omset Per Tahun',
+                                  labelStyle: GoogleFonts.rubik(
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFFFFFFFF),
+                                    fontSize: 13,
+                                  ),
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10.0,
+                                    horizontal: 18.0,
+                                  ), // Adjust vertical value padding
+                                  floatingLabelBehavior: FloatingLabelBehavior
+                                      .never, // Remove label animation
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20.0),
                             // Dropdown Kategori UMKM
                             Container(
                               height: 32,
@@ -428,59 +454,6 @@ class MyAppState extends State<MyApp> {
                                 dropdownColor: Color(0xFF8A828E),
                               ),
                             ),
-                            SizedBox(height: 20.0),
-                            // Field Link Video Youtube UMKM
-                            Container(
-                              height: 32,
-                              width: 224,
-                              child: TextFormField(
-                                controller: _linkVideoYoutubeController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Masukkan link video Youtube';
-                                  }
-                                  return null;
-                                },
-                                style: GoogleFonts.rubik(
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFFFFFFFF),
-                                  fontSize: 13,
-                                ),
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Color(0x7FF0EFF4),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(26),
-                                  ),
-                                  labelText: 'Link Video Youtube',
-                                  labelStyle: GoogleFonts.rubik(
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xFFFFFFFF),
-                                    fontSize: 13,
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    vertical: 10.0,
-                                    horizontal: 18.0,
-                                  ), // Adjust vertical value padding
-                                  floatingLabelBehavior: FloatingLabelBehavior
-                                      .never, // Remove label animation
-                                ),
-                              ),
-                            ),
-                            // Container(
-                            //   height: 32,
-                            //   width: 224,
-                            //   child: ElevatedButton(
-                            //     onPressed: _openFileExplorer,
-                            //     child: Text(
-                            //       'Upload Video',
-                            //       style: GoogleFonts.rubik(
-                            //         fontWeight: FontWeight.w400,
-                            //         fontSize: 13,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                             SizedBox(height: 25.0),
                             SizedBox(
                               width: 151,

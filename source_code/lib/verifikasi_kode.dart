@@ -67,7 +67,7 @@ class MyAppState extends State<MyApp> {
                   child: Text(
                     "MODALIN",
                     style: GoogleFonts.outfit(
-                      color: Color(0xFFF0EFF4),
+                      color: Color(0xFFFFFFFF),
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                     ),

@@ -1,8 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as path;
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
@@ -69,7 +65,7 @@ class MyAppState extends State<MyApp> {
                   child: Text(
                     "MODALIN",
                     style: GoogleFonts.outfit(
-                      color: Color(0xFFF0EFF4),
+                      color: Color(0xFFFFFFFF),
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                     ),
