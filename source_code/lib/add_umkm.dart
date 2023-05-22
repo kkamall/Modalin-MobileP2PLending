@@ -154,11 +154,15 @@ class MyAppState extends State<MyApp> {
                     children: [
                       // Menampilkan Logo
                       Container(
-                        margin: EdgeInsets.only(bottom: 25.0),
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: 105,
-                          height: 105,
+                        margin: EdgeInsets.only(bottom: 48.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(14.0),
+                          child: Image.asset(
+                            'assets/images/logo.png',
+                            width: 105,
+                            height: 105,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       // Form penambahan UMKM
