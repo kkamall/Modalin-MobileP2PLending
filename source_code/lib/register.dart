@@ -273,7 +273,14 @@ class MyAppState extends State<MyApp> {
                                   ),
                                 ),
                                 onPressed: _submitForm,
-                                child: Text('Register'),
+                                child: Text(
+                                  'Register',
+                                  style: GoogleFonts.rubik(
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFFFFFFFF),
+                                    fontSize: 13,
+                                  ),
+                                ),
                               ),
                             ),
                             SizedBox(height: 15.0),
