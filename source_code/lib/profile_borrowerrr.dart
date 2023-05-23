@@ -483,22 +483,74 @@ class ProfileBorrowerState extends State<MyApp> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Image.asset(
-                                  'assets/images/thumbnail.png',
-                                  width: 203,
-                                  height: 136,
+                                Container(
+                                  margin: EdgeInsets.only(right: 15),
+                                  child: Image.asset(
+                                    'assets/images/thumbnail.png',
+                                    width: 203,
+                                    height: 136,
+                                  ),
                                 ),
-                                Column(
-                                  children: [
-                                    Text(
-                                      "RENOVIN ",
-                                      style: GoogleFonts.rubik(
-                                        color: Color(0xFFFFFFFF),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                Expanded(
+                                  child: Container(
+                                    child: Column(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            "RENOVIN - UMKM yang bergerak pada bidang...",
+                                            style: GoogleFonts.rubik(
+                                              color: Color(0xFFFFFFFF),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            "Rp 5jt | 10% | 3 bln",
+                                            style: GoogleFonts.rubik(
+                                              color: Color(0xFFFFFFFF),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            "716K ditonton",
+                                            style: GoogleFonts.rubik(
+                                              color: Color(0xFFFFFFFF),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            "219 disukai",
+                                            style: GoogleFonts.rubik(
+                                              color: Color(0xFFFFFFFF),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
