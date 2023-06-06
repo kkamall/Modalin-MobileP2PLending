@@ -5,19 +5,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Verifikasi extends StatefulWidget {
+  const Verifikasi({Key? key}) : super(key: key);
   @override
-  MyAppState createState() {
-    return MyAppState();
+  VerifikasiState createState() {
+    return VerifikasiState();
   }
 }
 
-class MyAppState extends State<MyApp> {
+class VerifikasiState extends State<Verifikasi> {
   final textEditController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -31,6 +27,7 @@ class MyAppState extends State<MyApp> {
       String verifikasiKode = _verifikasiKodeController.text;
       // Process the input data or perform other operations
       print('Submitted Kode: $verifikasiKode');
+      Navigator.pushNamed(context, '/add_umkm');
     }
   }
 
@@ -65,7 +62,7 @@ class MyAppState extends State<MyApp> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "MODALIN",
+                    "VERIFIKASI",
                     style: GoogleFonts.outfit(
                       color: Color(0xFFFFFFFF),
                       fontSize: 32,
@@ -79,7 +76,7 @@ class MyAppState extends State<MyApp> {
                     children: [
                       // Menampilkan Logo
                       Container(
-                        margin: EdgeInsets.only(bottom: 56.0),
+                        margin: EdgeInsets.only(bottom: 12.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(14.0),
                           child: Image.asset(
@@ -189,13 +186,7 @@ class MyAppState extends State<MyApp> {
                                 GestureDetector(
                                   onTap: () {
                                     // Navigate to the login page
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => LoginPage(),
-                                    //   ),
-                                    // );
-                                    print("Login button clicked!");
+                                    Navigator.pushNamed(context, '/registrasi');
                                   },
                                   child: Text(
                                     'Klik disini!',

@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class AddUmkm extends StatefulWidget {
+  const AddUmkm({Key? key}) : super(key: key);
   @override
-  MyAppState createState() {
-    return MyAppState();
+  AddUmkmState createState() {
+    return AddUmkmState();
   }
 }
 
-class MyAppState extends State<MyApp> {
+class AddUmkmState extends State<AddUmkm> {
   final textEditController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -127,7 +123,7 @@ class MyAppState extends State<MyApp> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "MODALIN",
+                    "UMKM",
                     style: GoogleFonts.outfit(
                       color: Color(0xFFFFFFFF),
                       fontSize: 32,

@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Registrasi extends StatefulWidget {
+  const Registrasi({Key? key}) : super(key: key);
   @override
-  MyAppState createState() {
-    return MyAppState();
+  RegistrasiState createState() {
+    return RegistrasiState();
   }
 }
 
-class MyAppState extends State<MyApp> {
+class RegistrasiState extends State<Registrasi> {
   final textEditController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -40,6 +36,7 @@ class MyAppState extends State<MyApp> {
       print('Submitted Name: $username');
       print('Submitted Name: $password');
       print('Submitted Link YT: $confirmPassword');
+      Navigator.pushNamed(context, '/verifikasi');
     }
   }
 
@@ -74,7 +71,7 @@ class MyAppState extends State<MyApp> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "MODALIN",
+                    "REGISTER",
                     style: GoogleFonts.outfit(
                       color: Color(0xFFFFFFFF),
                       fontSize: 32,
@@ -88,7 +85,7 @@ class MyAppState extends State<MyApp> {
                     children: [
                       // Menampilkan Logo
                       Container(
-                        margin: EdgeInsets.only(bottom: 48.0),
+                        margin: EdgeInsets.only(bottom: 20.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(14.0),
                           child: Image.asset(
@@ -349,13 +346,7 @@ class MyAppState extends State<MyApp> {
                                 GestureDetector(
                                   onTap: () {
                                     // Navigate to the login page
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => LoginPage(),
-                                    //   ),
-                                    // );
-                                    print("Login button clicked!");
+                                    Navigator.pushNamed(context, '/login');
                                   },
                                   child: Text(
                                     'Login!',

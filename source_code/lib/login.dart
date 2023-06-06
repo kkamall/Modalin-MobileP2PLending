@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Login extends StatefulWidget {
+  const Login({Key? key}) : super(key: key);
   @override
-  MyAppState createState() {
-    return MyAppState();
+  LoginState createState() {
+    return LoginState();
   }
 }
 
-class MyAppState extends State<MyApp> {
+class LoginState extends State<Login> {
   final textEditController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -63,7 +59,7 @@ class MyAppState extends State<MyApp> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "MODALIN",
+                    "LOGIN",
                     style: GoogleFonts.outfit(
                       color: Color(0xFFFFFFFF),
                       fontSize: 32,
@@ -241,14 +237,8 @@ class MyAppState extends State<MyApp> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    // Navigate to the login page
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //     builder: (context) => LoginPage(),
-                                    //   ),
-                                    // );
-                                    print("Login button clicked!");
+                                    // Navigate to the register page
+                                    Navigator.pushNamed(context, '/registrasi');
                                   },
                                   child: Text(
                                     'Daftar sekarang!',

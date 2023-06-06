@@ -76,7 +76,7 @@ class MyAppState extends State<MyApp> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "MODALIN",
+                      "PINJAMAN",
                       style: GoogleFonts.outfit(
                         color: Color(0xFFFFFFFF),
                         fontSize: 32,
