@@ -7,6 +7,7 @@ import 'add_umkm.dart';
 import 'profile_guest.dart';
 import 'profile_investor.dart';
 import 'aktivitas_guest.dart';
+import 'chat-guest.dart';
 
 void main() {
   runApp(MainRouting());
@@ -26,8 +27,9 @@ class MainRouting extends StatelessWidget {
         "/profile_guest": (context) => ProfileGuest(),
         "/profile_investor": (context) => ProfileInvestor(),
         "/aktivitas_guest": (context) => AktivitasGuest(),
+        "/chat_guest": (context) => ChatGuest(),
       },
-      initialRoute: "/aktivitas_guest",
+      initialRoute: "/chat_guest",
     );
   }
 }
