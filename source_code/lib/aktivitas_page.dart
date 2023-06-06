@@ -82,7 +82,9 @@ class _HomeState extends State<Home> {
                             children: [
                               IconButton(
                                   iconSize: 30,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/notifikasi');
+                                  },
                                   icon: const Icon(Icons.notifications),
                                   color: Colors.white),
                               IconButton(
@@ -548,7 +550,9 @@ class _HomeState extends State<Home> {
                   children: [
                     IconButton(
                       iconSize: 24,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/explore');
+                      },
                       icon: const Icon(Icons.explore_rounded),
                       color: Colors.white,
                     ),
@@ -556,7 +560,9 @@ class _HomeState extends State<Home> {
                       children: [
                         IconButton(
                           iconSize: 24,
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/home');
+                          },
                           icon: const Icon(Icons.home),
                           color: Colors.white,
                         ),

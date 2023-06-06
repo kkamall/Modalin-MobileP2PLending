@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+void main() {
+  runApp(ChatDetail());
+}
+
 class ChatDetail extends StatefulWidget {
   const ChatDetail({Key? key}) : super(key: key);
 

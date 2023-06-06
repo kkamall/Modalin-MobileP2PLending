@@ -11,6 +11,8 @@ import 'chat-guest.dart';
 import 'chat.dart';
 import 'chat_detail.dart';
 import 'aktivitas_page.dart';
+import 'notifikasi.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(MainRouting());
@@ -33,6 +35,8 @@ class MainRouting extends StatelessWidget {
         "/chat_guest": (context) => ChatGuest(),
         "/chat": (context) => ChatNotif(),
         "/chat_detail": (context) => ChatDetail(),
+        "/notifikasi": (context) => Notifikasi(),
+        "/explore": (context) => HomeScreen(),
         "/home": (context) => Home(),
       },
       initialRoute: "/home",

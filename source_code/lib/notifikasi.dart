@@ -2,26 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tugas_besar/add_pinjaman.dart';
 
-void main() {
-  runApp(AktivitasGuest());
-}
-
-class AktivitasGuest extends StatefulWidget {
-  const AktivitasGuest({Key? key}) : super(key: key);
+class Notifikasi extends StatefulWidget {
+  const Notifikasi({Key? key}) : super(key: key);
   @override
-  AktivitasGuestState createState() {
-    return AktivitasGuestState();
+  NotifikasiState createState() {
+    return NotifikasiState();
   }
 }
 
-class AktivitasGuestState extends State<AktivitasGuest> {
+class NotifikasiState extends State<Notifikasi> {
   final textEditController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final List<String> dataList = [
-      'data 1',
-      'data 2',
-      'data 3',
+    'data 1',
+    'data 2',
+    'data 3',
   ];
 
   // Controller buat text
@@ -38,7 +34,6 @@ class AktivitasGuestState extends State<AktivitasGuest> {
       print('Submitted Name: $password');
     }
   }
-
 
   @override
   void dispose() {
@@ -80,195 +75,200 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                       children: [
                         IconButton(
                             iconSize: 40,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/home');
+                            },
                             icon: const Icon(Icons.home),
-                            color: Colors.white
-                        )
+                            color: Colors.white)
                       ],
                     ),
-
-                      
-                  ],   
-
+                  ],
                 ),
-
                 Padding(
                   padding: EdgeInsets.all(10),
                   child: //20 pixel ke semua arah
-                  Text(
+                      Text(
                     "Hari ini",
                     style: GoogleFonts.rubik(
                         fontSize: 14,
                         //fontWeight: FontWeight.w500,
                         color: Colors.white),
-                        textAlign: TextAlign.left,
+                    textAlign: TextAlign.left,
                   ),
-                
-                ), 
-
-                Card(
-                  child: 
-                    ListTile(
-                      //contentPadding: EdgeInsets.all(10),
-                      title: Text("PESAN  BARU: Jadi gimana pak?",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),
-                      ),
-                      subtitle: Text("RENOVIN",style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),),
-                      leading: CircleAvatar(),
-                      tileColor: Color(0xFF3D2645),
-                      trailing: Text("10:00"),
-                      isThreeLine: true,
-                      dense: true,
-                      onTap: (){},
-                    ),      
                 ),
-
                 Card(
-                  child: 
-                    ListTile(
-                      //contentPadding: EdgeInsets.all(10),
-                      title: Text("PESAN  BARU: Jadi gimana pak?",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),
+                  child: ListTile(
+                    //contentPadding: EdgeInsets.all(10),
+                    title: Text(
+                      "PESAN  BARU: Jadi gimana pak?",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
                       ),
-                      subtitle: Text("RENOVIN",style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),),
-                      leading: CircleAvatar(),
-                      tileColor: Color(0xFF3D2645),
-                      trailing: Text("10:00"),
-                      isThreeLine: true,
-                      dense: true,
-                      onTap: (){},
-                    ),      
+                    ),
+                    subtitle: Text(
+                      "RENOVIN",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    leading: CircleAvatar(),
+                    tileColor: Color(0xFF3D2645),
+                    trailing: Text("10:00"),
+                    isThreeLine: true,
+                    dense: true,
+                    onTap: () {},
+                  ),
                 ),
-
                 Card(
-                  child: 
-                    ListTile(
-                      //contentPadding: EdgeInsets.all(10),
-                      title: Text("PESAN  BARU: Jadi gimana pak?",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),
+                  child: ListTile(
+                    //contentPadding: EdgeInsets.all(10),
+                    title: Text(
+                      "PESAN  BARU: Jadi gimana pak?",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
                       ),
-                      subtitle: Text("RENOVIN",style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),),
-                      leading: CircleAvatar(),
-                      tileColor: Color(0xFF3D2645),
-                      trailing: Text("10:00"),
-                      isThreeLine: true,
-                      dense: true,
-                      onTap: (){},
-                    ),      
+                    ),
+                    subtitle: Text(
+                      "RENOVIN",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    leading: CircleAvatar(),
+                    tileColor: Color(0xFF3D2645),
+                    trailing: Text("10:00"),
+                    isThreeLine: true,
+                    dense: true,
+                    onTap: () {},
+                  ),
                 ),
-
+                Card(
+                  child: ListTile(
+                    //contentPadding: EdgeInsets.all(10),
+                    title: Text(
+                      "PESAN  BARU: Jadi gimana pak?",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "RENOVIN",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    leading: CircleAvatar(),
+                    tileColor: Color(0xFF3D2645),
+                    trailing: Text("10:00"),
+                    isThreeLine: true,
+                    dense: true,
+                    onTap: () {},
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.all(10),
                   child: //20 pixel ke semua arah
-                  Text(
+                      Text(
                     "Minggu ini",
                     style: GoogleFonts.rubik(
                         fontSize: 14,
                         //fontWeight: FontWeight.w500,
                         color: Colors.white),
                   ),
-                
                 ),
-
                 Card(
-                  child: 
-                    ListTile(
-                      //contentPadding: EdgeInsets.all(10),
-                      title: Text("PESAN  BARU: Jadi gimana pak?",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),
+                  child: ListTile(
+                    //contentPadding: EdgeInsets.all(10),
+                    title: Text(
+                      "PESAN  BARU: Jadi gimana pak?",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
                       ),
-                      subtitle: Text("RENOVIN",style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),),
-                      leading: CircleAvatar(),
-                      tileColor: Color(0xFF3D2645),
-                      trailing: Text("10:00"),
-                      isThreeLine: true,
-                      dense: true,
-                      onTap: (){},
-                    ),      
+                    ),
+                    subtitle: Text(
+                      "RENOVIN",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    leading: CircleAvatar(),
+                    tileColor: Color(0xFF3D2645),
+                    trailing: Text("10:00"),
+                    isThreeLine: true,
+                    dense: true,
+                    onTap: () {},
+                  ),
                 ),
-
                 Card(
-                  child: 
-                    ListTile(
-                      //contentPadding: EdgeInsets.all(10),
-                      title: Text("PESAN  BARU: Jadi gimana pak?",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),
+                  child: ListTile(
+                    //contentPadding: EdgeInsets.all(10),
+                    title: Text(
+                      "PESAN  BARU: Jadi gimana pak?",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
                       ),
-                      subtitle: Text("RENOVIN",style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),),
-                      leading: CircleAvatar(),
-                      tileColor: Color(0xFF3D2645),
-                      trailing: Text("10:00"),
-                      isThreeLine: true,
-                      dense: true,
-                      onTap: (){},
-                    ),      
+                    ),
+                    subtitle: Text(
+                      "RENOVIN",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    leading: CircleAvatar(),
+                    tileColor: Color(0xFF3D2645),
+                    trailing: Text("10:00"),
+                    isThreeLine: true,
+                    dense: true,
+                    onTap: () {},
+                  ),
                 ),
-
                 Card(
-                  child: 
-                    ListTile(
-                      //contentPadding: EdgeInsets.all(10),
-                      title: Text("PESAN  BARU: Jadi gimana pak?",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),
+                  child: ListTile(
+                    //contentPadding: EdgeInsets.all(10),
+                    title: Text(
+                      "PESAN  BARU: Jadi gimana pak?",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
                       ),
-                      subtitle: Text("RENOVIN",style: TextStyle(
-                                          fontSize: 12, 
-                                          color: Colors.white, 
-                                        ),),
-                      leading: CircleAvatar(),
-                      tileColor: Color(0xFF3D2645),
-                      trailing: Text("10:00"),
-                      isThreeLine: true,
-                      dense: true,
-                      onTap: (){},
-                    ),      
+                    ),
+                    subtitle: Text(
+                      "RENOVIN",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    leading: CircleAvatar(),
+                    tileColor: Color(0xFF3D2645),
+                    trailing: Text("10:00"),
+                    isThreeLine: true,
+                    dense: true,
+                    onTap: () {},
+                  ),
                 ),
-
 
                 /*
                 Padding(
@@ -337,11 +337,7 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                   color: Colors.white,
                 ),
                 */
-
-
               ],
-
-
             ),
           ),
         ),
@@ -375,7 +371,6 @@ class AktivitasGuestState extends State<AktivitasGuest> {
 
         ),
         */
-        
       ),
     );
   }

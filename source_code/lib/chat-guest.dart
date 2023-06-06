@@ -65,7 +65,10 @@ class ChatState extends State<ChatGuest> {
                                 children: [
                                   IconButton(
                                       iconSize: 38,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, '/notifikasi');
+                                      },
                                       icon: const Icon(Icons.notifications),
                                       color: Colors.white),
                                   IconButton(
@@ -165,7 +168,9 @@ class ChatState extends State<ChatGuest> {
                   children: [
                     IconButton(
                       iconSize: 26,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/explore');
+                      },
                       icon: const Icon(Icons.explore_rounded),
                       color: Colors.white,
                     ),
