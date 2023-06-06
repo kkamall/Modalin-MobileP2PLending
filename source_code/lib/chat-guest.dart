@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ChatGuest());
 }
 
 // class untuk menampung data user
@@ -15,8 +15,8 @@ class Chat {
   Chat(this.nama, this.foto, this.lastChat, this.chat);
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class ChatGuest extends StatefulWidget {
+  const ChatGuest({Key? key}) : super(key: key);
 
   @override
   ChatState createState() {
@@ -24,7 +24,7 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class ChatState extends State<MyApp> {
+class ChatState extends State<ChatGuest> {
   // list objek chat
   List<Chat> listChat = [
     Chat("MAKAN2", "formal.png", "Jadi Bagaimana Pak?", 3),
@@ -101,7 +101,7 @@ class ChatState extends State<MyApp> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(14.0),
                                 child: Image.asset(
-                                  'images/chat_guest.png',
+                                  'assets/images/chat_guest.png',
                                   width: 126,
                                   height: 126,
                                   fit: BoxFit.cover,

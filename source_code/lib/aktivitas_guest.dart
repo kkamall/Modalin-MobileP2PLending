@@ -218,7 +218,9 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                       ),
                       IconButton(
                         iconSize: 24,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/chat-guest');
+                        },
                         icon: const Icon(Icons.mark_chat_unread),
                         color: Colors.white,
                       ),
