@@ -66,7 +66,9 @@ class ProfileGuestState extends State<ProfileGuest> {
                             fontWeight: FontWeight.w700)),
                     IconButton(
                         iconSize: 42,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/aktivitas_guest');
+                        },
                         icon: const Icon(Icons.home),
                         color: Colors.white)
                   ],
@@ -120,7 +122,8 @@ class ProfileGuestState extends State<ProfileGuest> {
                               borderRadius: BorderRadius.circular(17.0),
                             ),
                           ),
-                          onPressed:() => Navigator.pushNamed(context, '/registrasi'),
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/registrasi'),
                           child: Text(
                             'Daftar Sekarang!',
                             style: GoogleFonts.rubik(

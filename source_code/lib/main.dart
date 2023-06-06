@@ -8,6 +8,9 @@ import 'profile_guest.dart';
 import 'profile_investor.dart';
 import 'aktivitas_guest.dart';
 import 'chat-guest.dart';
+import 'chat.dart';
+import 'chat_detail.dart';
+import 'aktivitas_page.dart';
 
 void main() {
   runApp(MainRouting());
@@ -28,8 +31,11 @@ class MainRouting extends StatelessWidget {
         "/profile_investor": (context) => ProfileInvestor(),
         "/aktivitas_guest": (context) => AktivitasGuest(),
         "/chat_guest": (context) => ChatGuest(),
+        "/chat": (context) => ChatNotif(),
+        "/chat_detail": (context) => ChatDetail(),
+        "/home": (context) => Home(),
       },
-      initialRoute: "/chat_guest",
+      initialRoute: "/home",
     );
   }
 }

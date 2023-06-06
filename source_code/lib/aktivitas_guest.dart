@@ -77,7 +77,9 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                             color: Colors.white),
                         IconButton(
                             iconSize: 30,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/profile_guest');
+                            },
                             icon: const Icon(Icons.person),
                             color: Colors.white),
                       ],
@@ -218,7 +220,9 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                       ),
                       IconButton(
                         iconSize: 24,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/chat-guest');
+                        },
                         icon: const Icon(Icons.mark_chat_unread),
                         color: Colors.white,
                       ),

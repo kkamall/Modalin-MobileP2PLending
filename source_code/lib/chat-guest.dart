@@ -21,14 +21,6 @@ class ChatGuest extends StatefulWidget {
 }
 
 class ChatState extends State<ChatGuest> {
-  // list objek chat
-  List<Chat> listChat = [
-    Chat("MAKAN2", "formal.png", "Jadi Bagaimana Pak?", 3),
-    Chat("RENOVIN", "formal.png", "Jadi Bagaimana Pak?", 1),
-    Chat("KOPIKIRAN", "formal.png", "Jadi Bagaimana Pak?", 0),
-    Chat("KOKITA", "formal.png", "Jadi Bagaimana Pak?", 0),
-  ];
-
   // penanda buat list yang dpilih
   int flag = 0;
 
@@ -78,7 +70,10 @@ class ChatState extends State<ChatGuest> {
                                       color: Colors.white),
                                   IconButton(
                                       iconSize: 38,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, '/profile_guest');
+                                      },
                                       icon: const Icon(Icons.account_circle),
                                       color: Colors.white)
                                 ],
@@ -176,7 +171,9 @@ class ChatState extends State<ChatGuest> {
                     ),
                     IconButton(
                       iconSize: 24,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/aktivitas_guest');
+                      },
                       icon: const Icon(Icons.home),
                       color: Colors.white,
                     ),

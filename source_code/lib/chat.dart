@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
 // class untuk menampung data user
 class Chat {
   String nama = "";
@@ -15,8 +11,8 @@ class Chat {
   Chat(this.nama, this.foto, this.lastChat, this.chat);
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class ChatNotif extends StatefulWidget {
+  const ChatNotif({Key? key}) : super(key: key);
 
   @override
   ChatState createState() {
@@ -24,7 +20,7 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class ChatState extends State<MyApp> {
+class ChatState extends State<ChatNotif> {
   // list objek chat
   List<Chat> listChat = [
     Chat("MAKAN2", "formal.png", "Jadi Bagaimana Pak?", 3),
@@ -82,7 +78,10 @@ class ChatState extends State<MyApp> {
                                       color: Colors.white),
                                   IconButton(
                                       iconSize: 38,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, '/profile_investor');
+                                      },
                                       icon: const Icon(Icons.account_circle),
                                       color: Colors.white)
                                 ],
@@ -393,13 +392,15 @@ class ChatState extends State<MyApp> {
                     IconButton(
                       iconSize: 26,
                       onPressed: () {},
-                      icon: const Icon(Icons.home),
+                      icon: const Icon(Icons.explore_rounded),
                       color: Colors.white,
                     ),
                     IconButton(
                       iconSize: 24,
-                      onPressed: () {},
-                      icon: const Icon(Icons.menu_book),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/home');
+                      },
+                      icon: const Icon(Icons.home),
                       color: Colors.white,
                     ),
                     Stack(

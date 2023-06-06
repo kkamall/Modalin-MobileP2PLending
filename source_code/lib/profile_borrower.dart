@@ -49,7 +49,9 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                 fontWeight: FontWeight.w700)),
                         IconButton(
                             iconSize: 40,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/home');
+                            },
                             icon: const Icon(Icons.home),
                             color: Colors.white)
                       ]),
