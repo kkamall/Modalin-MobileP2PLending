@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
 // class untuk menampung data user
 class Chat {
   String nama = "";
@@ -15,8 +11,8 @@ class Chat {
   Chat(this.nama, this.foto, this.lastChat, this.chat);
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class ChatNotif extends StatefulWidget {
+  const ChatNotif({Key? key}) : super(key: key);
 
   @override
   ChatState createState() {
@@ -24,7 +20,7 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class ChatState extends State<MyApp> {
+class ChatState extends State<ChatNotif> {
   // list objek chat
   List<Chat> listChat = [
     Chat("MAKAN2", "formal.png", "Jadi Bagaimana Pak?", 3),
@@ -77,12 +73,18 @@ class ChatState extends State<MyApp> {
                                 children: [
                                   IconButton(
                                       iconSize: 38,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, '/notifikasi');
+                                      },
                                       icon: const Icon(Icons.notifications),
                                       color: Colors.white),
                                   IconButton(
                                       iconSize: 38,
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, '/profile_investor');
+                                      },
                                       icon: const Icon(Icons.account_circle),
                                       color: Colors.white)
                                 ],
@@ -184,93 +186,103 @@ class ChatState extends State<MyApp> {
                                 return Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(20, 0, 20, 6),
-                                    child: Container(
-                                        width: 308,
-                                        height: 42,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                              width: 1,
-                                              color: const Color.fromARGB(
-                                                  255, 218, 65, 103),
-                                            )),
-                                        child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                14, 0, 14, 0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          0, 0, 0, 0),
-                                                  child: SizedBox(
-                                                      width: 24,
-                                                      height: 24,
-                                                      child: ClipOval(
-                                                        child: Image.asset(
-                                                          'assets/images/${listChat[index].foto}',
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      )),
-                                                ),
-                                                Text(
-                                                  listChat[index].nama,
-                                                  style: GoogleFonts.rubik(
-                                                    color: Colors.white,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(
+                                            context, '/chat_detail');
+
+                                        // print('pressed');
+                                      },
+                                      child: Container(
+                                          width: 308,
+                                          height: 42,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              border: Border.all(
+                                                width: 1,
+                                                color: const Color.fromARGB(
+                                                    255, 218, 65, 103),
+                                              )),
+                                          child: Padding(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      14, 0, 14, 0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(0, 0, 0, 0),
+                                                    child: SizedBox(
+                                                        width: 24,
+                                                        height: 24,
+                                                        child: ClipOval(
+                                                          child: Image.asset(
+                                                            'assets/images/${listChat[index].foto}',
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        )),
                                                   ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          12, 0, 12, 0),
-                                                  child: Text(
-                                                    listChat[index].lastChat,
+                                                  Text(
+                                                    listChat[index].nama,
                                                     style: GoogleFonts.rubik(
                                                       color: Colors.white,
-                                                      fontSize: 12,
+                                                      fontSize: 14,
                                                       fontWeight:
-                                                          FontWeight.w100,
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
-                                                ),
-                                                listChat[index].chat > 0
-                                                    ? Container(
-                                                        alignment:
-                                                            Alignment.center,
-                                                        width: 20,
-                                                        height: 20,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                            color: const Color
-                                                                    .fromARGB(
-                                                                255,
-                                                                218,
-                                                                65,
-                                                                103)),
-                                                        child: Text(
-                                                          listChat[index]
-                                                              .chat
-                                                              .toString(),
-                                                          style:
-                                                              GoogleFonts.rubik(
-                                                            color: Colors.white,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w100,
-                                                          ),
-                                                        ))
-                                                    : const SizedBox()
-                                              ],
-                                            ))));
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .fromLTRB(12, 0, 12, 0),
+                                                    child: Text(
+                                                      listChat[index].lastChat,
+                                                      style: GoogleFonts.rubik(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w100,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  listChat[index].chat > 0
+                                                      ? Container(
+                                                          alignment:
+                                                              Alignment.center,
+                                                          width: 20,
+                                                          height: 20,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
+                                                              color: const Color
+                                                                      .fromARGB(
+                                                                  255,
+                                                                  218,
+                                                                  65,
+                                                                  103)),
+                                                          child: Text(
+                                                            listChat[index]
+                                                                .chat
+                                                                .toString(),
+                                                            style: GoogleFonts
+                                                                .rubik(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w100,
+                                                            ),
+                                                          ))
+                                                      : const SizedBox()
+                                                ],
+                                              ))),
+                                    ));
                               })
                           // end listview builder all chat
                           // start listview builder unread chat
@@ -392,14 +404,18 @@ class ChatState extends State<MyApp> {
                   children: [
                     IconButton(
                       iconSize: 26,
-                      onPressed: () {},
-                      icon: const Icon(Icons.home),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/explore');
+                      },
+                      icon: const Icon(Icons.explore_rounded),
                       color: Colors.white,
                     ),
                     IconButton(
                       iconSize: 24,
-                      onPressed: () {},
-                      icon: const Icon(Icons.menu_book),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/home');
+                      },
+                      icon: const Icon(Icons.home),
                       color: Colors.white,
                     ),
                     Stack(

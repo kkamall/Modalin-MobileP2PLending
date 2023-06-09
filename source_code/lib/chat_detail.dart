@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChatDetail());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class ChatDetail extends StatefulWidget {
+  const ChatDetail({Key? key}) : super(key: key);
 
   @override
   ChatDetailState createState() {
@@ -14,7 +14,7 @@ class MyApp extends StatefulWidget {
   }
 }
 
-class ChatDetailState extends State<MyApp> {
+class ChatDetailState extends State<ChatDetail> {
   final TextEditingController _messageController = TextEditingController();
   final List<String?> messages = [];
 
@@ -56,7 +56,9 @@ class ChatDetailState extends State<MyApp> {
                                       fontWeight: FontWeight.w800)),
                               IconButton(
                                   iconSize: 42,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/home');
+                                  },
                                   icon: const Icon(Icons.home),
                                   color: Colors.white)
                             ]),

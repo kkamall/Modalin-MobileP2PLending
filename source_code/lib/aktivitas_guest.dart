@@ -72,12 +72,16 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                       children: [
                         IconButton(
                             iconSize: 30,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/notifikasi');
+                            },
                             icon: const Icon(Icons.notifications),
                             color: Colors.white),
                         IconButton(
                             iconSize: 30,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/profile_guest');
+                            },
                             icon: const Icon(Icons.person),
                             color: Colors.white),
                       ],
@@ -191,7 +195,9 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                     children: [
                       IconButton(
                         iconSize: 24,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/explore');
+                        },
                         icon: const Icon(Icons.explore_rounded),
                         color: Colors.white,
                       ),
