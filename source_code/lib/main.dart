@@ -28,8 +28,9 @@ class MainRouting extends StatelessWidget {
         "/profile_investor": (context) => ProfileInvestor(),
         "/aktivitas_guest": (context) => AktivitasGuest(),
         "/chat-guest": (context) => ChatGuest(),
+        "/chat_guest": (context) => ChatGuest(),
       },
-      initialRoute: "/aktivitas_guest",
+      initialRoute: "/chat_guest",
     );
   }
 }

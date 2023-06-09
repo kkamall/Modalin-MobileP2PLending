@@ -91,7 +91,7 @@ class ChatState extends State<ChatGuest> {
                       ),
                       // end top bar
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 95, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(0, 95, 0, 0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -113,10 +113,10 @@ class ChatState extends State<ChatGuest> {
                               style: GoogleFonts.rubik(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w500,
-                                color: Color(0xFFFFFFFF),
+                                color: const Color(0xFFFFFFFF),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 19,
                             ),
                             Text(
@@ -124,10 +124,10 @@ class ChatState extends State<ChatGuest> {
                               style: GoogleFonts.rubik(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w400,
-                                color: Color(0xFFFFFFFF),
+                                color: const Color(0xFFFFFFFF),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 19,
                             ),
                             SizedBox(
@@ -135,7 +135,7 @@ class ChatState extends State<ChatGuest> {
                               height: 34,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF832161),
+                                  backgroundColor: const Color(0xFF832161),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(17.0),
                                   ),
@@ -146,7 +146,7 @@ class ChatState extends State<ChatGuest> {
                                   'Daftar Sekarang!',
                                   style: GoogleFonts.rubik(
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xFFFFFFFF),
+                                    color: const Color(0xFFFFFFFF),
                                     fontSize: 16,
                                   ),
                                 ),
@@ -175,13 +175,13 @@ class ChatState extends State<ChatGuest> {
                     IconButton(
                       iconSize: 26,
                       onPressed: () {},
-                      icon: const Icon(Icons.home),
+                      icon: const Icon(Icons.explore_rounded),
                       color: Colors.white,
                     ),
                     IconButton(
                       iconSize: 24,
                       onPressed: () {},
-                      icon: const Icon(Icons.menu_book),
+                      icon: const Icon(Icons.home),
                       color: Colors.white,
                     ),
                     Stack(

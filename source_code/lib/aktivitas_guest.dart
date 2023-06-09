@@ -192,7 +192,7 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                       IconButton(
                         iconSize: 24,
                         onPressed: () {},
-                        icon: const Icon(Icons.home),
+                        icon: const Icon(Icons.explore_rounded),
                         color: Colors.white,
                       ),
                       Stack(
@@ -200,7 +200,7 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                           IconButton(
                             iconSize: 24,
                             onPressed: () {},
-                            icon: const Icon(Icons.menu_book),
+                            icon: const Icon(Icons.home),
                             color: Colors.white,
                           ),
                           Positioned(
