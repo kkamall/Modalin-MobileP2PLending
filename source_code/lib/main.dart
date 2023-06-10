@@ -40,7 +40,7 @@ class MainRouting extends StatelessWidget {
         "/explore": (context) => HomeScreen(),
         "/home": (context) => Home(),
       },
-      initialRoute: "/home",
+      initialRoute: "/profile_borrower",
     );
   }
 }

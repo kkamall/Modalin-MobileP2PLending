@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -16,15 +18,36 @@ class LoginState extends State<Login> {
   // Controller buat text
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String username = "";
+  String password = "";
+  String hasilValidasi = "";
+
+  late Future<int> respPost; //201 artinya berhasil
+  String login = "http://127.0.0.1:8000/login/";
+
+  Future<int> validateLogin() async {
+    //data disimpan di body
+    final response = await http.get(Uri.parse(login));
+
+    if (response.statusCode == 200) {
+      hasilValidasi = jsonDecode(response.body);
+      print(hasilValidasi);
+      if (hasilValidasi == "Ada") {
+        Navigator.pushNamed(context, '/home');
+      }
+    } else {
+      throw Exception('Gagal load');
+    }
+    return response.statusCode;
+  }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Form is valid, perform desired action
-      String username = _usernameController.text;
-      String password = _passwordController.text;
-      // Process the input data or perform other operations
-      print('Submitted Name: $username');
-      print('Submitted Name: $password');
+      username = _usernameController.text;
+      password = _passwordController.text;
+      login = login + username + '/' + password;
+      validateLogin();
     }
   }
 

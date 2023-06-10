@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class Registrasi extends StatefulWidget {
   const Registrasi({Key? key}) : super(key: key);
@@ -19,25 +20,50 @@ class RegistrasiState extends State<Registrasi> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  String email = "";
+  String username = "";
+  String password = "";
+  String confirmPassword = "";
 
   // Dropdown Role
   List<String> listRoleUser = ['Borrower', 'Lender'];
   String? roleUser;
 
+  late Future<int> respPost; //201 artinya berhasil
+  String registrasi = "http://127.0.0.1:8000/registrasi/";
+
+  Future<int> insertDataUser() async {
+    //data disimpan di body
+    final response = await http.post(Uri.parse(registrasi),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: """
+      {"username": "$username",
+      "email": "$email",
+      "password": "$password",
+      "role": "$roleUser",
+      "saldo_dana": 0} """);
+    return response.statusCode; //sukses kalau 201
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Form is valid, perform desired action
-      String email = _emailController.text;
-      String username = _usernameController.text;
-      String password = _passwordController.text;
-      String confirmPassword = _confirmPasswordController.text;
-      // Process the input data or perform other operations
-      print('Submitted Name: $email');
-      print('Submitted Name: $username');
-      print('Submitted Name: $password');
-      print('Submitted Link YT: $confirmPassword');
+      email = _emailController.text;
+      username = _usernameController.text;
+      password = _passwordController.text;
+      confirmPassword = _confirmPasswordController.text;
+      
+      respPost = insertDataUser();
       Navigator.pushNamed(context, '/verifikasi');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    respPost = Future.value(0); //init
   }
 
   @override

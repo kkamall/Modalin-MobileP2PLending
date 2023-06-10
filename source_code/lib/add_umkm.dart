@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 
 class AddUmkm extends StatefulWidget {
   const AddUmkm({Key? key}) : super(key: key);
@@ -20,6 +21,13 @@ class AddUmkmState extends State<AddUmkm> {
   final TextEditingController _deskripsiController = TextEditingController();
   final TextEditingController _omsetController = TextEditingController();
 
+  String nama_umkm = "";
+  String deskripsi = "";
+  int omset = 0;
+  String lokasi = "";
+  int tahun_berdiri = 0;
+  int id_user_borrower = 0;
+
   // Dropdown Kategori
   List<String> listKategori = ['Properti', 'Makanan', 'Saham'];
   String? kategori;
@@ -28,22 +36,39 @@ class AddUmkmState extends State<AddUmkm> {
   List<String> listKelas = ['Mikro', 'Makro'];
   String? kelas;
 
+  late Future<int> respPost; //201 artinya berhasil
+  String addUmkm = "http://127.0.0.1:8000/add_umkm/";
+
+  Future<int> insertDataUmkm() async {
+    //data disimpan di body
+    final response = await http.post(Uri.parse(addUmkm),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body:
+            """
+      {"nama_umkm": "$nama_umkm",
+      "deskripsi": "$deskripsi",
+      "omset": $omset,
+      "lokasi": "$lokasi",
+      "kategori": "$kategori",
+      "kelas": "$kelas",
+      "tahun_berdiri": $tahun_berdiri,
+      "id_user_borrower": 1} """);
+    return response.statusCode; //sukses kalau 201
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Form is valid, perform desired action
-      String name = _nameController.text;
-      String tahunBerdiri = _tahunBerdiriController.text;
-      String lokasi = _lokasiController.text;
-      String deskripsi = _deskripsiController.text;
-      String omset = _omsetController.text;
-      // Process the input data or perform other operations
-      print('Submitted Name: $name');
-      print('Submitted Name: $tahunBerdiri');
-      print('Submitted Name: $lokasi');
-      print('Submitted Name: $deskripsi');
-      print('Selected Kategori: $kategori');
-      print('Selected Kelas: $kelas');
-      print('Submitted Link YT: $omset');
+      nama_umkm = _nameController.text;
+      tahun_berdiri = int.parse(_tahunBerdiriController.text);
+      lokasi = _lokasiController.text;
+      deskripsi = _deskripsiController.text;
+      omset = int.parse(_omsetController.text);
+
+      respPost = insertDataUmkm();
+      Navigator.pushNamed(context, '/home');
     }
   }
 
