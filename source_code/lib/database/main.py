@@ -258,7 +258,7 @@ def get_user(id_user: int):
     finally:
         con.close()
 
-    return {"nama":existing_item[1], "email":existing_item[2], "saldo_dana":existing_item[7], "foto_profile":existing_item[5]}
+    return {"nama":existing_item[1], "email":existing_item[2], "saldo_dana":existing_item[7]}
 
 @app.get("/get_umkm/{id_user}")
 def get_umkm(id_user: int):

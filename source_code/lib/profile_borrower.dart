@@ -8,33 +8,22 @@ import 'package:http/http.dart' as http;
 class ProfileModel {
   String nama;
   String email;
-  int saldo_dana;
-  String foto_profile;
+  String saldo_dana;
   ProfileModel(
-      {required this.nama,
-      required this.email,
-      required this.saldo_dana,
-      required this.foto_profile});
+      {required this.nama, required this.email, required this.saldo_dana});
 }
 
 class ProfileCubit extends Cubit<ProfileModel> {
   String id_user = "1";
   String url = "http://127.0.0.1:8000/get_user/1";
-  ProfileCubit()
-      : super(
-            ProfileModel(nama: "", email: "", saldo_dana: 0, foto_profile: ""));
+  ProfileCubit() : super(ProfileModel(nama: "", email: "", saldo_dana: ""));
 
   //map dari json ke atribut
   void setFromJson(Map<String, dynamic> json) {
     String nama = json['nama'];
     String email = json['email'];
-    int saldo_dana = json['saldo_dana'];
-    String foto_profile = json['foto_profile'];
-    emit(ProfileModel(
-        nama: nama,
-        email: email,
-        foto_profile: foto_profile,
-        saldo_dana: saldo_dana));
+    String saldo_dana = json['saldo_dana'].toString();
+    emit(ProfileModel(nama: nama, email: email, saldo_dana: saldo_dana));
   }
 
   void fetchData() async {
@@ -50,8 +39,8 @@ class ProfileCubit extends Cubit<ProfileModel> {
 class UmkmModel {
   String nama_umkm;
   String deskripsi;
-  int tahun_berdiri;
-  int omset;
+  String tahun_berdiri;
+  String omset;
   String lokasi;
   String kategori;
   String kelas;
@@ -72,8 +61,8 @@ class UmkmCubit extends Cubit<UmkmModel> {
       : super(UmkmModel(
             nama_umkm: "",
             deskripsi: "",
-            tahun_berdiri: 0,
-            omset: 0,
+            tahun_berdiri: "",
+            omset: "",
             lokasi: "",
             kategori: "",
             kelas: ""));
@@ -82,8 +71,8 @@ class UmkmCubit extends Cubit<UmkmModel> {
   void setFromJson(Map<String, dynamic> json) {
     String nama_umkm = json['nama_umkm'];
     String deskripsi = json['deskripsi'];
-    int tahun_berdiri = json['tahun_berdiri'];
-    int omset = json['omset'];
+    String tahun_berdiri = json['tahun_berdiri'].toString();
+    String omset = json['omset'].toString();
     String lokasi = json['lokasi'];
     String kategori = json['kategori'];
     String kelas = json['kelas'];
@@ -107,8 +96,34 @@ class UmkmCubit extends Cubit<UmkmModel> {
   }
 }
 
-class ProfileBorrower extends StatelessWidget {
+class ProfileBorrower extends StatefulWidget {
   const ProfileBorrower({Key? key}) : super(key: key);
+
+  @override
+  ProfileBorrowerState createState() {
+    return ProfileBorrowerState();
+  }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //       home: MultiBlocProvider(
+  //     providers: [
+  //       BlocProvider<ProfileCubit>(
+  //         create: (BuildContext context) => ProfileCubit(),
+  //       ),
+  //       BlocProvider<UmkmCubit>(
+  //         create: (BuildContext context) => UmkmCubit(),
+  //       ),
+  //     ],
+  //     child: const ProfileBorrowerState(),
+  //   ));
+  // }
+}
+
+class ProfileBorrowerState extends State<ProfileBorrower> {
+  // penanda buat list yang dpilih
+  int flag = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -122,19 +137,7 @@ class ProfileBorrower extends StatelessWidget {
           create: (BuildContext context) => UmkmCubit(),
         ),
       ],
-      child: ProfileBorrowerState(),
-    ));
-  }
-}
-
-class ProfileBorrowerState extends StatelessWidget {
-  // penanda buat list yang dpilih
-  int flag = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'MODALIN - Profile Borrower',
         home: Scaffold(
@@ -153,8 +156,8 @@ class ProfileBorrowerState extends StatelessWidget {
                 ),
               ),
               child: BlocBuilder<ProfileCubit, ProfileModel>(
-                builder: (asd, profile) {
-                  asd.read<ProfileCubit>().fetchData();
+                builder: (context, profile) {
+                  context.read<ProfileCubit>().fetchData();
                   return BlocBuilder<UmkmCubit, UmkmModel>(
                     builder: (context, umkm) {
                       context.read<UmkmCubit>().fetchData();
@@ -208,7 +211,7 @@ class ProfileBorrowerState extends StatelessWidget {
                                           fontWeight: FontWeight.w600),
                                     ),
                                     Text(
-                                      "rifqi.fajar@upi.edu",
+                                      "${profile.email}",
                                       style: GoogleFonts.outfit(
                                           color: Colors.white,
                                           fontSize: 9,
@@ -281,7 +284,7 @@ class ProfileBorrowerState extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "Saldo Rp. 5.000.000",
+                                        "Saldo Rp. ${profile.saldo_dana}",
                                         style: GoogleFonts.outfit(
                                             fontSize: 15,
                                             color: Colors.white,
@@ -374,9 +377,9 @@ class ProfileBorrowerState extends StatelessWidget {
                                               fontWeight: FontWeight.w500),
                                         ),
                                         onPressed: () {
-                                          // setState(() {
-                                          //   flag = 0;
-                                          // });
+                                          setState(() {
+                                            flag = 0;
+                                          });
                                         },
                                         child: const Text("UMKM"),
                                       ),
@@ -412,9 +415,9 @@ class ProfileBorrowerState extends StatelessWidget {
                                               fontWeight: FontWeight.w500),
                                         ),
                                         onPressed: () {
-                                          // setState(() {
-                                          //   flag = 1;
-                                          // });
+                                          setState(() {
+                                            flag = 1;
+                                          });
                                         },
                                         child: const Text("Video"),
                                       ),
@@ -495,8 +498,7 @@ class ProfileBorrowerState extends StatelessWidget {
                                           child: RichText(
                                             textAlign: TextAlign.justify,
                                             text: TextSpan(
-                                              text:
-                                                  "Renovin adalah UMKM yang bergerak dibidang properti.",
+                                              text: "${umkm.deskripsi}",
                                               style: GoogleFonts.outfit(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w400,
@@ -521,7 +523,7 @@ class ProfileBorrowerState extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              "2012",
+                                              "${umkm.tahun_berdiri}",
                                               style: GoogleFonts.outfit(
                                                 color: Color(0xFFFFFFFF),
                                                 fontSize: 12,
@@ -546,7 +548,7 @@ class ProfileBorrowerState extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              "Rp 100jt",
+                                              "Rp. ${umkm.omset}jt",
                                               style: GoogleFonts.outfit(
                                                 color: Color(0xFFFFFFFF),
                                                 fontSize: 12,
@@ -571,7 +573,7 @@ class ProfileBorrowerState extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              "Kota Bandung",
+                                              "${umkm.lokasi}",
                                               style: GoogleFonts.outfit(
                                                 color: Color(0xFFFFFFFF),
                                                 fontSize: 12,
@@ -596,7 +598,7 @@ class ProfileBorrowerState extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              "Properti",
+                                              "${umkm.kategori}",
                                               style: GoogleFonts.outfit(
                                                 color: Color(0xFFFFFFFF),
                                                 fontSize: 12,
@@ -621,7 +623,7 @@ class ProfileBorrowerState extends StatelessWidget {
                                               ),
                                             ),
                                             Text(
-                                              "Mikro",
+                                              "${umkm.kelas}",
                                               style: GoogleFonts.outfit(
                                                 color: Color(0xFFFFFFFF),
                                                 fontSize: 12,
@@ -742,6 +744,6 @@ class ProfileBorrowerState extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }
