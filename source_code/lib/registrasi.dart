@@ -25,15 +25,16 @@ class RegistrasiState extends State<Registrasi> {
   String username = "";
   String password = "";
   String confirmPassword = "";
+  String id_user = "";
 
   // Dropdown Role
   List<String> listRoleUser = ['Borrower', 'Lender'];
   String? roleUser;
 
-  late Future<String> respPost; //201 artinya berhasil
+  late Future<int> respPost; //201 artinya berhasil
   String registrasi = "http://127.0.0.1:8000/registrasi/";
 
-  Future<String> insertDataUser() async {
+  Future<int> insertDataUser() async {
     //data disimpan di body
     final response = await http.post(Uri.parse(registrasi),
         headers: <String, String>{
@@ -45,8 +46,18 @@ class RegistrasiState extends State<Registrasi> {
       "password": "$password",
       "role": "$roleUser",
       "saldo_dana": 0} """);
-    String id_user = jsonDecode(response.body).toString();
-    return id_user; //sukses kalau 201
+    final responseUser =
+        await http.get(Uri.parse("http://127.0.0.1:8000/getLastUser/"));
+    id_user = jsonDecode(responseUser.body).toString();
+    Navigator.pushNamed(
+      context,
+      '/verifikasi',
+      arguments: {
+        'id_user': id_user,
+        'role_user': roleUser,
+      },
+    );
+    return jsonDecode(responseUser.body); //sukses kalau 201
   }
 
   void _submitForm() {
@@ -58,21 +69,13 @@ class RegistrasiState extends State<Registrasi> {
       confirmPassword = _confirmPasswordController.text;
 
       respPost = insertDataUser();
-      Navigator.pushNamed(
-        context,
-        '/verifikasi',
-        arguments: {
-          'id_user': respPost,
-          'role_user': roleUser,
-        },
-      );
     }
   }
 
   @override
   void initState() {
     super.initState();
-    respPost = Future.value(""); //init
+    respPost = Future.value(0); //init
   }
 
   @override

@@ -29,7 +29,7 @@ class VerifikasiState extends State<Verifikasi> {
   String idUser = "";
   String roleUser = "";
 
-  Future<int> validateLogin() async {
+  Future<int> verifikasiEmailUser() async {
     //data disimpan di body
     final response = await http.get(Uri.parse(verifikasiEmail));
 
@@ -38,8 +38,8 @@ class VerifikasiState extends State<Verifikasi> {
       if (hasilValidasi[1] == "Borrower") {
         Navigator.pushNamed(context, '/add_umkm',
             arguments: hasilValidasi[0].toString());
-      } else {
-        Navigator.pushNamed(context, '/profile_lender',
+      } else if (hasilValidasi[1] == "Lender") {
+        Navigator.pushNamed(context, '/profile_investor',
             arguments: hasilValidasi[0].toString());
       }
     } else {
@@ -52,7 +52,10 @@ class VerifikasiState extends State<Verifikasi> {
     if (_formKey.currentState!.validate()) {
       // Form is valid, perform desired action
       String verifikasiKode = _verifikasiKodeController.text;
-      verifikasiEmail = verifikasiEmail + idUser + verifikasiKode;
+      verifikasiEmail = "http://127.0.0.1:8000/verifikasi_email/";
+      verifikasiEmail = verifikasiEmail + idUser + '/' + verifikasiKode;
+      print(verifikasiEmail);
+      verifikasiEmailUser();
     }
   }
 

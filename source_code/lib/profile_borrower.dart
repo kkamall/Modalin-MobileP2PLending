@@ -13,20 +13,22 @@ class ProfileModel {
   String nama;
   String email;
   String saldo_dana;
+  String foto_profile;
   ProfileModel(
-      {required this.nama, required this.email, required this.saldo_dana});
+      {required this.nama, required this.email, required this.saldo_dana, required this.foto_profile});
 }
 
 class ProfileCubit extends Cubit<ProfileModel> {
   String url = "http://127.0.0.1:8000/get_user/";
-  ProfileCubit() : super(ProfileModel(nama: "", email: "", saldo_dana: ""));
+  ProfileCubit() : super(ProfileModel(nama: "", email: "", saldo_dana: "", foto_profile: ""));
 
   //map dari json ke atribut
   void setFromJson(Map<String, dynamic> json) {
     String nama = json['nama'];
     String email = json['email'];
     String saldo_dana = json['saldo_dana'].toString();
-    emit(ProfileModel(nama: nama, email: email, saldo_dana: saldo_dana));
+    String foto_profile = json['foto_profile'];
+    emit(ProfileModel(nama: nama, email: email, saldo_dana: saldo_dana, foto_profile: foto_profile));
   }
 
   void fetchData(id_user) async {
@@ -281,7 +283,7 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                               child: ClipOval(
                                                                 child:
                                                                     Image.asset(
-                                                                  'assets/images/formal.png',
+                                                                  'assets/images/${profile.nama}',
                                                                   fit: BoxFit
                                                                       .cover,
                                                                 ),

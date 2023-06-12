@@ -37,7 +37,7 @@ class LoginState extends State<Login> {
           Navigator.pushNamed(context, '/profile_borrower',
               arguments: hasilValidasi[1].toString());
         } else {
-          Navigator.pushNamed(context, '/profile_lender',
+          Navigator.pushNamed(context, '/profile_investor',
               arguments: hasilValidasi[1].toString());
         }
       } else {
@@ -56,6 +56,7 @@ class LoginState extends State<Login> {
       // Form is valid, perform desired action
       username = _usernameController.text;
       password = _passwordController.text;
+      login = "http://127.0.0.1:8000/login/";
       login = login + username + '/' + password;
       validateLogin();
     }
