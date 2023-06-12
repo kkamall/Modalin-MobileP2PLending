@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tugas_besar/add_pinjaman.dart';
 
 class Notifikasi extends StatefulWidget {
   const Notifikasi({Key? key}) : super(key: key);
@@ -10,37 +9,26 @@ class Notifikasi extends StatefulWidget {
   }
 }
 
+class NotifikasiItem {
+  int jenis = 0; // 0 chat 1 video
+  String nama = "";
+  String foto = "";
+  String isi = "";
+  int waktu = 0; // 0 hari ini, 1 minggu ini
+
+  NotifikasiItem(this.jenis, this.foto, this.nama, this.isi, this.waktu);
+}
+
 class NotifikasiState extends State<Notifikasi> {
-  final textEditController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final List<String> dataList = [
-    'data 1',
-    'data 2',
-    'data 3',
+  List<NotifikasiItem> dataNotif = [
+    NotifikasiItem(0, "formal.png", "RENOVIN", "Jadi gimana pak?", 0),
+    NotifikasiItem(1, "thumbnail.png", "RENOVIN",
+        "UMKM yang bergerak di bidang properti", 0),
+    NotifikasiItem(1, "thumbnail.png", "Thorfinn",
+        "Membuka ladang baru di tempat Ketil", 1),
+    NotifikasiItem(
+        1, "thumbnail.png", "Earen", "Menanam bibit gandung di ladang baru", 1),
   ];
-
-  // Controller buat text
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Form is valid, perform desired action
-      String username = _usernameController.text;
-      String password = _passwordController.text;
-      // Process the input data or perform other operations
-      print('Submitted Name: $username');
-      print('Submitted Name: $password');
-    }
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    textEditController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +37,7 @@ class NotifikasiState extends State<Notifikasi> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 Color(0xFF3D2645),
@@ -60,8 +48,9 @@ class NotifikasiState extends State<Notifikasi> {
             ),
           ),
           child: Container(
-            margin: EdgeInsets.fromLTRB(26, 20, 26, 20),
+            margin: const EdgeInsets.fromLTRB(26, 20, 26, 20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,7 +74,7 @@ class NotifikasiState extends State<Notifikasi> {
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.fromLTRB(5, 0, 0, 10),
                   child: //20 pixel ke semua arah
                       Text(
                     "Hari ini",
@@ -96,89 +85,78 @@ class NotifikasiState extends State<Notifikasi> {
                     textAlign: TextAlign.left,
                   ),
                 ),
-                Card(
-                  child: ListTile(
-                    //contentPadding: EdgeInsets.all(10),
-                    title: Text(
-                      "PESAN  BARU: Jadi gimana pak?",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "RENOVIN",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    leading: CircleAvatar(),
-                    tileColor: Color(0xFF3D2645),
-                    trailing: Text("10:00"),
-                    isThreeLine: true,
-                    dense: true,
-                    onTap: () {},
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    //contentPadding: EdgeInsets.all(10),
-                    title: Text(
-                      "PESAN  BARU: Jadi gimana pak?",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "RENOVIN",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    leading: CircleAvatar(),
-                    tileColor: Color(0xFF3D2645),
-                    trailing: Text("10:00"),
-                    isThreeLine: true,
-                    dense: true,
-                    onTap: () {},
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    //contentPadding: EdgeInsets.all(10),
-                    title: Text(
-                      "PESAN  BARU: Jadi gimana pak?",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "RENOVIN",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    leading: CircleAvatar(),
-                    tileColor: Color(0xFF3D2645),
-                    trailing: Text("10:00"),
-                    isThreeLine: true,
-                    dense: true,
-                    onTap: () {},
-                  ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: dataNotif.length,
+                  itemBuilder: (context, index) {
+                    return dataNotif[index].waktu == 0
+                        ? Card(
+                            child: ListTile(
+                              title: Row(children: [
+                                dataNotif[index].jenis == 0
+                                    ? Text(
+                                        "Pesan Baru: ",
+                                        style: GoogleFonts.rubik(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : Text(
+                                        "Video Populer: ",
+                                        style: GoogleFonts.rubik(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    dataNotif[index].isi,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.rubik(
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ]),
+                              subtitle: Text(
+                                dataNotif[index].nama,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.rubik(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              leading: dataNotif[index].jenis == 0
+                                  ? SizedBox(
+                                      width: 36,
+                                      height: 36,
+                                      child: ClipOval(
+                                        child: Image.asset(
+                                          'assets/images/${dataNotif[index].foto}',
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ))
+                                  : SizedBox(
+                                      width: 46,
+                                      height: 36,
+                                      child: Image.asset(
+                                        'assets/images/${dataNotif[index].foto}',
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                              tileColor: const Color(0xFF3D2645),
+                              onTap: () {},
+                            ),
+                          )
+                        : const SizedBox();
+                  },
                 ),
                 Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.fromLTRB(5, 10, 0, 10),
                   child: //20 pixel ke semua arah
                       Text(
                     "Minggu ini",
@@ -188,189 +166,80 @@ class NotifikasiState extends State<Notifikasi> {
                         color: Colors.white),
                   ),
                 ),
-                Card(
-                  child: ListTile(
-                    //contentPadding: EdgeInsets.all(10),
-                    title: Text(
-                      "PESAN  BARU: Jadi gimana pak?",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "RENOVIN",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    leading: CircleAvatar(),
-                    tileColor: Color(0xFF3D2645),
-                    trailing: Text("10:00"),
-                    isThreeLine: true,
-                    dense: true,
-                    onTap: () {},
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    //contentPadding: EdgeInsets.all(10),
-                    title: Text(
-                      "PESAN  BARU: Jadi gimana pak?",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "RENOVIN",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    leading: CircleAvatar(),
-                    tileColor: Color(0xFF3D2645),
-                    trailing: Text("10:00"),
-                    isThreeLine: true,
-                    dense: true,
-                    onTap: () {},
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    //contentPadding: EdgeInsets.all(10),
-                    title: Text(
-                      "PESAN  BARU: Jadi gimana pak?",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    subtitle: Text(
-                      "RENOVIN",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.white,
-                      ),
-                    ),
-                    leading: CircleAvatar(),
-                    tileColor: Color(0xFF3D2645),
-                    trailing: Text("10:00"),
-                    isThreeLine: true,
-                    dense: true,
-                    onTap: () {},
-                  ),
-                ),
-
-                /*
-                Padding(
-                padding: EdgeInsets.all(10),
-                child: //20 pixel ke semua arah
-                Text('Hari ini', textAlign: TextAlign.left,),
-                
-                ),
-                */
-                /*
-                Text(
-                  "Hari ini",
-                  style: GoogleFonts.rubik(
-                      fontSize: 14,
-                      //fontWeight: FontWeight.w500,
-                      color: Colors.white),
-                ),
-                */
-                /*
-                Divider(
-                  color: Colors.white,
-                ),
-                ListTile(
-                  //contentPadding: EdgeInsets.all(10),
-                  title: Text("PESAN  BARU: Jadi gimana pak?",
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                                      fontSize: 12, 
-                                      color: Colors.white, 
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: dataNotif.length,
+                  itemBuilder: (context, index) {
+                    return dataNotif[index].waktu == 1
+                        ? Card(
+                            child: ListTile(
+                              title: Row(children: [
+                                dataNotif[index].jenis == 0
+                                    ? Text(
+                                        "Pesan Baru: ",
+                                        style: GoogleFonts.rubik(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : Text(
+                                        "Video Populer: ",
+                                        style: GoogleFonts.rubik(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                SizedBox(
+                                  width: 120,
+                                  child: Text(
+                                    dataNotif[index].isi,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.rubik(
+                                      fontSize: 12,
+                                      color: Colors.white,
                                     ),
-                  ),
-                  subtitle: Text("RENOVIN",style: TextStyle(
-                                      fontSize: 12, 
-                                      color: Colors.white, 
-                                    ),),
-                  leading: CircleAvatar(),
-                  
-                  trailing: Text("10:00"),
-                  isThreeLine: true,
-                  onTap: (){},
-                ),
-                Divider(
-                  color: Colors.white,
-                ),
-                ListTile(
-                  //contentPadding: EdgeInsets.all(10),
-                  title: Text("PESAN  BARU: Jadi gimana pak?",
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                                      fontSize: 12, 
-                                      color: Colors.white, 
+                                  ),
+                                ),
+                              ]),
+                              subtitle: Text(
+                                dataNotif[index].nama,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.rubik(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              leading: dataNotif[index].jenis == 0
+                                  ? SizedBox(
+                                      width: 36,
+                                      height: 36,
+                                      child: ClipOval(
+                                        child: Image.asset(
+                                          'assets/images/${dataNotif[index].foto}',
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ))
+                                  : SizedBox(
+                                      width: 46,
+                                      height: 36,
+                                      child: Image.asset(
+                                        'assets/images/${dataNotif[index].foto}',
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                  ),
-                  subtitle: Text("RENOVIN",style: TextStyle(
-                                    fontSize: 12, 
-                                      color: Colors.white, 
-                                    ),),
-                  leading: CircleAvatar(),
-                  trailing: Text("10:00"),
-                  isThreeLine: true,
-                  onTap: (){},
+                              tileColor: const Color(0xFF3D2645),
+                              onTap: () {},
+                            ),
+                          )
+                        : const SizedBox();
+                  },
                 ),
-                Divider(
-                  color: Colors.white,
-                ),
-                */
               ],
             ),
           ),
         ),
-
-        /*
-        ListView.builder(  
-          itemCount: dataList.length,
-          itemBuilder: (context, index){
-            return ListTile(
-              //contentPadding: EdgeInsets.all(10),
-                title: Text("PESAN  BARU: Jadi gimana pak?",
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                                    fontSize: 12, 
-                                    color: Colors.white, 
-                                  ),
-                ),
-                subtitle: Text("RENOVIN",style: TextStyle(
-                                    fontSize: 12, 
-                                    color: Colors.white, 
-                                  ),),
-                leading: CircleAvatar(),
-                tileColor: Color(0xFF3D2645),
-                trailing: Text("10:00"),
-                isThreeLine: true,
-                dense: true,
-                onTap: (){},
-            );
-          },
-
-        ),
-        */
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'chat.dart';
 import 'chat_detail.dart';
 import 'aktivitas_page.dart';
 import 'notifikasi.dart';
+import 'add_pinjaman.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -38,9 +39,10 @@ class MainRouting extends StatelessWidget {
         "/chat_detail": (context) => ChatDetail(),
         "/notifikasi": (context) => Notifikasi(),
         "/explore": (context) => HomeScreen(),
+        "/add_pinjaman": (context) => AddPinjaman(),
         "/home": (context) => Home(),
       },
-      initialRoute: "/profile_borrower",
+      initialRoute: "/login",
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Registrasi extends StatefulWidget {
   const Registrasi({Key? key}) : super(key: key);
@@ -29,10 +30,10 @@ class RegistrasiState extends State<Registrasi> {
   List<String> listRoleUser = ['Borrower', 'Lender'];
   String? roleUser;
 
-  late Future<int> respPost; //201 artinya berhasil
+  late Future<String> respPost; //201 artinya berhasil
   String registrasi = "http://127.0.0.1:8000/registrasi/";
 
-  Future<int> insertDataUser() async {
+  Future<String> insertDataUser() async {
     //data disimpan di body
     final response = await http.post(Uri.parse(registrasi),
         headers: <String, String>{
@@ -44,7 +45,8 @@ class RegistrasiState extends State<Registrasi> {
       "password": "$password",
       "role": "$roleUser",
       "saldo_dana": 0} """);
-    return response.statusCode; //sukses kalau 201
+    String id_user = jsonDecode(response.body).toString();
+    return id_user; //sukses kalau 201
   }
 
   void _submitForm() {
@@ -54,16 +56,23 @@ class RegistrasiState extends State<Registrasi> {
       username = _usernameController.text;
       password = _passwordController.text;
       confirmPassword = _confirmPasswordController.text;
-      
+
       respPost = insertDataUser();
-      Navigator.pushNamed(context, '/verifikasi');
+      Navigator.pushNamed(
+        context,
+        '/verifikasi',
+        arguments: {
+          'id_user': respPost,
+          'role_user': roleUser,
+        },
+      );
     }
   }
 
   @override
   void initState() {
     super.initState();
-    respPost = Future.value(0); //init
+    respPost = Future.value(""); //init
   }
 
   @override

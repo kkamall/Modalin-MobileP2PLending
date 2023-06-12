@@ -26,7 +26,7 @@ class AddUmkmState extends State<AddUmkm> {
   int omset = 0;
   String lokasi = "";
   int tahun_berdiri = 0;
-  int id_user_borrower = 0;
+  String id_user_borrower = "";
 
   // Dropdown Kategori
   List<String> listKategori = ['Properti', 'Makanan', 'Saham'];
@@ -45,8 +45,7 @@ class AddUmkmState extends State<AddUmkm> {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8'
         },
-        body:
-            """
+        body: """
       {"nama_umkm": "$nama_umkm",
       "deskripsi": "$deskripsi",
       "omset": $omset,
@@ -54,7 +53,7 @@ class AddUmkmState extends State<AddUmkm> {
       "kategori": "$kategori",
       "kelas": "$kelas",
       "tahun_berdiri": $tahun_berdiri,
-      "id_user_borrower": 1} """);
+      "id_user_borrower": $id_user_borrower} """);
     return response.statusCode; //sukses kalau 201
   }
 
@@ -68,7 +67,8 @@ class AddUmkmState extends State<AddUmkm> {
       omset = int.parse(_omsetController.text);
 
       respPost = insertDataUmkm();
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushNamed(context, '/profile_borrower',
+          arguments: id_user_borrower);
     }
   }
 
@@ -126,6 +126,7 @@ class AddUmkmState extends State<AddUmkm> {
 
   @override
   Widget build(BuildContext context) {
+    id_user_borrower = ModalRoute.of(context)!.settings.arguments as String;
     return MaterialApp(
       title: 'Hello App',
       debugShowCheckedModeBanner: false,

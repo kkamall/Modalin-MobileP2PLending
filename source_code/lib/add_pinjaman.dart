@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class AddPinjaman extends StatefulWidget {
+  const AddPinjaman({Key? key}) : super(key: key);
   @override
-  MyAppState createState() {
-    return MyAppState();
+  AddPinjamanState createState() {
+    return AddPinjamanState();
   }
 }
 
-class MyAppState extends State<MyApp> {
+class AddPinjamanState extends State<AddPinjaman> {
   final textEditController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 

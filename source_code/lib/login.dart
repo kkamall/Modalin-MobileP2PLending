@@ -20,7 +20,8 @@ class LoginState extends State<Login> {
   final TextEditingController _passwordController = TextEditingController();
   String username = "";
   String password = "";
-  String hasilValidasi = "";
+  List hasilValidasi = [];
+  int flagLogin = 0;
 
   late Future<int> respPost; //201 artinya berhasil
   String login = "http://127.0.0.1:8000/login/";
@@ -31,9 +32,18 @@ class LoginState extends State<Login> {
 
     if (response.statusCode == 200) {
       hasilValidasi = jsonDecode(response.body);
-      print(hasilValidasi);
-      if (hasilValidasi == "Ada") {
-        Navigator.pushNamed(context, '/home');
+      if (hasilValidasi[0] == "Ada") {
+        if (hasilValidasi[2] == "Borrower") {
+          Navigator.pushNamed(context, '/profile_borrower',
+              arguments: hasilValidasi[1].toString());
+        } else {
+          Navigator.pushNamed(context, '/profile_lender',
+              arguments: hasilValidasi[1].toString());
+        }
+      } else {
+        setState(() {
+          flagLogin = 1;
+        });
       }
     } else {
       throw Exception('Gagal load');
@@ -96,7 +106,7 @@ class LoginState extends State<Login> {
                     children: [
                       // Menampilkan Logo
                       Container(
-                        margin: EdgeInsets.only(bottom: 48.0),
+                        margin: EdgeInsets.only(bottom: 35.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(14.0),
                           child: Image.asset(
@@ -107,6 +117,17 @@ class LoginState extends State<Login> {
                           ),
                         ),
                       ),
+                      if (flagLogin == 1) ...{
+                        Text(
+                          "Email atau Password Anda salah!",
+                          style: GoogleFonts.rubik(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.red,
+                            fontSize: 13,
+                          ),
+                        ),
+                      },
+                      SizedBox(height: 13.0),
                       // Form penambahan UMKM
                       Form(
                         key: _formKey,

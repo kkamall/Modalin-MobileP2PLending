@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Verifikasi extends StatefulWidget {
   const Verifikasi({Key? key}) : super(key: key);
@@ -21,13 +23,36 @@ class VerifikasiState extends State<Verifikasi> {
   final TextEditingController _verifikasiKodeController =
       TextEditingController();
 
+  late Future<int> respPost; //201 artinya berhasil
+  String verifikasiEmail = "http://127.0.0.1:8000/verifikasi_email/";
+  List hasilValidasi = [];
+  String idUser = "";
+  String roleUser = "";
+
+  Future<int> validateLogin() async {
+    //data disimpan di body
+    final response = await http.get(Uri.parse(verifikasiEmail));
+
+    if (response.statusCode == 200) {
+      hasilValidasi = jsonDecode(response.body);
+      if (hasilValidasi[1] == "Borrower") {
+        Navigator.pushNamed(context, '/add_umkm',
+            arguments: hasilValidasi[0].toString());
+      } else {
+        Navigator.pushNamed(context, '/profile_lender',
+            arguments: hasilValidasi[0].toString());
+      }
+    } else {
+      throw Exception('Gagal load');
+    }
+    return response.statusCode;
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Form is valid, perform desired action
       String verifikasiKode = _verifikasiKodeController.text;
-      // Process the input data or perform other operations
-      print('Submitted Kode: $verifikasiKode');
-      Navigator.pushNamed(context, '/add_umkm');
+      verifikasiEmail = verifikasiEmail + idUser + verifikasiKode;
     }
   }
 
@@ -40,6 +65,10 @@ class VerifikasiState extends State<Verifikasi> {
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    idUser = arguments['id_user'] as String;
+    roleUser = arguments['role_user'] as String;
     return MaterialApp(
       title: 'Hello App',
       debugShowCheckedModeBanner: false,

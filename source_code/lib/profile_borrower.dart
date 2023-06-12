@@ -5,6 +5,10 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 
+// void main() {
+//   runApp(const ProfileBorrower());
+// }
+
 class ProfileModel {
   String nama;
   String email;
@@ -14,8 +18,7 @@ class ProfileModel {
 }
 
 class ProfileCubit extends Cubit<ProfileModel> {
-  String id_user = "1";
-  String url = "http://127.0.0.1:8000/get_user/1";
+  String url = "http://127.0.0.1:8000/get_user/";
   ProfileCubit() : super(ProfileModel(nama: "", email: "", saldo_dana: ""));
 
   //map dari json ke atribut
@@ -26,8 +29,8 @@ class ProfileCubit extends Cubit<ProfileModel> {
     emit(ProfileModel(nama: nama, email: email, saldo_dana: saldo_dana));
   }
 
-  void fetchData() async {
-    final response = await http.get(Uri.parse(url));
+  void fetchData(id_user) async {
+    final response = await http.get(Uri.parse(url + id_user));
     if (response.statusCode == 200) {
       setFromJson(jsonDecode(response.body));
     } else {
@@ -55,8 +58,7 @@ class UmkmModel {
 }
 
 class UmkmCubit extends Cubit<UmkmModel> {
-  String id_user = "1";
-  String url = "http://127.0.0.1:8000/get_umkm/1";
+  String url = "http://127.0.0.1:8000/get_umkm/";
   UmkmCubit()
       : super(UmkmModel(
             nama_umkm: "",
@@ -86,8 +88,8 @@ class UmkmCubit extends Cubit<UmkmModel> {
         kelas: kelas));
   }
 
-  void fetchData() async {
-    final response = await http.get(Uri.parse(url));
+  void fetchData(id_user) async {
+    final response = await http.get(Uri.parse(url + id_user));
     if (response.statusCode == 200) {
       setFromJson(jsonDecode(response.body));
     } else {
@@ -103,30 +105,17 @@ class ProfileBorrower extends StatefulWidget {
   ProfileBorrowerState createState() {
     return ProfileBorrowerState();
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //       home: MultiBlocProvider(
-  //     providers: [
-  //       BlocProvider<ProfileCubit>(
-  //         create: (BuildContext context) => ProfileCubit(),
-  //       ),
-  //       BlocProvider<UmkmCubit>(
-  //         create: (BuildContext context) => UmkmCubit(),
-  //       ),
-  //     ],
-  //     child: const ProfileBorrowerState(),
-  //   ));
-  // }
 }
 
 class ProfileBorrowerState extends State<ProfileBorrower> {
   // penanda buat list yang dpilih
   int flag = 0;
 
+  final TextEditingController _nameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final String id_user = ModalRoute.of(context)!.settings.arguments as String;
     return MaterialApp(
         home: MultiBlocProvider(
       providers: [
@@ -157,10 +146,10 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
               ),
               child: BlocBuilder<ProfileCubit, ProfileModel>(
                 builder: (context, profile) {
-                  context.read<ProfileCubit>().fetchData();
+                  context.read<ProfileCubit>().fetchData(id_user);
                   return BlocBuilder<UmkmCubit, UmkmModel>(
                     builder: (context, umkm) {
-                      context.read<UmkmCubit>().fetchData();
+                      context.read<UmkmCubit>().fetchData(id_user);
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -225,7 +214,172 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                 padding:
                                     const EdgeInsets.fromLTRB(14, 90, 0, 0),
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                            // title: Text("Edit Profil"),
+                                            actionsAlignment:
+                                                MainAxisAlignment.center,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(16)),
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 131, 33, 79),
+                                            content: SizedBox(
+                                                width: double.maxFinite,
+                                                height: 176,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  // crossAxisAlignment:
+                                                  //     CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      "Edit Profil",
+                                                      style: GoogleFonts.rubik(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.white),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          32, 16, 32, 16),
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          IconButton(
+                                                            iconSize: 24,
+                                                            onPressed: () {},
+                                                            icon: const Icon(Icons
+                                                                .add_a_photo_rounded),
+                                                            color: Colors.white,
+                                                          ),
+                                                          Container(
+                                                              width: 90,
+                                                              height: 90,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              100),
+                                                                  border: Border.all(
+                                                                      color: const Color
+                                                                              .fromARGB(
+                                                                          255,
+                                                                          61,
+                                                                          38,
+                                                                          69),
+                                                                      width:
+                                                                          2)),
+                                                              child: ClipOval(
+                                                                child:
+                                                                    Image.asset(
+                                                                  'assets/images/formal.png',
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 32,
+                                                      width: 224,
+                                                      child: TextFormField(
+                                                        initialValue:
+                                                            profile.nama,
+                                                        // controller:
+                                                        //     _nameController,
+                                                        validator: (value) {
+                                                          if (value == null ||
+                                                              value.isEmpty) {
+                                                            return 'Masukkan nama';
+                                                          }
+                                                          return null;
+                                                        },
+                                                        style:
+                                                            GoogleFonts.rubik(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: const Color(
+                                                              0xFFFFFFFF),
+                                                          fontSize: 14,
+                                                        ),
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        26),
+                                                          ),
+                                                          filled: true,
+                                                          fillColor:
+                                                              const Color(
+                                                                  0x7FF0EFF4),
+                                                          labelText: 'Nama',
+                                                          labelStyle:
+                                                              GoogleFonts.rubik(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: const Color(
+                                                                0xFFFFFFFF),
+                                                            fontSize: 13,
+                                                          ),
+                                                          contentPadding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            vertical: 25,
+                                                            horizontal: 18,
+                                                          ),
+                                                          floatingLabelBehavior:
+                                                              FloatingLabelBehavior
+                                                                  .never, // Remove label animation
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    // const SizedBox(height: 1),
+                                                  ],
+                                                )),
+                                            actions: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty.all<
+                                                              Color>(const Color
+                                                                  .fromARGB(255,
+                                                              218, 65, 103))),
+                                                  child: Text(
+                                                    "Edit",
+                                                    style: GoogleFonts.rubik(
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.white),
+                                                  )),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  icon: const Icon(
+                                                      Icons.cancel_outlined),
+                                                  color: const Color.fromARGB(
+                                                      255, 218, 65, 103)),
+                                            ]);
+                                      },
+                                    );
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
                                         const Color.fromARGB(255, 218, 65, 103),
