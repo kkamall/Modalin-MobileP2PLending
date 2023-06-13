@@ -6,20 +6,22 @@ import 'verifikasi.dart';
 import 'add_umkm.dart';
 import 'profile_guest.dart';
 import 'profile_investor.dart';
-import 'aktivitas_guest.dart';
+import 'home_guest.dart';
 import 'chat-guest.dart';
 import 'chat.dart';
 import 'chat_detail.dart';
-import 'aktivitas_page.dart';
+import 'home_lender.dart';
+import 'home_borrower.dart';
+import 'home_borrower_dapat_pinjaman.dart';
 import 'notifikasi.dart';
 import 'add_pinjaman.dart';
 import 'screens/home_screen.dart';
 
 void main() {
-  runApp(MainRouting());
+  runApp(MyApp());
 }
 
-class MainRouting extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,8 +43,11 @@ class MainRouting extends StatelessWidget {
         "/explore": (context) => HomeScreen(),
         "/add_pinjaman": (context) => AddPinjaman(),
         "/home": (context) => Home(),
+        "/home_borrower": (context) => HomeBorrower(),
+        "/home_borrower_dapat_pinjaman": (context) =>
+            HomeBorrowerDapatPinjaman(),
       },
-      initialRoute: "/login",
+      initialRoute: "/aktivitas_guest",
     );
   }
 }

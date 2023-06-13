@@ -88,10 +88,10 @@ class ProfileBorrowerState extends State<ProfileInvestor> {
         'assets/images/formal.png'),
     LikedVideo('eSports Desa Kami', 'assets/images/thumbnail.png',
         'assets/images/formal.png'),
-    LikedVideo('Update UMKM Kami', 'assets/images/thumbnail.png',
-        'assets/images/formal.png'),
-    LikedVideo('Penerapan Teknologi', 'assets/images/thumbnail.png',
-        'assets/images/formal.png'),
+    // LikedVideo('Update UMKM Kami', 'assets/images/thumbnail.png',
+    //     'assets/images/formal.png'),
+    // LikedVideo('Penerapan Teknologi', 'assets/images/thumbnail.png',
+    //     'assets/images/formal.png'),
   ];
 
   // penanda buat list yang dpilih

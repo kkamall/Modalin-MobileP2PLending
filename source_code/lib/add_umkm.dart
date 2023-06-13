@@ -67,7 +67,7 @@ class AddUmkmState extends State<AddUmkm> {
       omset = int.parse(_omsetController.text);
 
       respPost = insertDataUmkm();
-      Navigator.pushNamed(context, '/profile_borrower',
+      Navigator.pushNamed(context, '/home_borrower',
           arguments: id_user_borrower);
     }
   }

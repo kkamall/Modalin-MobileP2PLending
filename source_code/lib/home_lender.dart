@@ -31,6 +31,7 @@ class Pemasukan {
 
 class _HomeState extends State<Home> {
   int flag = 0;
+  String? id_user = "";
 
   List<Pengeluaran> listPengeluaran = [
     Pengeluaran("RENOVIN", "formal.png", "Rp 5jt", "8%", "3 bln"),
@@ -47,6 +48,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    id_user = ModalRoute.of(context)!.settings.arguments as String;
     return MaterialApp(
       title: 'MODALIN',
       debugShowCheckedModeBanner: false,
@@ -91,7 +93,8 @@ class _HomeState extends State<Home> {
                                   iconSize: 30,
                                   onPressed: () {
                                     Navigator.pushNamed(
-                                        context, '/profile_investor');
+                                        context, '/profile_investor',
+                                        arguments: id_user);
                                   },
                                   icon: const Icon(Icons.person),
                                   color: Colors.white),

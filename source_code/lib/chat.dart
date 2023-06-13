@@ -189,7 +189,8 @@ class ChatState extends State<ChatNotif> {
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.pushNamed(
-                                            context, '/chat_detail');
+                                            context, '/chat_detail',
+                                            arguments: 1);
 
                                         // print('pressed');
                                       },

@@ -28,6 +28,7 @@ class VerifikasiState extends State<Verifikasi> {
   List hasilValidasi = [];
   String idUser = "";
   String roleUser = "";
+  int flagValidasi = 0;
 
   Future<int> verifikasiEmailUser() async {
     //data disimpan di body
@@ -35,12 +36,18 @@ class VerifikasiState extends State<Verifikasi> {
 
     if (response.statusCode == 200) {
       hasilValidasi = jsonDecode(response.body);
-      if (hasilValidasi[1] == "Borrower") {
-        Navigator.pushNamed(context, '/add_umkm',
-            arguments: hasilValidasi[0].toString());
-      } else if (hasilValidasi[1] == "Lender") {
-        Navigator.pushNamed(context, '/profile_investor',
-            arguments: hasilValidasi[0].toString());
+      if (hasilValidasi[0] == "Tidak Ada") {
+        setState(() {
+          flagValidasi = 1;
+        });
+      } else {
+        if (hasilValidasi[1] == "Borrower") {
+          Navigator.pushNamed(context, '/add_umkm',
+              arguments: hasilValidasi[0].toString());
+        } else if (hasilValidasi[1] == "Lender") {
+          Navigator.pushNamed(context, '/home',
+              arguments: hasilValidasi[0].toString());
+        }
       }
     } else {
       throw Exception('Gagal load');
@@ -133,6 +140,17 @@ class VerifikasiState extends State<Verifikasi> {
                               ),
                             ),
                             SizedBox(height: 12.0),
+                            if (flagValidasi == 1) ...{
+                              Text(
+                                "Kode verifikasi salah!",
+                                style: GoogleFonts.rubik(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.red,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            },
+                            SizedBox(height: 6.0),
                             // Field Verifikasi Kode User
                             Container(
                               height: 32,

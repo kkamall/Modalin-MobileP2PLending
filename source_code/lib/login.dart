@@ -34,10 +34,10 @@ class LoginState extends State<Login> {
       hasilValidasi = jsonDecode(response.body);
       if (hasilValidasi[0] == "Ada") {
         if (hasilValidasi[2] == "Borrower") {
-          Navigator.pushNamed(context, '/profile_borrower',
+          Navigator.pushNamed(context, '/home_borrower',
               arguments: hasilValidasi[1].toString());
         } else {
-          Navigator.pushNamed(context, '/profile_investor',
+          Navigator.pushNamed(context, '/home',
               arguments: hasilValidasi[1].toString());
         }
       } else {
@@ -122,13 +122,13 @@ class LoginState extends State<Login> {
                         Text(
                           "Email atau Password Anda salah!",
                           style: GoogleFonts.rubik(
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w500,
                             color: Colors.red,
                             fontSize: 13,
                           ),
                         ),
                       },
-                      SizedBox(height: 13.0),
+                      SizedBox(height: 6.0),
                       // Form penambahan UMKM
                       Form(
                         key: _formKey,
