@@ -285,7 +285,7 @@ def get_user(id_user: int):
     finally:
         con.close()
 
-    return {"nama": existing_item[1], "email": existing_item[2], "saldo_dana": existing_item[8], "foto_profile": existing_item[5]}
+    return {"nama": existing_item[1], "email": existing_item[2], "saldo_dana": existing_item[8], "foto_profile": existing_item[5], "role": existing_item[6]}
 
 
 @app.get("/get_umkm/{id_user}")
@@ -305,7 +305,6 @@ def get_umkm(id_user: int):
 
 
 class TopupWithdraw(BaseModel):
-    saldo_dana: int
     jumlah_transaksi: int
     waktu_transaksi: str
     id_user: int
@@ -319,7 +318,7 @@ def topup(m: TopupWithdraw, response: Response, request: Request):
         cur = con.cursor()
         # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
         cur.execute(
-            """update user set saldo_dana = saldo_dana + {} where id_user = {}""".format(m.saldo_dana, m.id_user))
+            """update user set saldo_dana = saldo_dana + {} where id_user = {}""".format(m.jumlah_transaksi, m.id_user))
         con.commit()
         cur.execute("""insert into transaksi (jumlah_transaksi,jenis_transaksi,waktu_transaksi,id_user) values ({},"Top Up","{}",{})""".format(
             m.jumlah_transaksi, m.waktu_transaksi, m.id_user))
@@ -341,7 +340,7 @@ def topup(m: TopupWithdraw, response: Response, request: Request):
         cur = con.cursor()
         # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
         cur.execute(
-            """update user set saldo_dana = saldo_dana - {} where id_user = {}""".format(m.saldo_dana, m.id_user))
+            """update user set saldo_dana = saldo_dana - {} where id_user = {}""".format(m.jumlah_transaksi, m.id_user))
         con.commit()
         cur.execute("""insert into transaksi (jumlah_transaksi,jenis_transaksi,waktu_transaksi,id_user) values ({},"Withdraw","{}",{})""".format(
             m.jumlah_transaksi, m.waktu_transaksi, m.id_user))

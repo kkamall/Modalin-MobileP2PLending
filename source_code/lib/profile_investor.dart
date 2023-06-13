@@ -138,8 +138,8 @@ class ProfileBorrowerState extends State<ProfileInvestor> {
                 ),
               ),
               child: BlocBuilder<ProfileCubit, ProfileModel>(
-                builder: (context, profile) {
-                  context.read<ProfileCubit>().fetchData(id_user);
+                builder: (contextProfile, profile) {
+                  contextProfile.read<ProfileCubit>().fetchData(id_user);
                   return Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -156,7 +156,7 @@ class ProfileBorrowerState extends State<ProfileInvestor> {
                                 IconButton(
                                     iconSize: 40,
                                     onPressed: () {
-                                      Navigator.pushNamed(context, '/home');
+                                      Navigator.pushNamed(context, '/home', arguments: id_user);
                                     },
                                     icon: const Icon(Icons.home),
                                     color: Colors.white)

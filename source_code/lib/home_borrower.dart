@@ -32,7 +32,7 @@ class Pemasukan {
 
 class _HomeBorrowerState extends State<HomeBorrower> {
   int flag = 0;
-  String? id_user = "";
+  String id_user = "";
 
   List<Pengeluaran> listPengeluaran = [
     Pengeluaran("RENOVIN", "formal.png", "Rp 5jt", "8%", "3 bln"),
@@ -53,6 +53,7 @@ class _HomeBorrowerState extends State<HomeBorrower> {
   final TextEditingController _returnPercentageController =
       TextEditingController();
   final TextEditingController _loanDurationController = TextEditingController();
+  String jumlahUang = "";
 
   @override
   void dispose() {
@@ -62,6 +63,10 @@ class _HomeBorrowerState extends State<HomeBorrower> {
     _returnPercentageController.dispose();
     _loanDurationController.dispose();
     super.dispose();
+  }
+
+  void _submitForm() {
+    jumlahUang = _loanAmountController.text;
   }
 
   @override
@@ -294,11 +299,21 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                     actions: [
                                                       ElevatedButton(
                                                         onPressed: () {
+                                                          _submitForm();
                                                           Navigator.of(context)
                                                               .pop();
                                                           Navigator.pushNamed(
-                                                              context,
-                                                              '/pembayaran');
+                                                            context,
+                                                            '/pembayaran',
+                                                            arguments: {
+                                                              'id_user':
+                                                                  int.parse(
+                                                                      id_user),
+                                                              'jumlahUang':
+                                                                  int.parse(
+                                                                      jumlahUang),
+                                                            },
+                                                          );
                                                         },
                                                         style: ButtonStyle(
                                                           backgroundColor:
@@ -490,12 +505,23 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                       actions: [
                                                         ElevatedButton(
                                                             onPressed: () {
+                                                              _submitForm();
                                                               Navigator.of(
                                                                       context)
                                                                   .pop();
-                                                              Navigator.pushNamed(
-                                                                  context,
-                                                                  '/withdraw');
+                                                              Navigator
+                                                                  .pushNamed(
+                                                                context,
+                                                                '/withdraw',
+                                                                arguments: {
+                                                                  'id_user':
+                                                                      int.parse(
+                                                                          id_user),
+                                                                  'jumlahUang':
+                                                                      int.parse(
+                                                                          jumlahUang),
+                                                                },
+                                                              );
                                                             },
                                                             style: ButtonStyle(
                                                                 backgroundColor:

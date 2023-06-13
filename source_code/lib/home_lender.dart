@@ -40,9 +40,10 @@ class HistoryVideo {
 
 class _HomeState extends State<Home> {
   int flag = 0;
-  String? id_user = "";
+  String id_user = "";
 
   final TextEditingController _loanAmountController = TextEditingController();
+  String jumlahUang = "";
 
   List<Pengeluaran> listPengeluaran = [
     Pengeluaran("RENOVIN", "formal.png", "Rp 5jt", "8%", "3 bln"),
@@ -66,6 +67,10 @@ class _HomeState extends State<Home> {
     // LikedVideo('Penerapan Teknologi', 'assets/images/thumbnail.png',
     //     'assets/images/formal.png'),
   ];
+
+  void _submitForm() {
+    jumlahUang = _loanAmountController.text;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,12 +288,23 @@ class _HomeState extends State<Home> {
                                                       actions: [
                                                         ElevatedButton(
                                                             onPressed: () {
+                                                              _submitForm();
                                                               Navigator.of(
                                                                       context)
                                                                   .pop();
-                                                              Navigator.pushNamed(
-                                                                  context,
-                                                                  '/pembayaran');
+                                                              Navigator
+                                                                  .pushNamed(
+                                                                context,
+                                                                '/pembayaran',
+                                                                arguments: {
+                                                                  'id_user':
+                                                                      int.parse(
+                                                                          id_user),
+                                                                  'jumlahUang':
+                                                                      int.parse(
+                                                                          jumlahUang),
+                                                                },
+                                                              );
                                                             },
                                                             style: ButtonStyle(
                                                                 backgroundColor:
@@ -477,12 +493,23 @@ class _HomeState extends State<Home> {
                                                       actions: [
                                                         ElevatedButton(
                                                             onPressed: () {
+                                                              _submitForm();
                                                               Navigator.of(
                                                                       context)
                                                                   .pop();
-                                                              Navigator.pushNamed(
-                                                                  context,
-                                                                  '/withdraw');
+                                                              Navigator
+                                                                  .pushNamed(
+                                                                context,
+                                                                '/withdraw',
+                                                                arguments: {
+                                                                  'id_user':
+                                                                      int.parse(
+                                                                          id_user),
+                                                                  'jumlahUang':
+                                                                      int.parse(
+                                                                          jumlahUang),
+                                                                },
+                                                              );
                                                             },
                                                             style: ButtonStyle(
                                                                 backgroundColor:
@@ -929,7 +956,7 @@ class _HomeState extends State<Home> {
                           : ListView.builder(
                               shrinkWrap: true,
                               itemCount: listHistoryVideo.length,
-                              itemBuilder: (context, index) {
+                              itemBuilder: (contextListHistoryVideo, index) {
                                 return Column(
                                   children: [
                                     SizedBox(

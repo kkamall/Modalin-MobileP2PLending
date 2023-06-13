@@ -182,7 +182,7 @@ class ChatState extends State<ChatNotif> {
                           ? ListView.builder(
                               shrinkWrap: true,
                               itemCount: listChat.length,
-                              itemBuilder: (context, index) {
+                              itemBuilder: (contextListChat, index) {
                                 return Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(20, 0, 20, 6),

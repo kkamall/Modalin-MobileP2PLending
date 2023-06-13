@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Pembayaran extends StatefulWidget {
   const Pembayaran({Key? key}) : super(key: key);
@@ -18,9 +20,55 @@ class MetodePembayaran extends State<Pembayaran> {
   methodType? jenisMetode;
 
   int flag = 0;
+  int jumlahUang = 0;
+  int id_user = 0;
+
+  late Future<int> respPost; //201 artinya berhasil
+  String topup = "http://127.0.0.1:8000/topup/";
+
+  Future<int> insertDataUser() async {
+    //data disimpan di body
+    DateTime now = DateTime.now();
+    String waktuTransaksi = now.toString();
+    String get_user = "http://127.0.0.1:8000/get_user/";
+
+    final response = await http.post(Uri.parse(topup),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: """
+      {"jumlah_transaksi": $jumlahUang,
+      "waktu_transaksi": "$waktuTransaksi",
+      "id_user": $id_user} """);
+
+    final responseUser = await http.get(Uri.parse(get_user + id_user.toString()));
+    Map<String, dynamic> user = jsonDecode(responseUser.body);
+    if(user['role'] == "Lender")
+    {
+      Navigator.pushNamed(
+        context,
+        '/home',
+        arguments: id_user.toString(),
+      );
+    }
+    else
+    {
+      Navigator.pushNamed(
+        context,
+        '/home_borrower',
+        arguments: id_user.toString(),
+      );
+    }
+
+    return response.statusCode; //sukses kalau 201
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> arguments =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    id_user = arguments['id_user'] as int;
+    jumlahUang = arguments['jumlahUang'] as int;
     return MaterialApp(
       title: 'Hello App',
       debugShowCheckedModeBanner: false,
@@ -248,7 +296,7 @@ class MetodePembayaran extends State<Pembayaran> {
                             ),
                           ),
                           subtitle: Text(
-                            'Rp1.000.000',
+                            'Rp $jumlahUang',
                             style: GoogleFonts.rubik(
                               fontWeight: FontWeight.w400,
                               color: Color(0xFFFFFFFF),
@@ -267,8 +315,7 @@ class MetodePembayaran extends State<Pembayaran> {
                                 padding: const EdgeInsets.all(5.0),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, '/home_borrower');
+                                    insertDataUser();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:

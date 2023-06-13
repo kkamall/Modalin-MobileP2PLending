@@ -162,11 +162,11 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                 ),
               ),
               child: BlocBuilder<ProfileCubit, ProfileModel>(
-                builder: (context, profile) {
-                  context.read<ProfileCubit>().fetchData(id_user);
+                builder: (contextProfile, profile) {
+                  contextProfile.read<ProfileCubit>().fetchData(id_user);
                   return BlocBuilder<UmkmCubit, UmkmModel>(
-                    builder: (context, umkm) {
-                      context.read<UmkmCubit>().fetchData(id_user);
+                    builder: (contextUmkm, umkm) {
+                      contextUmkm.read<UmkmCubit>().fetchData(id_user);
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
