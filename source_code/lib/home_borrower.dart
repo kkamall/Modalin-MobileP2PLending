@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 
 class HomeBorrower extends StatefulWidget {
   @override
@@ -45,6 +46,23 @@ class _HomeBorrowerState extends State<HomeBorrower> {
     Pemasukan("RENOVIN", "formal.png", "Rp 500.000"),
     Pemasukan("RENOVIN", "formal.png", "Rp 500.000"),
   ];
+
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _linkController = TextEditingController();
+  final TextEditingController _loanAmountController = TextEditingController();
+  final TextEditingController _returnPercentageController =
+      TextEditingController();
+  final TextEditingController _loanDurationController = TextEditingController();
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _linkController.dispose();
+    _loanAmountController.dispose();
+    _returnPercentageController.dispose();
+    _loanDurationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -146,7 +164,181 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              print('Icon pressed');
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    // title: Text("Edit Profil"),
+                                                    actionsAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        16)),
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 131, 33, 79),
+                                                    content: SizedBox(
+                                                        width: double.maxFinite,
+                                                        height: 128,
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          // crossAxisAlignment:
+                                                          //     CrossAxisAlignment.center,
+                                                          children: [
+                                                            Text(
+                                                              "Top Up",
+                                                              style: GoogleFonts.rubik(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 12,
+                                                            ),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                        "Jumlah",
+                                                                        style: GoogleFonts.rubik(
+                                                                            fontWeight: FontWeight
+                                                                                .w200,
+                                                                            fontSize:
+                                                                                12,
+                                                                            color:
+                                                                                Colors.white)),
+                                                                    Row(
+                                                                      children: [
+                                                                        Text(
+                                                                            "Rp",
+                                                                            style: GoogleFonts.rubik(
+                                                                                fontWeight: FontWeight.w500,
+                                                                                fontSize: 16,
+                                                                                color: Colors.white)),
+                                                                        const SizedBox(
+                                                                            width:
+                                                                                5),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              32,
+                                                                          width:
+                                                                              196,
+                                                                          child:
+                                                                              TextFormField(
+                                                                            keyboardType:
+                                                                                TextInputType.number,
+                                                                            inputFormatters: [
+                                                                              FilteringTextInputFormatter.digitsOnly,
+                                                                            ],
+                                                                            controller:
+                                                                                _loanAmountController,
+                                                                            validator:
+                                                                                (value) {
+                                                                              if (value == null || value.isEmpty) {
+                                                                                return 'Masukkan Jumlah!';
+                                                                              }
+                                                                              return null;
+                                                                            },
+                                                                            style:
+                                                                                GoogleFonts.rubik(
+                                                                              fontWeight: FontWeight.w500,
+                                                                              color: const Color(0xFFFFFFFF),
+                                                                              fontSize: 14,
+                                                                            ),
+                                                                            decoration:
+                                                                                InputDecoration(
+                                                                              border: OutlineInputBorder(
+                                                                                borderRadius: BorderRadius.circular(26),
+                                                                              ),
+                                                                              filled: true,
+                                                                              fillColor: const Color(0x7FF0EFF4),
+                                                                              labelText: '3.000.000',
+                                                                              labelStyle: GoogleFonts.rubik(
+                                                                                fontWeight: FontWeight.w200,
+                                                                                color: const Color(0xFFFFFFFF),
+                                                                                fontSize: 13,
+                                                                              ),
+                                                                              contentPadding: const EdgeInsets.symmetric(
+                                                                                vertical: 25,
+                                                                                horizontal: 18,
+                                                                              ),
+                                                                              floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        )),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              '/pembayaran');
+                                                        },
+                                                        style: ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStateProperty
+                                                                  .all<Color>(
+                                                            const Color
+                                                                    .fromARGB(
+                                                                255,
+                                                                218,
+                                                                65,
+                                                                103),
+                                                          ),
+                                                        ),
+                                                        child: Text(
+                                                          "Top Up",
+                                                          style:
+                                                              GoogleFonts.rubik(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color: Colors
+                                                                      .white),
+                                                        ),
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        icon: const Icon(Icons
+                                                            .cancel_outlined),
+                                                        color: const Color
+                                                                .fromARGB(
+                                                            255, 218, 65, 103),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
                                             },
                                             child: Icon(
                                               Icons.add,
@@ -180,7 +372,167 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              print('Icon pressed');
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                      // title: Text("Edit Profil"),
+                                                      actionsAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  16)),
+                                                      backgroundColor:
+                                                          const Color.fromARGB(
+                                                              255, 131, 33, 79),
+                                                      content: SizedBox(
+                                                          width:
+                                                              double.maxFinite,
+                                                          height: 128,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            // crossAxisAlignment:
+                                                            //     CrossAxisAlignment.center,
+                                                            children: [
+                                                              Text(
+                                                                "Withdraw",
+                                                                style: GoogleFonts.rubik(
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 12,
+                                                              ),
+                                                              Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(
+                                                                          "Jumlah",
+                                                                          style: GoogleFonts.rubik(
+                                                                              fontWeight: FontWeight.w200,
+                                                                              fontSize: 12,
+                                                                              color: Colors.white)),
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                              "Rp",
+                                                                              style: GoogleFonts.rubik(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white)),
+                                                                          const SizedBox(
+                                                                              width: 5),
+                                                                          SizedBox(
+                                                                            height:
+                                                                                32,
+                                                                            width:
+                                                                                196,
+                                                                            child:
+                                                                                TextFormField(
+                                                                              keyboardType: TextInputType.number,
+                                                                              inputFormatters: [
+                                                                                FilteringTextInputFormatter.digitsOnly,
+                                                                              ],
+                                                                              controller: _loanAmountController,
+                                                                              validator: (value) {
+                                                                                if (value == null || value.isEmpty) {
+                                                                                  return 'Masukkan Jumlah!';
+                                                                                }
+                                                                                return null;
+                                                                              },
+                                                                              style: GoogleFonts.rubik(
+                                                                                fontWeight: FontWeight.w500,
+                                                                                color: const Color(0xFFFFFFFF),
+                                                                                fontSize: 14,
+                                                                              ),
+                                                                              decoration: InputDecoration(
+                                                                                border: OutlineInputBorder(
+                                                                                  borderRadius: BorderRadius.circular(26),
+                                                                                ),
+                                                                                filled: true,
+                                                                                fillColor: const Color(0x7FF0EFF4),
+                                                                                labelText: '3.000.000',
+                                                                                labelStyle: GoogleFonts.rubik(
+                                                                                  fontWeight: FontWeight.w200,
+                                                                                  color: const Color(0xFFFFFFFF),
+                                                                                  fontSize: 13,
+                                                                                ),
+                                                                                contentPadding: const EdgeInsets.symmetric(
+                                                                                  vertical: 25,
+                                                                                  horizontal: 18,
+                                                                                ),
+                                                                                floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          )),
+                                                      actions: [
+                                                        ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                              Navigator.pushNamed(
+                                                                  context,
+                                                                  '/withdraw');
+                                                            },
+                                                            style: ButtonStyle(
+                                                                backgroundColor:
+                                                                    MaterialStateProperty.all<
+                                                                        Color>(const Color
+                                                                            .fromARGB(
+                                                                        255,
+                                                                        218,
+                                                                        65,
+                                                                        103))),
+                                                            child: Text(
+                                                              "Withdraw",
+                                                              style: GoogleFonts.rubik(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color: Colors
+                                                                      .white),
+                                                            )),
+                                                        IconButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            icon: const Icon(Icons
+                                                                .cancel_outlined),
+                                                            color: const Color
+                                                                    .fromARGB(
+                                                                255,
+                                                                218,
+                                                                65,
+                                                                103)),
+                                                      ]);
+                                                },
+                                              );
                                             },
                                             child: const Icon(
                                               Icons.wallet_rounded,
@@ -252,8 +604,547 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/home_borrower_dapat_pinjaman', arguments: id_user);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                          // title: Text("Edit Profil"),
+                                          actionsAlignment:
+                                              MainAxisAlignment.center,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16)),
+                                          backgroundColor: const Color.fromARGB(
+                                              255, 131, 33, 79),
+                                          content: SizedBox(
+                                              width: double.maxFinite,
+                                              height: 293,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                // crossAxisAlignment:
+                                                //     CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "Pengajuan Pinjaman",
+                                                    style: GoogleFonts.rubik(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.white),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 12,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text("Judul Video",
+                                                          style:
+                                                              GoogleFonts.rubik(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w200,
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .white)),
+                                                      SizedBox(
+                                                        height: 32,
+                                                        width: 224,
+                                                        child: TextFormField(
+                                                          controller:
+                                                              _titleController,
+                                                          validator: (value) {
+                                                            if (value == null ||
+                                                                value.isEmpty) {
+                                                              return 'Masukkan Judul!';
+                                                            }
+                                                            return null;
+                                                          },
+                                                          style:
+                                                              GoogleFonts.rubik(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: const Color(
+                                                                0xFFFFFFFF),
+                                                            fontSize: 14,
+                                                          ),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            border:
+                                                                OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          26),
+                                                            ),
+                                                            filled: true,
+                                                            fillColor:
+                                                                const Color(
+                                                                    0x7FF0EFF4),
+                                                            labelText:
+                                                                'Membuka Lahan Baru',
+                                                            labelStyle:
+                                                                GoogleFonts
+                                                                    .rubik(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w200,
+                                                              color: const Color(
+                                                                  0xFFFFFFFF),
+                                                              fontSize: 13,
+                                                            ),
+                                                            contentPadding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                              vertical: 25,
+                                                              horizontal: 18,
+                                                            ),
+                                                            floatingLabelBehavior:
+                                                                FloatingLabelBehavior
+                                                                    .never, // Remove label animation
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text("Link Video",
+                                                              style: GoogleFonts.rubik(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w200,
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .white)),
+                                                          SizedBox(
+                                                            height: 32,
+                                                            width: 224,
+                                                            child:
+                                                                TextFormField(
+                                                              controller:
+                                                                  _linkController,
+                                                              validator:
+                                                                  (value) {
+                                                                if (value ==
+                                                                        null ||
+                                                                    value
+                                                                        .isEmpty) {
+                                                                  return 'Masukkan Link Video!';
+                                                                }
+                                                                return null;
+                                                              },
+                                                              style: GoogleFonts
+                                                                  .rubik(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: const Color(
+                                                                    0xFFFFFFFF),
+                                                                fontSize: 14,
+                                                              ),
+                                                              decoration:
+                                                                  InputDecoration(
+                                                                border:
+                                                                    OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              26),
+                                                                ),
+                                                                filled: true,
+                                                                fillColor:
+                                                                    const Color(
+                                                                        0x7FF0EFF4),
+                                                                labelText:
+                                                                    'link youtube',
+                                                                labelStyle:
+                                                                    GoogleFonts
+                                                                        .rubik(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w200,
+                                                                  color: const Color(
+                                                                      0xFFFFFFFF),
+                                                                  fontSize: 13,
+                                                                ),
+                                                                contentPadding:
+                                                                    const EdgeInsets
+                                                                        .symmetric(
+                                                                  vertical: 25,
+                                                                  horizontal:
+                                                                      18,
+                                                                ),
+                                                                floatingLabelBehavior:
+                                                                    FloatingLabelBehavior
+                                                                        .never, // Remove label animation
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                              "Jumlah Pinjaman",
+                                                              style: GoogleFonts.rubik(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w200,
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .white)),
+                                                          Row(
+                                                            children: [
+                                                              Text("Rp",
+                                                                  style: GoogleFonts.rubik(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontSize:
+                                                                          16,
+                                                                      color: Colors
+                                                                          .white)),
+                                                              const SizedBox(
+                                                                  width: 5),
+                                                              SizedBox(
+                                                                height: 32,
+                                                                width: 196,
+                                                                child:
+                                                                    TextFormField(
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  inputFormatters: [
+                                                                    FilteringTextInputFormatter
+                                                                        .digitsOnly,
+                                                                  ],
+                                                                  controller:
+                                                                      _loanAmountController,
+                                                                  validator:
+                                                                      (value) {
+                                                                    if (value ==
+                                                                            null ||
+                                                                        value
+                                                                            .isEmpty) {
+                                                                      return 'Masukkan Jumlah!';
+                                                                    }
+                                                                    return null;
+                                                                  },
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .rubik(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: const Color(
+                                                                        0xFFFFFFFF),
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    border:
+                                                                        OutlineInputBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              26),
+                                                                    ),
+                                                                    filled:
+                                                                        true,
+                                                                    fillColor:
+                                                                        const Color(
+                                                                            0x7FF0EFF4),
+                                                                    labelText:
+                                                                        '3.000.000',
+                                                                    labelStyle:
+                                                                        GoogleFonts
+                                                                            .rubik(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w200,
+                                                                      color: const Color(
+                                                                          0xFFFFFFFF),
+                                                                      fontSize:
+                                                                          13,
+                                                                    ),
+                                                                    contentPadding:
+                                                                        const EdgeInsets
+                                                                            .symmetric(
+                                                                      vertical:
+                                                                          25,
+                                                                      horizontal:
+                                                                          18,
+                                                                    ),
+                                                                    floatingLabelBehavior:
+                                                                        FloatingLabelBehavior
+                                                                            .never, // Remove label animation
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                              "Persentase Return",
+                                                              style: GoogleFonts.rubik(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w200,
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .white)),
+                                                          Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 32,
+                                                                width: 128,
+                                                                child:
+                                                                    TextFormField(
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  inputFormatters: [
+                                                                    FilteringTextInputFormatter
+                                                                        .digitsOnly,
+                                                                  ],
+                                                                  controller:
+                                                                      _returnPercentageController,
+                                                                  validator:
+                                                                      (value) {
+                                                                    if (value ==
+                                                                            null ||
+                                                                        value
+                                                                            .isEmpty) {
+                                                                      return 'Masukkan Persentase!';
+                                                                    }
+                                                                    return null;
+                                                                  },
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .rubik(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: const Color(
+                                                                        0xFFFFFFFF),
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    border:
+                                                                        OutlineInputBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              26),
+                                                                    ),
+                                                                    filled:
+                                                                        true,
+                                                                    fillColor:
+                                                                        const Color(
+                                                                            0x7FF0EFF4),
+                                                                    labelText:
+                                                                        '10',
+                                                                    labelStyle:
+                                                                        GoogleFonts
+                                                                            .rubik(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w200,
+                                                                      color: const Color(
+                                                                          0xFFFFFFFF),
+                                                                      fontSize:
+                                                                          13,
+                                                                    ),
+                                                                    contentPadding:
+                                                                        const EdgeInsets
+                                                                            .symmetric(
+                                                                      vertical:
+                                                                          25,
+                                                                      horizontal:
+                                                                          18,
+                                                                    ),
+                                                                    floatingLabelBehavior:
+                                                                        FloatingLabelBehavior
+                                                                            .never, // Remove label animation
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 5),
+                                                              Text("%",
+                                                                  style: GoogleFonts.rubik(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontSize:
+                                                                          16,
+                                                                      color: Colors
+                                                                          .white)),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text("Lama Pinjaman",
+                                                              style: GoogleFonts.rubik(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w200,
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .white)),
+                                                          Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                height: 32,
+                                                                width: 128,
+                                                                child:
+                                                                    TextFormField(
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  inputFormatters: [
+                                                                    FilteringTextInputFormatter
+                                                                        .digitsOnly,
+                                                                  ],
+                                                                  controller:
+                                                                      _loanDurationController,
+                                                                  validator:
+                                                                      (value) {
+                                                                    if (value ==
+                                                                            null ||
+                                                                        value
+                                                                            .isEmpty) {
+                                                                      return 'Masukkan Lama Pinjaman!';
+                                                                    }
+                                                                    return null;
+                                                                  },
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .rubik(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: const Color(
+                                                                        0xFFFFFFFF),
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    border:
+                                                                        OutlineInputBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              26),
+                                                                    ),
+                                                                    filled:
+                                                                        true,
+                                                                    fillColor:
+                                                                        const Color(
+                                                                            0x7FF0EFF4),
+                                                                    labelText:
+                                                                        '6',
+                                                                    labelStyle:
+                                                                        GoogleFonts
+                                                                            .rubik(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w200,
+                                                                      color: const Color(
+                                                                          0xFFFFFFFF),
+                                                                      fontSize:
+                                                                          13,
+                                                                    ),
+                                                                    contentPadding:
+                                                                        const EdgeInsets
+                                                                            .symmetric(
+                                                                      vertical:
+                                                                          25,
+                                                                      horizontal:
+                                                                          18,
+                                                                    ),
+                                                                    floatingLabelBehavior:
+                                                                        FloatingLabelBehavior
+                                                                            .never, // Remove label animation
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 5),
+                                                              Text("Bulan",
+                                                                  style: GoogleFonts.rubik(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontSize:
+                                                                          16,
+                                                                      color: Colors
+                                                                          .white)),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )),
+                                          actions: [
+                                            ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  Navigator.pushNamed(context,
+                                                      '/home_borrower_dapat_pinjaman',
+                                                      arguments: id_user);
+                                                },
+                                                style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty.all<
+                                                            Color>(const Color
+                                                                .fromARGB(255,
+                                                            218, 65, 103))),
+                                                child: Text(
+                                                  "Ajukan",
+                                                  style: GoogleFonts.rubik(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.white),
+                                                )),
+                                            IconButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                icon: const Icon(
+                                                    Icons.cancel_outlined),
+                                                color: const Color.fromARGB(
+                                                    255, 218, 65, 103)),
+                                          ]);
+                                    },
+                                  );
                                 },
                                 child: Text(
                                   'Ajukan Sekarang!',

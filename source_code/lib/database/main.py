@@ -620,3 +620,72 @@ def update_profile(response: Response, id_user: int, m: ProfilePatch ):
    
     con.close()
     return m
+
+class UmkmPatch(BaseModel):
+   nama_umkm: str | None = "kosong"
+   tahun_berdiri: str | None = "kosong"
+   lokasi: str | None = "kosong"
+   deskripsi: Optional[str] | None = "kosong"
+   omset: int | None = -9999
+
+@app.patch("/update_umkm/{id_umkm}",response_model = UmkmPatch)
+def update_umkm(response: Response, id_umkm: int, m: UmkmPatch ):
+    try:
+      print(str(m))
+      DB_NAME = "modalin.db"
+      con = sqlite3.connect(DB_NAME)
+      cur = con.cursor() 
+      cur.execute("select * from umkm where id_umkm = ?", (id_umkm,) )  #tambah koma untuk menandakan tupple
+      existing_item = cur.fetchone()
+    except Exception as e:
+      raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(str(e))) # misal database down  
+    
+    if existing_item:  #data ada, lakukan update
+        sqlstr = "update umkm set " #asumsi miid_umkmal ada satu field update
+        # todo: bisa direfaktor dan dirapikan
+        if m.nama_umkm!="kosong":
+            if m.nama_umkm!=None:
+                sqlstr = sqlstr + " nama_umkm = '{}' ,".format(m.nama_umkm)
+            else:     
+                sqlstr = sqlstr + " nama_umkm = null ,"
+        
+        if m.tahun_berdiri!="kosong":
+            if m.tahun_berdiri!=None:
+                sqlstr = sqlstr + " tahun_berdiri = '{}' ,".format(m.tahun_berdiri)
+            else:
+                sqlstr = sqlstr + " tahun_berdiri = null ,"
+        
+        
+        if m.lokasi!="kosong":
+            if m.lokasi!=None:
+                sqlstr = sqlstr + " lokasi = '{}' ,".format(m.lokasi)
+            else:
+                sqlstr = sqlstr + " lokasi = null ,"
+        
+        if m.deskripsi!="kosong":
+            if m.deskripsi!=None:
+                sqlstr = sqlstr + " deskripsi = '{}' ,".format(m.deskripsi)
+            else:
+                sqlstr = sqlstr + " deskripsi = null, "  
+
+        if m.omset!=-9999:
+            if m.omset!=None:
+                sqlstr = sqlstr + " omset = {} ,".format(m.omset)
+            else:    
+                sqlstr = sqlstr + " omset = null ,"
+            
+        sqlstr = sqlstr[:-1] + " where id_umkm='{}' ".format(id_umkm)  #buang koma yang trakhir  
+        print(sqlstr)      
+        try:
+            cur.execute(sqlstr)
+            con.commit()         
+            # response.headers["location"] = "/mahasixswa/{}".format(nim)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(str(e)))   
+        
+
+    else:  # data tidak ada 404, item not found
+         raise HTTPException(status_code=404, detail="Item Not Found")
+   
+    con.close()
+    return m

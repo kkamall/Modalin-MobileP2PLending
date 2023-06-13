@@ -42,7 +42,7 @@ class ProfileGuestState extends State<ProfileGuest> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 Color(0xFF3D2645),
@@ -53,7 +53,7 @@ class ProfileGuestState extends State<ProfileGuest> {
             ),
           ),
           child: Container(
-            margin: EdgeInsets.fromLTRB(26, 20, 26, 20),
+            margin: const EdgeInsets.fromLTRB(20, 8, 20, 16),
             child: Column(
               children: [
                 Row(
@@ -65,7 +65,7 @@ class ProfileGuestState extends State<ProfileGuest> {
                             fontSize: 32,
                             fontWeight: FontWeight.w700)),
                     IconButton(
-                        iconSize: 42,
+                        iconSize: 30,
                         onPressed: () {
                           Navigator.pushNamed(context, '/aktivitas_guest');
                         },
@@ -123,7 +123,7 @@ class ProfileGuestState extends State<ProfileGuest> {
                             ),
                           ),
                           onPressed: () =>
-                              Navigator.pushNamed(context, '/registrasi'),
+                              Navigator.pushNamed(context, '/login'),
                           child: Text(
                             'Daftar Sekarang!',
                             style: GoogleFonts.rubik(

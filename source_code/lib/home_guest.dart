@@ -21,17 +21,6 @@ class AktivitasGuestState extends State<AktivitasGuest> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Form is valid, perform desired action
-      String username = _usernameController.text;
-      String password = _passwordController.text;
-      // Process the input data or perform other operations
-      print('Submitted Name: $username');
-      print('Submitted Name: $password');
-    }
-  }
-
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
@@ -46,7 +35,7 @@ class AktivitasGuestState extends State<AktivitasGuest> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 Color(0xFF3D2645),
@@ -57,13 +46,13 @@ class AktivitasGuestState extends State<AktivitasGuest> {
             ),
           ),
           child: Container(
-            margin: EdgeInsets.fromLTRB(26, 20, 26, 20),
+            margin: const EdgeInsets.fromLTRB(20, 8, 20, 16),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("AKTIVITAS",
+                    Text("HOME",
                         style: GoogleFonts.outfit(
                             color: Colors.white,
                             fontSize: 32,
@@ -169,7 +158,7 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                             ),
                           ),
                           onPressed: () =>
-                              Navigator.pushNamed(context, '/registrasi'),
+                              Navigator.pushNamed(context, '/login'),
                           child: Text(
                             'Daftar Sekarang!',
                             style: GoogleFonts.rubik(

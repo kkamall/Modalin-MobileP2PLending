@@ -68,7 +68,7 @@ class ChatState extends State<ChatGuest> {
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                      iconSize: 38,
+                                      iconSize: 30,
                                       onPressed: () {
                                         Navigator.pushNamed(
                                             context, '/notifikasi');
@@ -76,12 +76,12 @@ class ChatState extends State<ChatGuest> {
                                       icon: const Icon(Icons.notifications),
                                       color: Colors.white),
                                   IconButton(
-                                      iconSize: 38,
+                                      iconSize: 30,
                                       onPressed: () {
                                         Navigator.pushNamed(
                                             context, '/profile_guest');
                                       },
-                                      icon: const Icon(Icons.account_circle),
+                                      icon: const Icon(Icons.person),
                                       color: Colors.white)
                                 ],
                               ),
@@ -139,7 +139,7 @@ class ChatState extends State<ChatGuest> {
                                   ),
                                 ),
                                 onPressed: () =>
-                                    Navigator.pushNamed(context, '/registrasi'),
+                                    Navigator.pushNamed(context, '/login'),
                                 child: Text(
                                   'Daftar Sekarang!',
                                   style: GoogleFonts.rubik(
@@ -212,15 +212,24 @@ class ChatState extends State<ChatGuest> {
             // end bottom nav
           ],
         ),
-        floatingActionButton:
-            // start floating button
-            Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 50),
-          child: FloatingActionButton(
-            onPressed: () {},
-            backgroundColor: const Color.fromARGB(255, 218, 65, 103),
-            child: const Icon(Icons.headset_mic),
-          ),
+        floatingActionButton: Stack(
+          children: [
+            Positioned(
+              bottom: 45,
+              right: 0,
+              child: Container(
+                width: 44,
+                height: 44,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    // jika ditap
+                  },
+                  backgroundColor: Color(0xFFDA4167),
+                  child: const Icon(Icons.headset_mic),
+                ),
+              ),
+            )
+          ],
         ),
         // end floating button
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

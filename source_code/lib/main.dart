@@ -15,6 +15,8 @@ import 'home_borrower.dart';
 import 'home_borrower_dapat_pinjaman.dart';
 import 'notifikasi.dart';
 import 'add_pinjaman.dart';
+import 'metodePembayaran.dart';
+import 'metodeWithdraw.dart';
 import 'screens/home_screen.dart';
 
 void main() {
@@ -42,6 +44,8 @@ class MyApp extends StatelessWidget {
         "/notifikasi": (context) => Notifikasi(),
         "/explore": (context) => HomeScreen(),
         "/add_pinjaman": (context) => AddPinjaman(),
+        "/pembayaran": (context) => Pembayaran(),
+        "/withdraw": (context) => Withdraw(),
         "/home": (context) => Home(),
         "/home_borrower": (context) => HomeBorrower(),
         "/home_borrower_dapat_pinjaman": (context) =>
