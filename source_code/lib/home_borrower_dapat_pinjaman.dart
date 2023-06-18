@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter/services.dart';
 
 class PinjamanModel {
   String judul_pinjaman;
@@ -234,8 +235,10 @@ class Pemasukan {
 
 class _HomeState extends State<HomeBorrowerDapatPinjaman> {
   int flag = 0;
-  String? id_user = "";
+  String id_user = "";
   String? id_pinjaman = "";
+  String jumlahUang = "";
+  final TextEditingController _loanAmountController = TextEditingController();
 
   List<Pengeluaran> listPengeluaran = [
     Pengeluaran("RENOVIN", "formal.png", "Rp 5jt", "8%", "3 bln"),
@@ -250,12 +253,17 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
     Pemasukan("RENOVIN", "formal.png", "Rp 500.000"),
   ];
 
+  void _submitForm() {
+    jumlahUang = _loanAmountController.text;
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     id_user = arguments['id_user'] as String;
     id_pinjaman = arguments['id_pinjaman'] as String;
+
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
@@ -315,7 +323,8 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                                           iconSize: 30,
                                           onPressed: () {
                                             Navigator.pushNamed(
-                                                context, '/notifikasi');
+                                                context, '/notifikasi',
+                                                arguments: id_user);
                                           },
                                           icon: const Icon(Icons.notifications),
                                           color: Colors.white),
@@ -378,7 +387,182 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      print('Icon pressed');
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            // title: Text("Edit Profil"),
+                                                            actionsAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            16)),
+                                                            backgroundColor:
+                                                                const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    131,
+                                                                    33,
+                                                                    79),
+                                                            content: SizedBox(
+                                                                width: double
+                                                                    .maxFinite,
+                                                                height: 128,
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  // crossAxisAlignment:
+                                                                  //     CrossAxisAlignment.center,
+                                                                  children: [
+                                                                    Text(
+                                                                      "Top Up",
+                                                                      style: GoogleFonts.rubik(
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height:
+                                                                          12,
+                                                                    ),
+                                                                    Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Text("Jumlah",
+                                                                                style: GoogleFonts.rubik(fontWeight: FontWeight.w200, fontSize: 12, color: Colors.white)),
+                                                                            Row(
+                                                                              children: [
+                                                                                Text("Rp", style: GoogleFonts.rubik(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white)),
+                                                                                const SizedBox(width: 5),
+                                                                                SizedBox(
+                                                                                  height: 32,
+                                                                                  width: 196,
+                                                                                  child: TextFormField(
+                                                                                    keyboardType: TextInputType.number,
+                                                                                    inputFormatters: [
+                                                                                      FilteringTextInputFormatter.digitsOnly,
+                                                                                    ],
+                                                                                    controller: _loanAmountController,
+                                                                                    validator: (value) {
+                                                                                      if (value == null || value.isEmpty) {
+                                                                                        return 'Masukkan Jumlah!';
+                                                                                      }
+                                                                                      return null;
+                                                                                    },
+                                                                                    style: GoogleFonts.rubik(
+                                                                                      fontWeight: FontWeight.w500,
+                                                                                      color: const Color(0xFFFFFFFF),
+                                                                                      fontSize: 14,
+                                                                                    ),
+                                                                                    decoration: InputDecoration(
+                                                                                      border: OutlineInputBorder(
+                                                                                        borderRadius: BorderRadius.circular(26),
+                                                                                      ),
+                                                                                      filled: true,
+                                                                                      fillColor: const Color(0x7FF0EFF4),
+                                                                                      labelText: '3.000.000',
+                                                                                      labelStyle: GoogleFonts.rubik(
+                                                                                        fontWeight: FontWeight.w200,
+                                                                                        color: const Color(0xFFFFFFFF),
+                                                                                        fontSize: 13,
+                                                                                      ),
+                                                                                      contentPadding: const EdgeInsets.symmetric(
+                                                                                        vertical: 25,
+                                                                                        horizontal: 18,
+                                                                                      ),
+                                                                                      floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                )),
+                                                            actions: [
+                                                              ElevatedButton(
+                                                                onPressed: () {
+                                                                  _submitForm();
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  Navigator
+                                                                      .pushNamed(
+                                                                    context,
+                                                                    '/pembayaran',
+                                                                    arguments: {
+                                                                      'id_user':
+                                                                          int.parse(
+                                                                              id_user),
+                                                                      'jumlahUang':
+                                                                          int.parse(
+                                                                              jumlahUang),
+                                                                    },
+                                                                  );
+                                                                },
+                                                                style:
+                                                                    ButtonStyle(
+                                                                  backgroundColor:
+                                                                      MaterialStateProperty
+                                                                          .all<
+                                                                              Color>(
+                                                                    const Color
+                                                                            .fromARGB(
+                                                                        255,
+                                                                        218,
+                                                                        65,
+                                                                        103),
+                                                                  ),
+                                                                ),
+                                                                child: Text(
+                                                                  "Top Up",
+                                                                  style: GoogleFonts.rubik(
+                                                                      fontSize:
+                                                                          13,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ),
+                                                              IconButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .cancel_outlined),
+                                                                color: const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    218,
+                                                                    65,
+                                                                    103),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
                                                     },
                                                     child: Icon(
                                                       Icons.add,
@@ -413,7 +597,182 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      print('Icon pressed');
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            // title: Text("Edit Profil"),
+                                                            actionsAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            16)),
+                                                            backgroundColor:
+                                                                const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    131,
+                                                                    33,
+                                                                    79),
+                                                            content: SizedBox(
+                                                                width: double
+                                                                    .maxFinite,
+                                                                height: 128,
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  // crossAxisAlignment:
+                                                                  //     CrossAxisAlignment.center,
+                                                                  children: [
+                                                                    Text(
+                                                                      "Withdraw",
+                                                                      style: GoogleFonts.rubik(
+                                                                          fontSize:
+                                                                              16,
+                                                                          fontWeight: FontWeight
+                                                                              .w600,
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      height:
+                                                                          12,
+                                                                    ),
+                                                                    Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Column(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Text("Jumlah",
+                                                                                style: GoogleFonts.rubik(fontWeight: FontWeight.w200, fontSize: 12, color: Colors.white)),
+                                                                            Row(
+                                                                              children: [
+                                                                                Text("Rp", style: GoogleFonts.rubik(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white)),
+                                                                                const SizedBox(width: 5),
+                                                                                SizedBox(
+                                                                                  height: 32,
+                                                                                  width: 196,
+                                                                                  child: TextFormField(
+                                                                                    keyboardType: TextInputType.number,
+                                                                                    inputFormatters: [
+                                                                                      FilteringTextInputFormatter.digitsOnly,
+                                                                                    ],
+                                                                                    controller: _loanAmountController,
+                                                                                    validator: (value) {
+                                                                                      if (value == null || value.isEmpty) {
+                                                                                        return 'Masukkan Jumlah!';
+                                                                                      }
+                                                                                      return null;
+                                                                                    },
+                                                                                    style: GoogleFonts.rubik(
+                                                                                      fontWeight: FontWeight.w500,
+                                                                                      color: const Color(0xFFFFFFFF),
+                                                                                      fontSize: 14,
+                                                                                    ),
+                                                                                    decoration: InputDecoration(
+                                                                                      border: OutlineInputBorder(
+                                                                                        borderRadius: BorderRadius.circular(26),
+                                                                                      ),
+                                                                                      filled: true,
+                                                                                      fillColor: const Color(0x7FF0EFF4),
+                                                                                      labelText: '3.000.000',
+                                                                                      labelStyle: GoogleFonts.rubik(
+                                                                                        fontWeight: FontWeight.w200,
+                                                                                        color: const Color(0xFFFFFFFF),
+                                                                                        fontSize: 13,
+                                                                                      ),
+                                                                                      contentPadding: const EdgeInsets.symmetric(
+                                                                                        vertical: 25,
+                                                                                        horizontal: 18,
+                                                                                      ),
+                                                                                      floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                )),
+                                                            actions: [
+                                                              ElevatedButton(
+                                                                onPressed: () {
+                                                                  _submitForm();
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  Navigator
+                                                                      .pushNamed(
+                                                                    context,
+                                                                    '/withdraw',
+                                                                    arguments: {
+                                                                      'id_user':
+                                                                          int.parse(
+                                                                              id_user),
+                                                                      'jumlahUang':
+                                                                          int.parse(
+                                                                              jumlahUang),
+                                                                    },
+                                                                  );
+                                                                },
+                                                                style:
+                                                                    ButtonStyle(
+                                                                  backgroundColor:
+                                                                      MaterialStateProperty
+                                                                          .all<
+                                                                              Color>(
+                                                                    const Color
+                                                                            .fromARGB(
+                                                                        255,
+                                                                        218,
+                                                                        65,
+                                                                        103),
+                                                                  ),
+                                                                ),
+                                                                child: Text(
+                                                                  "Withdraw",
+                                                                  style: GoogleFonts.rubik(
+                                                                      fontSize:
+                                                                          13,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ),
+                                                              IconButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                icon: const Icon(
+                                                                    Icons
+                                                                        .cancel_outlined),
+                                                                color: const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    218,
+                                                                    65,
+                                                                    103),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
                                                     },
                                                     child: const Icon(
                                                       Icons.wallet_rounded,
@@ -960,9 +1319,7 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                           children: [
                             IconButton(
                               iconSize: 24,
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/home');
-                              },
+                              onPressed: () {},
                               icon: const Icon(Icons.home),
                               color: Colors.white,
                             ),
@@ -982,7 +1339,8 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                         IconButton(
                           iconSize: 24,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/chat');
+                            Navigator.pushNamed(context, '/chat',
+                                arguments: id_user);
                           },
                           icon: const Icon(Icons.mark_chat_unread),
                           color: Colors.white,

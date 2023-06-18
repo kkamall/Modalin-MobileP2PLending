@@ -82,7 +82,6 @@ def init_db():
         create_table = """ CREATE TABLE investasi(
             id_investasi INTEGER PRIMARY KEY AUTOINCREMENT,
             tanggal_investasi TEXT NOT NULL,
-        
             id_pinjaman INTEGER NOT NULL,
             id_user_lender INTEGER NOT NULL,
             FOREIGN KEY (id_pinjaman) REFERENCES pinjaman(id_pinjaman),
@@ -96,10 +95,11 @@ def init_db():
             id_chat INTEGER PRIMARY KEY AUTOINCREMENT,
             isi_chat TEXT NOT NULL,
             tanggal_chat TEXT NOT NULL,
-            waktu_chat INTEGER NOT NULL,
             status TEXT NOT NULL,
-            id_user INTEGER NOT NULL,
-            FOREIGN KEY (id_user) REFERENCES user(id_user)
+            id_user_pengirim INTEGER NOT NULL,
+            id_user_penerima INTEGER NOT NULL,
+            FOREIGN KEY (id_user_pengirim) REFERENCES user(id_user),
+            FOREIGN KEY (id_user_penerima) REFERENCES user(id_user)
         )  
         """
         cur.execute(create_table)
@@ -112,7 +112,7 @@ def init_db():
             id_user_borrower INTEGER NOT NULL,
             id_user_lender INTEGER NOT NULL,
             FOREIGN KEY (id_investasi) REFERENCES investasi(id_investasi),
-            FOREIGN KEY (id_transaksi) REFERENCES transaksi(id_transaksi)
+            FOREIGN KEY (id_transaksi) REFERENCES transaksi(id_transaksi),
             FOREIGN KEY (id_user_borrower) REFERENCES user(id_user),
             FOREIGN KEY (id_user_lender) REFERENCES user(id_user)
         )  
@@ -737,3 +737,103 @@ def update_umkm(response: Response, id_user_borrower: int, m: UmkmPatch):
 
     con.close()
     return m
+
+
+class Chat(BaseModel):
+    isi_chat: str
+    tanggal_chat: str
+    status: str
+    id_user_pengirim: int
+    id_user_penerima: int
+
+
+@app.post("/add_chat/", response_model=Chat, status_code=201)
+def tambah_chat(m: Chat, response: Response, request: Request):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+        cur.execute("""insert into chat (isi_chat,tanggal_chat,status,id_user_pengirim,id_user_penerima) values ( "{}","{}","{}",{},{})""".format(
+            m.isi_chat, m.tanggal_chat, m.status, m.id_user_pengirim, m.id_user_penerima))
+        con.commit()
+    except:
+        print("oioi error")
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+    # response.headers["Location"] = "/user/{}".format(m.username)
+    return m
+
+
+@app.get("/get_chat_belum_terbaca/{id_user_pengirim}")
+def get_chat_belum_terbaca(id_user_pengirim: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+
+        recs = []
+
+        for row in cur.execute("""
+            SELECT user.foto_profile, user.username, chat.isi_chat, MAX(id_chat), Count(*), chat.id_user_penerima, chat.id_user_pengirim
+            FROM chat
+            JOIN user on chat.id_user_penerima = user.id_user
+            where id_user_pengirim = ? AND chat.status = 'Terkirim'
+            GROUP BY id_user_penerima
+            """, (id_user_pengirim,)):
+            recs.append(row)
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+
+    return {"data": recs}
+
+@app.get("/get_chat_semua/{id_user_pengirim}")
+def get_chat_semua(id_user_pengirim: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+
+        recs = []
+
+        for row in cur.execute("""
+            SELECT user.foto_profile, user.username, chat.isi_chat, MAX(id_chat), chat.id_user_penerima, chat.id_user_pengirim
+            FROM chat
+            JOIN user on chat.id_user_penerima = user.id_user
+            where id_user_pengirim = ?
+            GROUP BY id_user_penerima
+            """, (id_user_pengirim,)):
+            recs.append(row)
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+
+    return {"data": recs}
+
+
+@app.get("/get_chat/{id_user_penerima}/{id_user_pengirim}")
+def get_chat(id_user_pengirim: int, id_user_penerima: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+
+        recs = []
+
+        for row in cur.execute("""
+            SELECT isi_chat, id_user_penerima, id_user_pengirim
+            FROM chat
+            where id_user_penerima = ? AND id_user_pengirim = ? OR id_user_penerima = ? AND id_user_pengirim = ?
+            ORDER BY id_chat ASC
+            """, (id_user_penerima, id_user_pengirim, id_user_pengirim, id_user_penerima)):
+            recs.append(row)
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+
+    return {"data": recs}

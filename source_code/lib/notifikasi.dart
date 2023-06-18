@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Notifikasi extends StatefulWidget {
   const Notifikasi({Key? key}) : super(key: key);
@@ -20,6 +22,8 @@ class NotifikasiItem {
 }
 
 class NotifikasiState extends State<Notifikasi> {
+  String id_user = "";
+
   List<NotifikasiItem> dataNotif = [
     NotifikasiItem(0, "formal.png", "RENOVIN", "Jadi gimana pak?", 0),
     NotifikasiItem(1, "thumbnail.png", "RENOVIN",
@@ -30,8 +34,42 @@ class NotifikasiState extends State<Notifikasi> {
         1, "thumbnail.png", "Earen", "Menanam bibit gandung di ladang baru", 1),
   ];
 
+  Future<int> checkUser() async {
+    final responseGetUser =
+        await http.get(Uri.parse("http://127.0.0.1:8000/get_user/" + id_user));
+    Map<String, dynamic> jsonGetUser = jsonDecode(responseGetUser.body);
+
+    final responseCekPinjamanBelumSelesai = await http.get(Uri.parse(
+        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/" + id_user));
+    List jsonCekPinjamanBelumSelesai =
+        jsonDecode(responseCekPinjamanBelumSelesai.body);
+
+    if (responseGetUser.statusCode == 200) {
+      if (jsonGetUser['role'] == "Borrower") {
+        if (jsonCekPinjamanBelumSelesai[0] == "Tidak Ada") {
+          Navigator.pushNamed(context, '/home_borrower', arguments: id_user);
+        } else if (jsonCekPinjamanBelumSelesai[0] == "Ada") {
+          Navigator.pushNamed(
+            context,
+            '/home_borrower_dapat_pinjaman',
+            arguments: {
+              'id_user': id_user,
+              'id_pinjaman': jsonCekPinjamanBelumSelesai[1].toString(),
+            },
+          );
+        }
+      } else {
+        Navigator.pushNamed(context, '/home', arguments: id_user);
+      }
+    } else {
+      throw Exception('Gagal load');
+    }
+    return responseGetUser.statusCode;
+  }
+
   @override
   Widget build(BuildContext context) {
+    id_user = ModalRoute.of(context)!.settings.arguments as String;
     return MaterialApp(
       title: 'Hello App',
       debugShowCheckedModeBanner: false,
@@ -65,7 +103,7 @@ class NotifikasiState extends State<Notifikasi> {
                         IconButton(
                             iconSize: 40,
                             onPressed: () {
-                              Navigator.pushNamed(context, '/home');
+                              checkUser();
                             },
                             icon: const Icon(Icons.home),
                             color: Colors.white)

@@ -20,12 +20,12 @@ class NavScreen extends StatefulWidget {
 class _NavScreenState extends State<NavScreen> {
   static const double _playerMinHeight = 60.0;
 
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
 
   final _screens = [
-    HomeScreen(),
+    const Explore(),
     Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -35,13 +35,13 @@ class _NavScreenState extends State<NavScreen> {
           ],
         ),
       ),
-      child: Scaffold(
+      child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(child: Text('Aktivitas')),
       ),
     ),
     Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -51,7 +51,7 @@ class _NavScreenState extends State<NavScreen> {
           ],
         ),
       ),
-      child: Scaffold(
+      child: const Scaffold(
         backgroundColor: Colors.transparent,
         body: Center(child: Text('Chat')),
       ),
@@ -88,7 +88,7 @@ class _NavScreenState extends State<NavScreen> {
                     builder: (height, percentage) {
                       if (selectedVideo == null) return const SizedBox.shrink();
 
-                      if (height <= _playerMinHeight + 50.0)
+                      if (height <= _playerMinHeight + 50.0) {
                         return Container(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           child: Column(
@@ -115,7 +115,7 @@ class _NavScreenState extends State<NavScreen> {
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .caption!
+                                                  .bodySmall!
                                                   .copyWith(
                                                     color: Colors.white,
                                                     fontWeight: FontWeight.w500,
@@ -128,7 +128,7 @@ class _NavScreenState extends State<NavScreen> {
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .caption!
+                                                  .bodySmall!
                                                   .copyWith(
                                                       fontWeight:
                                                           FontWeight.w500),
@@ -161,6 +161,7 @@ class _NavScreenState extends State<NavScreen> {
                             ],
                           ),
                         );
+                      }
                       return VideoScreen();
                     },
                   ),
@@ -178,7 +179,7 @@ class _NavScreenState extends State<NavScreen> {
               width: 180,
               height: 45,
               decoration: BoxDecoration(
-                color: Color(0xFF832161),
+                color: const Color(0xFF832161),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
@@ -222,14 +223,14 @@ class _NavScreenState extends State<NavScreen> {
           Positioned(
             bottom: 45,
             right: 0,
-            child: Container(
+            child: SizedBox(
               width: 44,
               height: 44,
               child: FloatingActionButton(
                 onPressed: () {
                   // jika ditap
                 },
-                backgroundColor: Color(0xFFDA4167),
+                backgroundColor: const Color(0xFFDA4167),
                 child: const Icon(Icons.headset_mic),
               ),
             ),

@@ -26,6 +26,8 @@ class MetodePembayaran extends State<Withdraw> {
   late Future<int> respPost; //201 artinya berhasil
   String withdraw = "http://127.0.0.1:8000/withdraw/";
   String get_user = "http://127.0.0.1:8000/get_user/";
+  String cek_pinjaman_belum_selesai =
+      "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/";
 
   Future<int> insertDataUser() async {
     //data disimpan di body
@@ -41,23 +43,36 @@ class MetodePembayaran extends State<Withdraw> {
       "waktu_transaksi": "$waktuTransaksi",
       "id_user": $id_user} """);
 
-    final responseUser = await http.get(Uri.parse(get_user + id_user.toString()));
+    final responseUser =
+        await http.get(Uri.parse(get_user + id_user.toString()));
     Map<String, dynamic> user = jsonDecode(responseUser.body);
-    if(user['role'] == "Lender")
-    {
+
+    // Cek pinjaman (udah mengajukan apa belum)
+    final responseCekPinjamanBelumSelesai = await http
+        .get(Uri.parse(cek_pinjaman_belum_selesai + id_user.toString()));
+    List jsonCekPinjamanBelumSelesai =
+        jsonDecode(responseCekPinjamanBelumSelesai.body);
+
+    if (user['role'] == "Lender") {
       Navigator.pushNamed(
         context,
         '/home',
         arguments: id_user.toString(),
       );
-    }
-    else
-    {
-      Navigator.pushNamed(
-        context,
-        '/home_borrower',
-        arguments: id_user.toString(),
-      );
+    } else {
+      if (jsonCekPinjamanBelumSelesai[0] == "Tidak Ada") {
+        Navigator.pushNamed(context, '/home_borrower',
+            arguments: id_user.toString());
+      } else if (jsonCekPinjamanBelumSelesai[0] == "Ada") {
+        Navigator.pushNamed(
+          context,
+          '/home_borrower_dapat_pinjaman',
+          arguments: {
+            'id_user': id_user.toString(),
+            'id_pinjaman': jsonCekPinjamanBelumSelesai[1].toString(),
+          },
+        );
+      }
     }
 
     return response.statusCode; //sukses kalau 201

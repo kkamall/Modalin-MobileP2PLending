@@ -287,7 +287,8 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                           iconSize: 30,
                                           onPressed: () {
                                             Navigator.pushNamed(
-                                                context, '/notifikasi');
+                                                context, '/notifikasi',
+                                                arguments: id_user);
                                           },
                                           icon: const Icon(Icons.notifications),
                                           color: Colors.white),
@@ -1567,9 +1568,7 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                           children: [
                             IconButton(
                               iconSize: 24,
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/home');
-                              },
+                              onPressed: () {},
                               icon: const Icon(Icons.home),
                               color: Colors.white,
                             ),
@@ -1589,7 +1588,8 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                         IconButton(
                           iconSize: 24,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/chat');
+                            Navigator.pushNamed(context, '/chat',
+                                arguments: id_user);
                           },
                           icon: const Icon(Icons.mark_chat_unread),
                           color: Colors.white,
