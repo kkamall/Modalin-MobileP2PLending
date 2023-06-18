@@ -109,8 +109,12 @@ def init_db():
             id_pengembalian INTEGER PRIMARY KEY AUTOINCREMENT,
             id_investasi INTEGER NOT NULL,
             id_transaksi INTEGER NOT NULL,
+            id_user_borrower INTEGER NOT NULL,
+            id_user_lender INTEGER NOT NULL,
             FOREIGN KEY (id_investasi) REFERENCES investasi(id_investasi),
             FOREIGN KEY (id_transaksi) REFERENCES transaksi(id_transaksi)
+            FOREIGN KEY (id_user_borrower) REFERENCES user(id_user),
+            FOREIGN KEY (id_user_lender) REFERENCES user(id_user)
         )  
         """
         cur.execute(create_table)
@@ -120,8 +124,12 @@ def init_db():
             id_pendanaan INTEGER PRIMARY KEY AUTOINCREMENT,
             id_investasi INTEGER NOT NULL,
             id_transaksi INTEGER NOT NULL,
+            id_user_borrower INTEGER NOT NULL,
+            id_user_lender INTEGER NOT NULL,
             FOREIGN KEY (id_investasi) REFERENCES investasi(id_investasi),
-            FOREIGN KEY (id_transaksi) REFERENCES transaksi(id_transaksi)
+            FOREIGN KEY (id_transaksi) REFERENCES transaksi(id_transaksi),
+            FOREIGN KEY (id_user_borrower) REFERENCES user(id_user),
+            FOREIGN KEY (id_user_lender) REFERENCES user(id_user)
         )  
         """
         cur.execute(create_table)
@@ -301,7 +309,7 @@ def get_umkm(id_user: int):
     finally:
         con.close()
 
-    return {"nama_umkm": existing_item[1], "deskripsi": existing_item[2], "tahun_berdiri": existing_item[7], "omset": existing_item[3], "lokasi": existing_item[4], "kategori": existing_item[5], "kelas": existing_item[6]}
+    return {"id_umkm": existing_item[0], "nama_umkm": existing_item[1], "deskripsi": existing_item[2], "tahun_berdiri": existing_item[7], "omset": existing_item[3], "lokasi": existing_item[4], "kategori": existing_item[5], "kelas": existing_item[6]}
 
 
 class TopupWithdraw(BaseModel):
@@ -385,57 +393,51 @@ def tambah_pinjaman(m: Pinjaman, response: Response, request: Request):
     return m
 
 
-# @app.get("/get_user_umkm/{id_user}")
-# def get_user_umkm(id_user: int):
-#     try:
-#         DB_NAME = "modalin.db"
-#         con = sqlite3.connect(DB_NAME)
-#         cur = con.cursor()
-
-#         # Join the 'user' and 'umkm' tables based on the 'id_user' column
-#         cur.execute("""
-#             SELECT user.nama, user.email, user.saldo_dana, umkm.nama_umkm, umkm.deskripsi, umkm.tahun_berdiri, umkm.omset, umkm.lokasi, umkm.kategori, umkm.kelas
-#             FROM user
-#             JOIN umkm ON user.id_user = umkm.id_user_borrower
-#             WHERE user.id_user = ?
-#         """, (id_user,))
-
-#         existing_item = cur.fetchone()
-#     except:
-#         return ({"status": "terjadi error"})
-#     finally:
-#         con.close()
-
-#     return {
-#         "nama": existing_item[0],
-#         "email": existing_item[1],
-#         "saldo_dana": existing_item[2],
-#         "nama_umkm": existing_item[3],
-#         "deskripsi": existing_item[4],
-#         "tahun_berdiri": existing_item[5],
-#         "omset": existing_item[6],
-#         "lokasi": existing_item[7],
-#         "kategori": existing_item[8],
-#         "kelas": existing_item[9]
-#     }
-
-# history / aktivitas
-
-@app.get("/history_pendanaan/{id_user}")
-def history_pendanaan(id_user: int):
+@app.get("/history_pengeluaran_lender/{id_user}")
+def history_pengeluaran_lender(id_user: int):
     try:
         DB_NAME = "modalin.db"
         con = sqlite3.connect(DB_NAME)
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT transaksi.jumlah_transaksi, transaksi.waktu_transaksi, pinjaman.judul_pinjaman, 
-            pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman
+            SELECT user.foto_profile, umkm.nama_umkm,
+            transaksi.jumlah_transaksi, pinjaman.return_keuntungan, pinjaman.lama_pinjaman
             FROM transaksi
             JOIN pendanaan ON transaksi.id_transaksi = pendanaan.id_transaksi
             JOIN investasi ON pendanaan.id_investasi = investasi.id_investasi
             JOIN pinjaman ON investasi.id_pinjaman = pinjaman.id_pinjaman
+            JOIN user ON pinjaman.id_user_borrower = user.id_user
+            JOIN umkm ON umkm.id_user_borrower = pinjaman.id_user_borrower 
             WHERE transaksi.id_user = ? AND transaksi.jenis_transaksi = "Pendanaan"
+            ORDER BY transaksi.id_transaksi DESC 
+        """, (id_user,)):
+            recs.append(row)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(
+            str(e)))
+    finally:
+        con.close()
+    return {"data": recs}
+
+
+@app.get("/history_pemasukan_lender/{id_user}")
+def history_pemasukan_lender(id_user: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        recs = []
+        for row in cur.execute("""
+            SELECT user.foto_profile, umkm.nama_umkm, transaksi.jumlah_transaksi, pinjaman.jumlah_pinjaman
+            FROM pengembalian
+            JOIN user ON user.id_user = pengembalian.id_user_borrower
+            JOIN umkm ON umkm.id_user_borrower = pengembalian.id_user_borrower
+            JOIN transaksi ON transaksi.id_transaksi = pengembalian.id_transaksi
+            JOIN investasi ON investasi.id_investasi = pengembalian.id_investasi
+            JOIN pinjaman ON pinjaman.id_pinjaman = investasi.id_pinjaman
+            WHERE pengembalian.id_user_lender = ?
+            ORDER BY pengembalian.id_pengembalian DESC
         """, (id_user,)):
             recs.append(row)
     except:
@@ -445,7 +447,7 @@ def history_pendanaan(id_user: int):
     return {"data": recs}
 
 
-@app.get("/history_pengembalian/{id_user}")
+@app.get("/history_pengembalian_borrower/{id_user}")
 def history_pengembalian(id_user: int):
     try:
         DB_NAME = "modalin.db"
@@ -453,13 +455,15 @@ def history_pengembalian(id_user: int):
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT transaksi.jumlah_transaksi, transaksi.waktu_transaksi, pinjaman.judul_pinjaman, 
-            pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman
-            FROM transaksi
-            JOIN pengembalian ON transaksi.id_transaksi = pengembalian.id_transaksi
-            JOIN investasi ON pengembalian.id_investasi = investasi.id_investasi
-            JOIN pinjaman ON investasi.id_pinjaman = pinjaman.id_pinjaman
-            WHERE transaksi.id_user = ? AND transaksi.jenis_transaksi = "Pengembalian"
+            SELECT user.foto_profile, umkm.nama_umkm, transaksi.jumlah_transaksi, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman
+            FROM pengembalian
+            JOIN user ON user.id_user = pengembalian.id_user_borrower
+            JOIN umkm ON umkm.id_user_borrower = pengembalian.id_user_borrower
+            JOIN transaksi ON transaksi.id_transaksi = pengembalian.id_transaksi
+            JOIN investasi ON investasi.id_investasi = pengembalian.id_investasi
+            JOIN pinjaman ON pinjaman.id_pinjaman = investasi.id_pinjaman
+            WHERE pengembalian.id_user_borrower = ?
+            ORDER BY pengembalian.id_pengembalian DESC
         """, (id_user,)):
             recs.append(row)
     except:
@@ -491,6 +495,26 @@ def list_pinjaman():
     return {"data": recs}
 
 
+@app.get("/cek_pinjaman_belum_selesai/{id_user}")
+def cek_pinjaman_belum_selesai(id_user: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        cur.execute("""
+            select * from pinjaman where id_user_borrower = ? and (status = 'Belum' or status = 'Sedang') ORDER BY tanggal_pengajuan DESC""", (id_user,))
+        existing_item = cur.fetchone()
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+
+    if existing_item:
+        return ["Ada", existing_item[0]]
+    else:
+        return ["Tidak Ada"]
+
+
 @app.get("/get_pinjaman/{id_pinjaman}")
 def get_pinjaman(id_pinjaman: int):
     try:
@@ -499,7 +523,24 @@ def get_pinjaman(id_pinjaman: int):
         cur = con.cursor()
         cur.execute("""
             select * from pinjaman JOIN user ON pinjaman.id_user_borrower = user.id_user
-            JOIN umkm ON umkm.id_umkm = umkm.id_umkm where id_pinjaman = ?""", (id_pinjaman,))
+            JOIN umkm ON pinjaman.id_umkm = umkm.id_umkm where id_pinjaman = ?""", (id_pinjaman,))
+        existing_item = cur.fetchone()
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+
+    return {"judul_pinjaman": existing_item[1], "tanggal_pengajuan": existing_item[7], "jumlah_pinjaman": existing_item[3], "return_keuntungan": existing_item[4], "lama_pinjaman": existing_item[5], "status": existing_item[6], "link_vidio": existing_item[2]}
+
+
+@app.get("/get_investor_pinjaman/{id_pinjaman}")
+def get_investor_pinjaman(id_pinjaman: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        cur.execute("""
+            select * from investasi JOIN user ON investasi.id_user_lender = user.id_user where id_pinjaman = ?""", (id_pinjaman,))
         existing_item = cur.fetchone()
     except:
         return ({"status": "terjadi error"})
@@ -571,120 +612,128 @@ def nego(m: Nego, response: Response, request: Request):
 # menggunakan "kosong" dan -9999 supaya bisa membedakan apakah tdk diupdate ("kosong") atau mau
 # diupdate dengan dengan None atau 0
 class ProfilePatch(BaseModel):
-   nama: str | None = "kosong"
-   foto_profile: str | None = "kosong"
+    nama: str | None = "kosong"
+    foto_profile: str | None = "kosong"
 
 
-
-@app.patch("/update_profile/{id_user}",response_model = ProfilePatch)
-def update_profile(response: Response, id_user: int, m: ProfilePatch ):
+@app.patch("/update_profile/{id_user}", response_model=ProfilePatch)
+def update_profile(response: Response, id_user: int, m: ProfilePatch):
     try:
-      print(str(m))
-      DB_NAME = "modalin.db"
-      con = sqlite3.connect(DB_NAME)
-      cur = con.cursor() 
-      cur.execute("select * from user where id_user = ?", (id_user,) )  #tambah koma untuk menandakan tupple
-      existing_item = cur.fetchone()
+        print(str(m))
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        # tambah koma untuk menandakan tupple
+        cur.execute("select * from user where id_user = ?", (id_user,))
+        existing_item = cur.fetchone()
     except Exception as e:
-      raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(str(e))) # misal database down  
-    
-    if existing_item:  #data ada, lakukan update
-        sqlstr = "update user set " #asumsi miid_useral ada satu field update
+        raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(
+            str(e)))  # misal database down
+
+    if existing_item:  # data ada, lakukan update
+        sqlstr = "update user set "  # asumsi miid_useral ada satu field update
         # todo: bisa direfaktor dan dirapikan
-        if m.nama!="kosong":
-            if m.nama!=None:
+        if m.nama != "kosong":
+            if m.nama != None:
                 sqlstr = sqlstr + " nama = '{}' ,".format(m.nama)
-            else:     
+            else:
                 sqlstr = sqlstr + " nama = null ,"
-        
-        if m.foto_profile!="kosong":
-            if m.foto_profile!=None:
-                sqlstr = sqlstr + " foto_profile = '{}' ,".format(m.foto_profile)
+
+        if m.foto_profile != "kosong":
+            if m.foto_profile != None:
+                sqlstr = sqlstr + \
+                    " foto_profile = '{}' ,".format(m.foto_profile)
             else:
                 sqlstr = sqlstr + " foto_profile = null ,"
-        
-        
-        sqlstr = sqlstr[:-1] + " where id_user='{}' ".format(id_user)  #buang koma yang trakhir  
-        print(sqlstr)      
+
+        # buang koma yang trakhir
+        sqlstr = sqlstr[:-1] + " where id_user='{}' ".format(id_user)
+        print(sqlstr)
         try:
             cur.execute(sqlstr)
-            con.commit()         
+            con.commit()
             # response.headers["location"] = "/mahasixswa/{}".format(nim)
         except Exception as e:
-            raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(str(e)))   
-        
+            raise HTTPException(
+                status_code=500, detail="Terjadi exception: {}".format(str(e)))
 
     else:  # data tidak ada 404, item not found
-         raise HTTPException(status_code=404, detail="Item Not Found")
-   
+        raise HTTPException(status_code=404, detail="Item Not Found")
+
     con.close()
     return m
 
-class UmkmPatch(BaseModel):
-   nama_umkm: str | None = "kosong"
-   tahun_berdiri: str | None = "kosong"
-   lokasi: str | None = "kosong"
-   deskripsi: Optional[str] | None = "kosong"
-   omset: int | None = -9999
 
-@app.patch("/update_umkm/{id_umkm}",response_model = UmkmPatch)
-def update_umkm(response: Response, id_umkm: int, m: UmkmPatch ):
+class UmkmPatch(BaseModel):
+    nama_umkm: str | None = "kosong"
+    tahun_berdiri: int | None = -9999
+    lokasi: str | None = "kosong"
+    deskripsi: Optional[str] | None = "kosong"
+    omset: int | None = -9999
+
+
+@app.patch("/update_umkm/{id_user_borrower}", response_model=UmkmPatch)
+def update_umkm(response: Response, id_user_borrower: int, m: UmkmPatch):
     try:
-      print(str(m))
-      DB_NAME = "modalin.db"
-      con = sqlite3.connect(DB_NAME)
-      cur = con.cursor() 
-      cur.execute("select * from umkm where id_umkm = ?", (id_umkm,) )  #tambah koma untuk menandakan tupple
-      existing_item = cur.fetchone()
+        print(str(m))
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        cur.execute("select * from umkm where id_user_borrower = ?",
+                    (id_user_borrower,))  # tambah koma untuk menandakan tupple
+        existing_item = cur.fetchone()
     except Exception as e:
-      raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(str(e))) # misal database down  
-    
-    if existing_item:  #data ada, lakukan update
-        sqlstr = "update umkm set " #asumsi miid_umkmal ada satu field update
+        raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(
+            str(e)))  # misal database down
+
+    if existing_item:  # data ada, lakukan update
+        sqlstr = "update umkm set "  # asumsi miid_umkmal ada satu field update
         # todo: bisa direfaktor dan dirapikan
-        if m.nama_umkm!="kosong":
-            if m.nama_umkm!=None:
+        if m.nama_umkm != "kosong":
+            if m.nama_umkm != None:
                 sqlstr = sqlstr + " nama_umkm = '{}' ,".format(m.nama_umkm)
-            else:     
+            else:
                 sqlstr = sqlstr + " nama_umkm = null ,"
-        
-        if m.tahun_berdiri!="kosong":
-            if m.tahun_berdiri!=None:
-                sqlstr = sqlstr + " tahun_berdiri = '{}' ,".format(m.tahun_berdiri)
+
+        if m.tahun_berdiri != -9999:
+            if m.tahun_berdiri != None:
+                sqlstr = sqlstr + \
+                    " tahun_berdiri = {} ,".format(m.tahun_berdiri)
             else:
                 sqlstr = sqlstr + " tahun_berdiri = null ,"
-        
-        
-        if m.lokasi!="kosong":
-            if m.lokasi!=None:
+
+        if m.lokasi != "kosong":
+            if m.lokasi != None:
                 sqlstr = sqlstr + " lokasi = '{}' ,".format(m.lokasi)
             else:
                 sqlstr = sqlstr + " lokasi = null ,"
-        
-        if m.deskripsi!="kosong":
-            if m.deskripsi!=None:
+
+        if m.deskripsi != "kosong":
+            if m.deskripsi != None:
                 sqlstr = sqlstr + " deskripsi = '{}' ,".format(m.deskripsi)
             else:
-                sqlstr = sqlstr + " deskripsi = null, "  
+                sqlstr = sqlstr + " deskripsi = null, "
 
-        if m.omset!=-9999:
-            if m.omset!=None:
+        if m.omset != -9999:
+            if m.omset != None:
                 sqlstr = sqlstr + " omset = {} ,".format(m.omset)
-            else:    
+            else:
                 sqlstr = sqlstr + " omset = null ,"
-            
-        sqlstr = sqlstr[:-1] + " where id_umkm='{}' ".format(id_umkm)  #buang koma yang trakhir  
-        print(sqlstr)      
+
+        # buang koma yang trakhir
+        sqlstr = sqlstr[:-1] + \
+            " where id_user_borrower={} ".format(id_user_borrower)
+        print(sqlstr)
         try:
             cur.execute(sqlstr)
-            con.commit()         
+            con.commit()
             # response.headers["location"] = "/mahasixswa/{}".format(nim)
         except Exception as e:
-            raise HTTPException(status_code=500, detail="Terjadi exception: {}".format(str(e)))   
-        
+            raise HTTPException(
+                status_code=500, detail="Terjadi exception: {}".format(str(e)))
 
     else:  # data tidak ada 404, item not found
-         raise HTTPException(status_code=404, detail="Item Not Found")
-   
+        raise HTTPException(status_code=404, detail="Item Not Found")
+
     con.close()
     return m

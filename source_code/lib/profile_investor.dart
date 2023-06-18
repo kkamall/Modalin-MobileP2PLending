@@ -77,14 +77,17 @@ class ProfileInvestor extends StatefulWidget {
   const ProfileInvestor({Key? key}) : super(key: key);
 
   @override
-  ProfileBorrowerState createState() {
-    return ProfileBorrowerState();
+  ProfileInvestorState createState() {
+    return ProfileInvestorState();
   }
 }
 
-class ProfileBorrowerState extends State<ProfileInvestor> {
+class ProfileInvestorState extends State<ProfileInvestor> {
   // bikin objek user
   // User user = User('Rifqi Fajar', 'rifqi.fajar@upi.edu', 'formal.png');
+  final TextEditingController _nameController = TextEditingController();
+  String id_user = "";
+  String nama = "";
 
   // list investasi
   List<Investasi> listInvestasi = [
@@ -105,13 +108,39 @@ class ProfileBorrowerState extends State<ProfileInvestor> {
     //     'assets/images/formal.png'),
   ];
 
+  late Future<int> respPost; //201 artinya berhasil
+  String updateProfile = "http://127.0.0.1:8000/update_profile/";
+
+  Future<int> updateUser() async {
+    //data disimpan di body
+    final response = await http.patch(Uri.parse(updateProfile + id_user),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: """
+      {"nama": "$nama",
+      "foto_profile": "kosong"} """);
+    return response.statusCode; //sukses kalau 201
+  }
+
+  void _submitForm() {
+    print(_nameController.text);
+    if (_nameController.text != "") {
+      nama = _nameController.text;
+    } else {
+      nama = "kosong";
+    }
+
+    respPost = updateUser();
+  }
+
   // penanda buat list yang dpilih
   int flag = 0;
   int flagAmbil = 0;
 
   @override
   Widget build(BuildContext context) {
-    final String id_user = ModalRoute.of(context)!.settings.arguments as String;
+    id_user = ModalRoute.of(context)!.settings.arguments as String;
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
@@ -156,7 +185,8 @@ class ProfileBorrowerState extends State<ProfileInvestor> {
                                 IconButton(
                                     iconSize: 40,
                                     onPressed: () {
-                                      Navigator.pushNamed(context, '/home', arguments: id_user);
+                                      Navigator.pushNamed(context, '/home',
+                                          arguments: id_user);
                                     },
                                     icon: const Icon(Icons.home),
                                     color: Colors.white)
@@ -276,10 +306,8 @@ class ProfileBorrowerState extends State<ProfileInvestor> {
                                                     height: 32,
                                                     width: 224,
                                                     child: TextFormField(
-                                                      initialValue:
-                                                          profile.nama,
-                                                      // controller:
-                                                      //     _nameController,
+                                                      controller:
+                                                          _nameController,
                                                       validator: (value) {
                                                         if (value == null ||
                                                             value.isEmpty) {
@@ -333,6 +361,7 @@ class ProfileBorrowerState extends State<ProfileInvestor> {
                                             ElevatedButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
+                                                  _submitForm();
                                                 },
                                                 style: ButtonStyle(
                                                     backgroundColor:

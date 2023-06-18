@@ -6,10 +6,6 @@ import 'package:flutter/services.dart';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 
-// void main() {
-//   runApp(const ProfileBorrower());
-// }
-
 class ProfileModel {
   String nama;
   String email;
@@ -120,7 +116,118 @@ class ProfileBorrower extends StatefulWidget {
 }
 
 class ProfileBorrowerState extends State<ProfileBorrower> {
-  // penanda buat list yang dpilih
+  // User
+  String id_user = "";
+  String nama = "";
+
+  // Umkm
+  String nama_umkm = "";
+  int tahun_berdiri = 0;
+  String lokasi = "";
+  String deskripsi = "";
+  int omset = 0;
+
+  late Future<int> respPost; //201 artinya berhasil
+  String updateProfile = "http://127.0.0.1:8000/update_profile/";
+
+  Future<int> updateUser() async {
+    //data disimpan di body
+    final response = await http.patch(Uri.parse(updateProfile + id_user),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: """
+      {"nama": "$nama",
+      "foto_profile": "kosong"} """);
+    return response.statusCode; //sukses kalau 201
+  }
+
+  void _submitFormUser() {
+    if (_nameController.text != "") {
+      nama = _nameController.text;
+    } else {
+      nama = "kosong";
+    }
+
+    respPost = updateUser();
+  }
+
+  late Future<int> respPostUmkm; //201 artinya berhasil
+  String updateUmkmUrl = "http://127.0.0.1:8000/update_umkm/";
+
+  Future<int> updateUmkm() async {
+    //data disimpan di body
+    final response = await http.patch(Uri.parse(updateUmkmUrl + id_user),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body:
+            """
+      {"nama_umkm": "$nama_umkm",
+      "tahun_berdiri": $tahun_berdiri,
+      "lokasi": "$lokasi",
+      "deskripsi": "$deskripsi",
+      "omset": $omset} """);
+    return response.statusCode; //sukses kalau 201
+  }
+
+  void _submitFormUpdateUmkm() {
+    if (_umkmController.text != "") {
+      nama_umkm = _umkmController.text;
+    } else {
+      nama_umkm = "kosong";
+    }
+    if (_tahunBerdiriController.text != "") {
+      tahun_berdiri = int.parse(_tahunBerdiriController.text);
+    } else {
+      tahun_berdiri = -9999;
+    }
+    if (_lokasiController.text != "") {
+      lokasi = _lokasiController.text;
+    } else {
+      lokasi = "kosong";
+    }
+    if (_deskripsiController.text != "") {
+      deskripsi = _deskripsiController.text;
+    } else {
+      deskripsi = "kosong";
+    }
+    if (_omsetController.text != "") {
+      omset = int.parse(_omsetController.text);
+    } else {
+      omset = -9999;
+    }
+
+    respPostUmkm = updateUmkm();
+  }
+
+  // Mengecek apakah borrower sudah memiliki pinjaman
+  Future<int> _checkPinjaman() async {
+    //data disimpan di body
+    final responseCekPinjamanBelumSelesai = await http.get(Uri.parse(
+        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/" + id_user));
+    List jsonCekPinjamanBelumSelesai =
+        jsonDecode(responseCekPinjamanBelumSelesai.body);
+
+    if (responseCekPinjamanBelumSelesai.statusCode == 200) {
+      if (jsonCekPinjamanBelumSelesai[0] == "Tidak Ada") {
+        Navigator.pushNamed(context, '/home_borrower', arguments: id_user);
+      } else if (jsonCekPinjamanBelumSelesai[0] == "Ada") {
+        Navigator.pushNamed(
+          context,
+          '/home_borrower_dapat_pinjaman',
+          arguments: {
+            'id_user': id_user,
+            'id_pinjaman': jsonCekPinjamanBelumSelesai[1].toString(),
+          },
+        );
+      }
+    } else {
+      throw Exception('Gagal load');
+    }
+    return responseCekPinjamanBelumSelesai.statusCode;
+  }
+
   int flag = 0;
 
   final TextEditingController _nameController = TextEditingController();
@@ -132,7 +239,7 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
 
   @override
   Widget build(BuildContext context) {
-    final String id_user = ModalRoute.of(context)!.settings.arguments as String;
+    id_user = ModalRoute.of(context)!.settings.arguments as String;
     return MaterialApp(
         home: MultiBlocProvider(
       providers: [
@@ -184,9 +291,7 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                   IconButton(
                                       iconSize: 40,
                                       onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, '/home_borrower',
-                                            arguments: id_user);
+                                        _checkPinjaman();
                                       },
                                       icon: const Icon(Icons.home),
                                       color: Colors.white)
@@ -312,10 +417,10 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                       height: 32,
                                                       width: 224,
                                                       child: TextFormField(
-                                                        initialValue:
-                                                            profile.nama,
-                                                        // controller:
-                                                        //     _nameController,
+                                                        // initialValue:
+                                                        //     profile.nama,
+                                                        controller:
+                                                            _nameController,
                                                         validator: (value) {
                                                           if (value == null ||
                                                               value.isEmpty) {
@@ -371,6 +476,7 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                             actions: [
                                               ElevatedButton(
                                                   onPressed: () {
+                                                    _submitFormUser();
                                                     Navigator.of(context).pop();
                                                   },
                                                   style: ButtonStyle(
@@ -1013,6 +1119,7 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                         actions: [
                                                           ElevatedButton(
                                                               onPressed: () {
+                                                                _submitFormUpdateUmkm();
                                                                 Navigator.of(
                                                                         context)
                                                                     .pop();

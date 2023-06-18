@@ -25,17 +25,34 @@ class LoginState extends State<Login> {
 
   late Future<int> respPost; //201 artinya berhasil
   String login = "http://127.0.0.1:8000/login/";
+  String cek_pinjaman_belum_selesai =
+      "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/";
 
   Future<int> validateLogin() async {
     //data disimpan di body
     final response = await http.get(Uri.parse(login));
+    hasilValidasi = jsonDecode(response.body);
+    final responseCekPinjamanBelumSelesai = await http.get(
+        Uri.parse(cek_pinjaman_belum_selesai + hasilValidasi[1].toString()));
+    List jsonCekPinjamanBelumSelesai =
+        jsonDecode(responseCekPinjamanBelumSelesai.body);
 
     if (response.statusCode == 200) {
-      hasilValidasi = jsonDecode(response.body);
       if (hasilValidasi[0] == "Ada") {
         if (hasilValidasi[2] == "Borrower") {
-          Navigator.pushNamed(context, '/home_borrower',
-              arguments: hasilValidasi[1].toString());
+          if (jsonCekPinjamanBelumSelesai[0] == "Tidak Ada") {
+            Navigator.pushNamed(context, '/home_borrower',
+                arguments: hasilValidasi[1].toString());
+          } else if (jsonCekPinjamanBelumSelesai[0] == "Ada") {
+            Navigator.pushNamed(
+              context,
+              '/home_borrower_dapat_pinjaman',
+              arguments: {
+                'id_user': hasilValidasi[1].toString(),
+                'id_pinjaman': jsonCekPinjamanBelumSelesai[1].toString(),
+              },
+            );
+          }
         } else {
           Navigator.pushNamed(context, '/home',
               arguments: hasilValidasi[1].toString());
