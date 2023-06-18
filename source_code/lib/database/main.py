@@ -109,12 +109,12 @@ def init_db():
             id_pengembalian INTEGER PRIMARY KEY AUTOINCREMENT,
             id_investasi INTEGER NOT NULL,
             id_transaksi INTEGER NOT NULL,
-            id_user_borrower INTEGER NOT NULL,
             id_user_lender INTEGER NOT NULL,
+            id_user_borrower INTEGER NOT NULL,
             FOREIGN KEY (id_investasi) REFERENCES investasi(id_investasi),
             FOREIGN KEY (id_transaksi) REFERENCES transaksi(id_transaksi),
-            FOREIGN KEY (id_user_borrower) REFERENCES user(id_user),
             FOREIGN KEY (id_user_lender) REFERENCES user(id_user)
+            FOREIGN KEY (id_user_borrower) REFERENCES user(id_user),
         )  
         """
         cur.execute(create_table)
@@ -837,3 +837,73 @@ def get_chat(id_user_pengirim: int, id_user_penerima: int):
         con.close()
 
     return {"data": recs}
+
+
+class Pengembalian(BaseModel):
+    id_investasi: int
+    id_transaksi: int
+    id_user_lender: int
+    id_user_borrower: int
+
+@app.post("/add_pengembalian/", response_model=Pengembalian, status_code=201)
+def add_pengembalian(m: Pengembalian, response: Response, request: Request):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+        cur.execute("""insert into pengembalian (id_investasi,id_transaksi,id_user_lender,id_user_borrower) values ({},{},{},{})""".format(
+            m.id_investasi, m.id_transaksi, m.id_user_lender, m.id_user_borrower))
+        con.commit()
+    except:
+        print("oioi error")
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+    # response.headers["Location"] = "/user/{}".format(m.username)
+    return m
+
+@app.post("/pembayaran/{id_pinjaman}", response_model=TopupWithdraw, status_code=201)
+def pembayaran(m: TopupWithdraw, id_pinjaman: int, response: Response, request: Request):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        print(id_pinjaman)
+        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+        cur.execute(
+            """update user set saldo_dana = saldo_dana - {} where id_user = {}""".format(m.jumlah_transaksi, m.id_user))
+        con.commit()
+        cur.execute("""insert into transaksi (jumlah_transaksi,jenis_transaksi,waktu_transaksi,id_user) values ({},"Pengembalian","{}",{})""".format(
+            m.jumlah_transaksi, m.waktu_transaksi, m.id_user))
+        con.commit()
+        cur.execute(
+            """update pinjaman set status = 'Selesai' where id_pinjaman = ?""", (id_pinjaman,))
+        con.commit()
+    except Exception as e:
+            raise HTTPException(
+                status_code=500, detail="Terjadi exception: {}".format(str(e)))
+
+    finally:
+        con.close()
+    # response.headers["Location"] = "/user/{}".format(m.username)
+    return m
+
+@app.get("/getLastTransaksi/{id_user}")
+def validator_login(id_user: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+
+        cur.execute("""
+            SELECT * FROM transaksi where transaksi.id_user = ? ORDER BY id_transaksi DESC LIMIT 1""", (id_user,))
+        existing_item = cur.fetchone()
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+    if existing_item:
+        return existing_item[0]
+    else:
+        return 0

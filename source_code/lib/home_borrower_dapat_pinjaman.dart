@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter/services.dart';
 
 class PinjamanModel {
   String judul_pinjaman;
@@ -19,18 +18,23 @@ class PinjamanModel {
   String link_vidio;
   String tenggat_waktu;
   String total_pinjaman;
-  PinjamanModel(
-      {required this.judul_pinjaman,
-      required this.tanggal_pengajuan,
-      required this.jumlah_pinjaman,
-      required this.return_keuntungan,
-      required this.lama_pinjaman,
-      required this.status,
-      required this.nama_investor,
-      required this.tanggal_investasi,
-      required this.link_vidio,
-      required this.tenggat_waktu,
-      required this.total_pinjaman});
+  String id_investasi;
+  String id_investor;
+  PinjamanModel({
+    required this.judul_pinjaman,
+    required this.tanggal_pengajuan,
+    required this.jumlah_pinjaman,
+    required this.return_keuntungan,
+    required this.lama_pinjaman,
+    required this.status,
+    required this.nama_investor,
+    required this.tanggal_investasi,
+    required this.link_vidio,
+    required this.tenggat_waktu,
+    required this.total_pinjaman,
+    required this.id_investasi,
+    required this.id_investor,
+  });
 }
 
 class PinjamanCubit extends Cubit<PinjamanModel> {
@@ -38,17 +42,20 @@ class PinjamanCubit extends Cubit<PinjamanModel> {
 
   PinjamanCubit()
       : super(PinjamanModel(
-            judul_pinjaman: "",
-            tanggal_pengajuan: "",
-            jumlah_pinjaman: "",
-            return_keuntungan: "",
-            lama_pinjaman: "",
-            status: "",
-            nama_investor: "",
-            tanggal_investasi: "",
-            link_vidio: "",
-            tenggat_waktu: "",
-            total_pinjaman: ""));
+          judul_pinjaman: "",
+          tanggal_pengajuan: "",
+          jumlah_pinjaman: "",
+          return_keuntungan: "",
+          lama_pinjaman: "",
+          status: "",
+          nama_investor: "",
+          tanggal_investasi: "",
+          link_vidio: "",
+          tenggat_waktu: "",
+          total_pinjaman: "",
+          id_investasi: "",
+          id_investor: "",
+        ));
 
   static Future<String> formatDateTime(String dateTimeString) async {
     DateTime dateTime = DateTime.parse(dateTimeString);
@@ -60,8 +67,12 @@ class PinjamanCubit extends Cubit<PinjamanModel> {
   }
 
   //map dari json ke atribut
-  void setFromJson(Map<String, dynamic> json, String nama_investor,
-      String tanggal_investasi_dt) async {
+  void setFromJson(
+      Map<String, dynamic> json,
+      String nama_investor,
+      String tanggal_investasi_dt,
+      String id_investasi_dt,
+      String id_investor_dt) async {
     // Tanggal Pengajuan
     String dateTimeTanggalPengajuan = json['tanggal_pengajuan'];
     String tanggal_pengajuan = await formatDateTime(
@@ -101,6 +112,8 @@ class PinjamanCubit extends Cubit<PinjamanModel> {
     String status = json['status'];
     String link_vidio = json['link_vidio'];
     String total_pinjaman = return_pinjaman.toString();
+    String id_investasi = id_investasi_dt;
+    String id_investor = id_investor_dt;
 
     emit(PinjamanModel(
         judul_pinjaman: judul_pinjaman,
@@ -113,7 +126,9 @@ class PinjamanCubit extends Cubit<PinjamanModel> {
         tanggal_investasi: tanggal_investasi,
         tenggat_waktu: tenggat_waktu,
         link_vidio: link_vidio,
-        total_pinjaman: total_pinjaman));
+        total_pinjaman: total_pinjaman,
+        id_investasi: id_investasi,
+        id_investor: id_investor));
   }
 
   void fetchData(id_pinjaman) async {
@@ -124,6 +139,8 @@ class PinjamanCubit extends Cubit<PinjamanModel> {
       // Mendapatkan nama investor & tanggal investasi pinjaman jika sudah dapat
       String nama_investor = "";
       String tanggal_investasi = "";
+      String id_investasi = "";
+      String id_investor = "";
       if (json['status'] == "Sedang") {
         String urlGetInvestorPinjaman =
             "http://127.0.0.1:8000/get_investor_pinjaman/";
@@ -132,9 +149,12 @@ class PinjamanCubit extends Cubit<PinjamanModel> {
         List get_investor_pinjaman = jsonDecode(response.body);
         nama_investor = get_investor_pinjaman[5];
         tanggal_investasi = get_investor_pinjaman[1];
+        id_investasi = (get_investor_pinjaman[0]).toString();
+        id_investor = (get_investor_pinjaman[3]).toString();
       }
 
-      setFromJson(json, nama_investor, tanggal_investasi);
+      setFromJson(
+          json, nama_investor, tanggal_investasi, id_investasi, id_investor);
     } else {
       throw Exception('Gagal load');
     }
@@ -235,10 +255,8 @@ class Pemasukan {
 
 class _HomeState extends State<HomeBorrowerDapatPinjaman> {
   int flag = 0;
-  String id_user = "";
-  String? id_pinjaman = "";
-  String jumlahUang = "";
-  final TextEditingController _loanAmountController = TextEditingController();
+  String? id_user = "";
+  String id_pinjaman = "";
 
   List<Pengeluaran> listPengeluaran = [
     Pengeluaran("RENOVIN", "formal.png", "Rp 5jt", "8%", "3 bln"),
@@ -253,8 +271,44 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
     Pemasukan("RENOVIN", "formal.png", "Rp 500.000"),
   ];
 
-  void _submitForm() {
-    jumlahUang = _loanAmountController.text;
+  late Future<int> respPost; //201 artinya berhasil
+  String pembayaran = "http://127.0.0.1:8000/pembayaran/";
+  String get_user = "http://127.0.0.1:8000/get_user/";
+  String add_pengembalian = "http://127.0.0.1:8000/add_pengembalian/";
+  String get_last_transaksi = "http://127.0.0.1:8000/getLastTransaksi/";
+
+  Future<int> insertPembayaran(
+      int jumlahUang, int id_investasi, int id_investor) async {
+    //data disimpan di body
+    DateTime now = DateTime.now();
+    String waktuTransaksi = now.toString();
+
+    final response = await http.post(Uri.parse(pembayaran + id_pinjaman),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: """
+      {"jumlah_transaksi": $jumlahUang,
+      "waktu_transaksi": "$waktuTransaksi",
+      "id_user": $id_user} """);
+
+    final responseGetLastTransaksi =
+        await http.get(Uri.parse(get_last_transaksi + id_user.toString()));
+    int id_transaksi = jsonDecode(responseGetLastTransaksi.body);
+
+    final responsePengembalian = await http.post(Uri.parse(add_pengembalian),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: """
+      {"id_investasi": $id_investasi,
+      "id_transaksi": $id_transaksi,
+      "id_user_lender": $id_investor,
+      "id_user_borrower": $id_user} """);
+
+    Navigator.pushNamed(context, '/home_borrower', arguments: id_user);
+
+    return response.statusCode; //sukses kalau 201
   }
 
   @override
@@ -263,7 +317,6 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     id_user = arguments['id_user'] as String;
     id_pinjaman = arguments['id_pinjaman'] as String;
-
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
@@ -323,8 +376,7 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                                           iconSize: 30,
                                           onPressed: () {
                                             Navigator.pushNamed(
-                                                context, '/notifikasi',
-                                                arguments: id_user);
+                                                context, '/notifikasi');
                                           },
                                           icon: const Icon(Icons.notifications),
                                           color: Colors.white),
@@ -387,182 +439,7 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return AlertDialog(
-                                                            // title: Text("Edit Profil"),
-                                                            actionsAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            16)),
-                                                            backgroundColor:
-                                                                const Color
-                                                                        .fromARGB(
-                                                                    255,
-                                                                    131,
-                                                                    33,
-                                                                    79),
-                                                            content: SizedBox(
-                                                                width: double
-                                                                    .maxFinite,
-                                                                height: 128,
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  // crossAxisAlignment:
-                                                                  //     CrossAxisAlignment.center,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Top Up",
-                                                                      style: GoogleFonts.rubik(
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight: FontWeight
-                                                                              .w600,
-                                                                          color:
-                                                                              Colors.white),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height:
-                                                                          12,
-                                                                    ),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Text("Jumlah",
-                                                                                style: GoogleFonts.rubik(fontWeight: FontWeight.w200, fontSize: 12, color: Colors.white)),
-                                                                            Row(
-                                                                              children: [
-                                                                                Text("Rp", style: GoogleFonts.rubik(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white)),
-                                                                                const SizedBox(width: 5),
-                                                                                SizedBox(
-                                                                                  height: 32,
-                                                                                  width: 196,
-                                                                                  child: TextFormField(
-                                                                                    keyboardType: TextInputType.number,
-                                                                                    inputFormatters: [
-                                                                                      FilteringTextInputFormatter.digitsOnly,
-                                                                                    ],
-                                                                                    controller: _loanAmountController,
-                                                                                    validator: (value) {
-                                                                                      if (value == null || value.isEmpty) {
-                                                                                        return 'Masukkan Jumlah!';
-                                                                                      }
-                                                                                      return null;
-                                                                                    },
-                                                                                    style: GoogleFonts.rubik(
-                                                                                      fontWeight: FontWeight.w500,
-                                                                                      color: const Color(0xFFFFFFFF),
-                                                                                      fontSize: 14,
-                                                                                    ),
-                                                                                    decoration: InputDecoration(
-                                                                                      border: OutlineInputBorder(
-                                                                                        borderRadius: BorderRadius.circular(26),
-                                                                                      ),
-                                                                                      filled: true,
-                                                                                      fillColor: const Color(0x7FF0EFF4),
-                                                                                      labelText: '3.000.000',
-                                                                                      labelStyle: GoogleFonts.rubik(
-                                                                                        fontWeight: FontWeight.w200,
-                                                                                        color: const Color(0xFFFFFFFF),
-                                                                                        fontSize: 13,
-                                                                                      ),
-                                                                                      contentPadding: const EdgeInsets.symmetric(
-                                                                                        vertical: 25,
-                                                                                        horizontal: 18,
-                                                                                      ),
-                                                                                      floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                )),
-                                                            actions: [
-                                                              ElevatedButton(
-                                                                onPressed: () {
-                                                                  _submitForm();
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                  Navigator
-                                                                      .pushNamed(
-                                                                    context,
-                                                                    '/pembayaran',
-                                                                    arguments: {
-                                                                      'id_user':
-                                                                          int.parse(
-                                                                              id_user),
-                                                                      'jumlahUang':
-                                                                          int.parse(
-                                                                              jumlahUang),
-                                                                    },
-                                                                  );
-                                                                },
-                                                                style:
-                                                                    ButtonStyle(
-                                                                  backgroundColor:
-                                                                      MaterialStateProperty
-                                                                          .all<
-                                                                              Color>(
-                                                                    const Color
-                                                                            .fromARGB(
-                                                                        255,
-                                                                        218,
-                                                                        65,
-                                                                        103),
-                                                                  ),
-                                                                ),
-                                                                child: Text(
-                                                                  "Top Up",
-                                                                  style: GoogleFonts.rubik(
-                                                                      fontSize:
-                                                                          13,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400,
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              ),
-                                                              IconButton(
-                                                                onPressed: () {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                },
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .cancel_outlined),
-                                                                color: const Color
-                                                                        .fromARGB(
-                                                                    255,
-                                                                    218,
-                                                                    65,
-                                                                    103),
-                                                              ),
-                                                            ],
-                                                          );
-                                                        },
-                                                      );
+                                                      print('Icon pressed');
                                                     },
                                                     child: Icon(
                                                       Icons.add,
@@ -597,182 +474,7 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return AlertDialog(
-                                                            // title: Text("Edit Profil"),
-                                                            actionsAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            16)),
-                                                            backgroundColor:
-                                                                const Color
-                                                                        .fromARGB(
-                                                                    255,
-                                                                    131,
-                                                                    33,
-                                                                    79),
-                                                            content: SizedBox(
-                                                                width: double
-                                                                    .maxFinite,
-                                                                height: 128,
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  // crossAxisAlignment:
-                                                                  //     CrossAxisAlignment.center,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Withdraw",
-                                                                      style: GoogleFonts.rubik(
-                                                                          fontSize:
-                                                                              16,
-                                                                          fontWeight: FontWeight
-                                                                              .w600,
-                                                                          color:
-                                                                              Colors.white),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height:
-                                                                          12,
-                                                                    ),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Text("Jumlah",
-                                                                                style: GoogleFonts.rubik(fontWeight: FontWeight.w200, fontSize: 12, color: Colors.white)),
-                                                                            Row(
-                                                                              children: [
-                                                                                Text("Rp", style: GoogleFonts.rubik(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white)),
-                                                                                const SizedBox(width: 5),
-                                                                                SizedBox(
-                                                                                  height: 32,
-                                                                                  width: 196,
-                                                                                  child: TextFormField(
-                                                                                    keyboardType: TextInputType.number,
-                                                                                    inputFormatters: [
-                                                                                      FilteringTextInputFormatter.digitsOnly,
-                                                                                    ],
-                                                                                    controller: _loanAmountController,
-                                                                                    validator: (value) {
-                                                                                      if (value == null || value.isEmpty) {
-                                                                                        return 'Masukkan Jumlah!';
-                                                                                      }
-                                                                                      return null;
-                                                                                    },
-                                                                                    style: GoogleFonts.rubik(
-                                                                                      fontWeight: FontWeight.w500,
-                                                                                      color: const Color(0xFFFFFFFF),
-                                                                                      fontSize: 14,
-                                                                                    ),
-                                                                                    decoration: InputDecoration(
-                                                                                      border: OutlineInputBorder(
-                                                                                        borderRadius: BorderRadius.circular(26),
-                                                                                      ),
-                                                                                      filled: true,
-                                                                                      fillColor: const Color(0x7FF0EFF4),
-                                                                                      labelText: '3.000.000',
-                                                                                      labelStyle: GoogleFonts.rubik(
-                                                                                        fontWeight: FontWeight.w200,
-                                                                                        color: const Color(0xFFFFFFFF),
-                                                                                        fontSize: 13,
-                                                                                      ),
-                                                                                      contentPadding: const EdgeInsets.symmetric(
-                                                                                        vertical: 25,
-                                                                                        horizontal: 18,
-                                                                                      ),
-                                                                                      floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                )),
-                                                            actions: [
-                                                              ElevatedButton(
-                                                                onPressed: () {
-                                                                  _submitForm();
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                  Navigator
-                                                                      .pushNamed(
-                                                                    context,
-                                                                    '/withdraw',
-                                                                    arguments: {
-                                                                      'id_user':
-                                                                          int.parse(
-                                                                              id_user),
-                                                                      'jumlahUang':
-                                                                          int.parse(
-                                                                              jumlahUang),
-                                                                    },
-                                                                  );
-                                                                },
-                                                                style:
-                                                                    ButtonStyle(
-                                                                  backgroundColor:
-                                                                      MaterialStateProperty
-                                                                          .all<
-                                                                              Color>(
-                                                                    const Color
-                                                                            .fromARGB(
-                                                                        255,
-                                                                        218,
-                                                                        65,
-                                                                        103),
-                                                                  ),
-                                                                ),
-                                                                child: Text(
-                                                                  "Withdraw",
-                                                                  style: GoogleFonts.rubik(
-                                                                      fontSize:
-                                                                          13,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w400,
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              ),
-                                                              IconButton(
-                                                                onPressed: () {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                },
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .cancel_outlined),
-                                                                color: const Color
-                                                                        .fromARGB(
-                                                                    255,
-                                                                    218,
-                                                                    65,
-                                                                    103),
-                                                              ),
-                                                            ],
-                                                          );
-                                                        },
-                                                      );
+                                                      print('Icon pressed');
                                                     },
                                                     child: const Icon(
                                                       Icons.wallet_rounded,
@@ -1067,7 +769,13 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                                                   ),
                                                 ),
                                                 onPressed: () {
-                                                  // Aksi yang ingin dilakukan saat tombol ditekan
+                                                  insertPembayaran(
+                                                      int.parse(pinjaman
+                                                          .total_pinjaman),
+                                                      int.parse(pinjaman
+                                                          .id_investasi),
+                                                      int.parse(pinjaman
+                                                          .id_investor));
                                                 },
                                                 child: Text(
                                                   'Bayar',
@@ -1319,7 +1027,9 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                           children: [
                             IconButton(
                               iconSize: 24,
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/home');
+                              },
                               icon: const Icon(Icons.home),
                               color: Colors.white,
                             ),
