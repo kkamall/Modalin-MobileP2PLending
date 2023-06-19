@@ -481,11 +481,11 @@ def list_pinjaman():
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT * 
+            SELECT user.foto_profile, user.nama, pinjaman.judul_pinjaman, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, pinjaman.link_vidio, umkm.nama_umkm, user.saldo_dana
             FROM pinjaman
             JOIN user ON pinjaman.id_user_borrower = user.id_user
-            JOIN umkm ON umkm.id_umkm = umkm.id_umkm
-            WHERE pinjaman.status = "belum"
+            JOIN umkm ON user.id_user = umkm.id_user_borrower
+            WHERE pinjaman.status = "Belum"
         """):
             recs.append(row)
     except:

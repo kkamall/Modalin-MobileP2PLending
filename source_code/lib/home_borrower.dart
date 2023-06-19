@@ -1559,7 +1559,7 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                         IconButton(
                           iconSize: 24,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/explore');
+                            Navigator.pushNamed(context, '/explore', arguments: id_user);
                           },
                           icon: const Icon(Icons.explore_rounded),
                           color: Colors.white,

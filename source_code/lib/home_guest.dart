@@ -185,7 +185,7 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                       IconButton(
                         iconSize: 24,
                         onPressed: () {
-                          Navigator.pushNamed(context, '/explore');
+                          Navigator.pushNamed(context, '/explore', arguments: "0");
                         },
                         icon: const Icon(Icons.explore_rounded),
                         color: Colors.white,

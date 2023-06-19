@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
         "/chat_detail": (context) => ChatDetail(),
         "/notifikasi": (context) => Notifikasi(),
         "/explore": (context) => Explore(),
+        "/detail_video": (context) => DetailPage(),
         "/add_pinjaman": (context) => AddPinjaman(),
         "/pembayaran": (context) => Pembayaran(),
         "/withdraw": (context) => Withdraw(),
