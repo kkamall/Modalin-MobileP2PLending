@@ -283,7 +283,8 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
     DateTime now = DateTime.now();
     String waktuTransaksi = now.toString();
 
-    final response = await http.post(Uri.parse(pembayaran + id_pinjaman),
+    final response = await http.post(
+        Uri.parse(pembayaran + id_pinjaman + '/' + (id_investor).toString()),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8'
         },
@@ -317,6 +318,9 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     id_user = arguments['id_user'] as String;
     id_pinjaman = arguments['id_pinjaman'] as String;
+
+    int saldo = 100;
+
     return MaterialApp(
       home: MultiBlocProvider(
         providers: [
@@ -769,19 +773,144 @@ class _HomeState extends State<HomeBorrowerDapatPinjaman> {
                                                   ),
                                                 ),
                                                 onPressed: () {
-                                                  insertPembayaran(
-                                                      int.parse(pinjaman
-                                                          .total_pinjaman),
-                                                      int.parse(pinjaman
-                                                          .id_investasi),
-                                                      int.parse(pinjaman
-                                                          .id_investor));
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return AlertDialog(
+                                                          actionsAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          16)),
+                                                          backgroundColor:
+                                                              const Color
+                                                                      .fromARGB(
+                                                                  255,
+                                                                  131,
+                                                                  33,
+                                                                  79),
+                                                          content: SizedBox(
+                                                            child: saldo > 100
+                                                                ? Text(
+                                                                    "Apakah Anda Yakin Ingin Membayar?",
+                                                                    style: GoogleFonts.rubik(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                  )
+                                                                : Text(
+                                                                    "Oops.. Saldo Anda Tidak Mencukupi :(",
+                                                                    style: GoogleFonts.rubik(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                  ),
+                                                          ),
+                                                          actions: [
+                                                            saldo > 100
+                                                                ? ElevatedButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      insertPembayaran(
+                                                                          int.parse(pinjaman
+                                                                              .total_pinjaman),
+                                                                          int.parse(pinjaman
+                                                                              .id_investasi),
+                                                                          int.parse(
+                                                                              pinjaman.id_investor));
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                    },
+                                                                    style:
+                                                                        ButtonStyle(
+                                                                      backgroundColor:
+                                                                          MaterialStateProperty.all<
+                                                                              Color>(
+                                                                        const Color.fromARGB(
+                                                                            255,
+                                                                            218,
+                                                                            65,
+                                                                            103),
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      "Yakin!",
+                                                                      style: GoogleFonts.rubik(
+                                                                          fontSize:
+                                                                              13,
+                                                                          fontWeight: FontWeight
+                                                                              .w400,
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                  )
+                                                                : ElevatedButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                    },
+                                                                    style:
+                                                                        ButtonStyle(
+                                                                      backgroundColor:
+                                                                          MaterialStateProperty.all<
+                                                                              Color>(
+                                                                        const Color.fromARGB(
+                                                                            255,
+                                                                            218,
+                                                                            65,
+                                                                            103),
+                                                                      ),
+                                                                    ),
+                                                                    child: Text(
+                                                                      "Baik!",
+                                                                      style: GoogleFonts.rubik(
+                                                                          fontSize:
+                                                                              13,
+                                                                          fontWeight: FontWeight
+                                                                              .w400,
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                  ),
+                                                            IconButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              },
+                                                              icon: const Icon(Icons
+                                                                  .cancel_outlined),
+                                                              color: const Color
+                                                                      .fromARGB(
+                                                                  255,
+                                                                  218,
+                                                                  65,
+                                                                  103),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      } // end builder
+                                                      ); // end showDialog
                                                 },
                                                 child: Text(
                                                   'Bayar',
                                                   style: GoogleFonts.rubik(
                                                     fontWeight: FontWeight.w500,
-                                                    color: Color(0xFFFFFFFF),
+                                                    color:
+                                                        const Color(0xFFFFFFFF),
                                                     fontSize: 12,
                                                   ),
                                                 ),

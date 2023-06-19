@@ -401,8 +401,7 @@ def history_pengeluaran_lender(id_user: int):
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT user.foto_profile, umkm.nama_umkm,
-            transaksi.jumlah_transaksi, pinjaman.return_keuntungan, pinjaman.lama_pinjaman
+            SELECT user.foto_profile, umkm.nama_umkm, transaksi.jumlah_transaksi, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, transaksi.waktu_transaksi, pinjaman.judul_pinjaman
             FROM transaksi
             JOIN pendanaan ON transaksi.id_transaksi = pendanaan.id_transaksi
             JOIN investasi ON pendanaan.id_investasi = investasi.id_investasi
@@ -429,7 +428,7 @@ def history_pemasukan_lender(id_user: int):
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT user.foto_profile, umkm.nama_umkm, transaksi.jumlah_transaksi, pinjaman.jumlah_pinjaman
+            SELECT user.foto_profile, umkm.nama_umkm, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, transaksi.waktu_transaksi, pinjaman.judul_pinjaman, transaksi.jumlah_transaksi
             FROM pengembalian
             JOIN user ON user.id_user = pengembalian.id_user_borrower
             JOIN umkm ON umkm.id_user_borrower = pengembalian.id_user_borrower
@@ -863,14 +862,16 @@ def add_pengembalian(m: Pengembalian, response: Response, request: Request):
     # response.headers["Location"] = "/user/{}".format(m.username)
     return m
 
-@app.post("/pembayaran/{id_pinjaman}", response_model=TopupWithdraw, status_code=201)
-def pembayaran(m: TopupWithdraw, id_pinjaman: int, response: Response, request: Request):
+@app.post("/pembayaran/{id_pinjaman}/{id_user_lender}", response_model=TopupWithdraw, status_code=201)
+def pembayaran(m: TopupWithdraw, id_pinjaman: int, id_user_lender: int, response: Response, request: Request):
     try:
         DB_NAME = "modalin.db"
         con = sqlite3.connect(DB_NAME)
         cur = con.cursor()
-        print(id_pinjaman)
         # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+        cur.execute(
+            """update user set saldo_dana = saldo_dana + {} where id_user = {}""".format(m.jumlah_transaksi, id_user_lender))
+        con.commit()
         cur.execute(
             """update user set saldo_dana = saldo_dana - {} where id_user = {}""".format(m.jumlah_transaksi, m.id_user))
         con.commit()

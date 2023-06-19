@@ -17,7 +17,8 @@ import 'notifikasi.dart';
 import 'add_pinjaman.dart';
 import 'metodePembayaran.dart';
 import 'metodeWithdraw.dart';
-import 'screens/home_screen.dart';
+import 'riwayat_pamasukan.dart';
+import 'explore.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         "/home_borrower": (context) => HomeBorrower(),
         "/home_borrower_dapat_pinjaman": (context) =>
             HomeBorrowerDapatPinjaman(),
+        "/riwayat": (context) => Riwayat(),
       },
       initialRoute: "/aktivitas_guest",
     );

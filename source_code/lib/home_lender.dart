@@ -103,11 +103,11 @@ class ListPengembalianCubit extends Cubit<ListPengembalianModel> {
     num total_keuntungan_int = 0;
     num flag = 0;
     for (var val in data) {
-      total_keuntungan_int += val[2].toInt() - val[3].toInt();
+      total_keuntungan_int += val[7].toInt() - val[2].toInt();
       if (flag < 3) {
         var foto_profile = val[0];
         var nama_umkm = val[1];
-        var keuntungan = (val[2] - val[3]).toString();
+        var keuntungan = (val[7] - val[2]).toString();
         listPengembalianModel.add(Pengembalian(
             foto_profile: foto_profile,
             nama_umkm: nama_umkm,
@@ -1016,14 +1016,24 @@ class _HomeState extends State<Home> {
                                                               const SizedBox(
                                                                 height: 10,
                                                               ),
-                                                              if (modelListPendanaan
-                                                                      .listPendanaanModel
-                                                                      .length >
-                                                                  3) ...{
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .bottomRight,
+                                                              Align(
+                                                                alignment: Alignment
+                                                                    .bottomRight,
+                                                                child:
+                                                                    GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.pushNamed(
+                                                                        context,
+                                                                        '/riwayat',
+                                                                        arguments: {
+                                                                          "jenis":
+                                                                              "PENGELUARAN",
+                                                                          "id_user":
+                                                                              id_user,
+                                                                          "total":
+                                                                              modelListPendanaan.total_pengeluaran
+                                                                        });
+                                                                  },
                                                                   child: Text(
                                                                     "Lihat Lainnya",
                                                                     style: GoogleFonts.outfit(
@@ -1034,8 +1044,8 @@ class _HomeState extends State<Home> {
                                                                         fontWeight:
                                                                             FontWeight.w500),
                                                                   ),
-                                                                )
-                                                              }
+                                                                ),
+                                                              )
                                                             ],
                                                           ),
                                                   ],
@@ -1226,25 +1236,36 @@ class _HomeState extends State<Home> {
                                                               const SizedBox(
                                                                 height: 10,
                                                               ),
-                                                              if (modelListPengembalian
-                                                                      .listPengembalianModel
-                                                                      .length >
-                                                                  3) ...{
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .bottomRight,
+                                                              Align(
+                                                                alignment: Alignment
+                                                                    .bottomRight,
+                                                                child:
+                                                                    GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.pushNamed(
+                                                                        context,
+                                                                        '/riwayat',
+                                                                        arguments: {
+                                                                          "jenis":
+                                                                              "PEMASUKAN",
+                                                                          "id_user":
+                                                                              id_user,
+                                                                          "total":
+                                                                              modelListPengembalian.total_keuntungan
+                                                                        });
+                                                                  },
                                                                   child: Text(
-                                                                      "Lihat Lainnya",
-                                                                      style: GoogleFonts.outfit(
-                                                                          color: Colors
-                                                                              .white,
-                                                                          fontSize:
-                                                                              14,
-                                                                          fontWeight:
-                                                                              FontWeight.w500)),
-                                                                )
-                                                              }
+                                                                    "Lihat Lainnya",
+                                                                    style: GoogleFonts.outfit(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                  ),
+                                                                ),
+                                                              )
                                                             ],
                                                           ),
                                                   ],
@@ -1395,7 +1416,8 @@ class _HomeState extends State<Home> {
                         IconButton(
                           iconSize: 24,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/explore', arguments: id_user);
+                            Navigator.pushNamed(context, '/explore',
+                                arguments: id_user);
                           },
                           icon: const Icon(Icons.explore_rounded),
                           color: Colors.white,
