@@ -235,31 +235,6 @@ class LoginState extends State<Login> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 5.0),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        // Navigate to the login page
-                                        // Navigator.push(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) => LoginPage(),
-                                        //   ),
-                                        // );
-                                        print(
-                                            "Forgot Password button clicked!");
-                                      },
-                                      child: Text(
-                                        'Lupa Password?',
-                                        style: GoogleFonts.rubik(
-                                          fontWeight: FontWeight.w400,
-                                          color: Color(0xFFDA4167),
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
                                 ],
                               ),
                             ),

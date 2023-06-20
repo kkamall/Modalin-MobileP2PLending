@@ -61,7 +61,7 @@ class ListPendanaanCubit extends Cubit<ListPendanaanModel> {
       if (flag < 3) {
         var foto_profile = val[0];
         var nama_umkm = val[1];
-        var jumlah_pinjaman = (val[2] / 1000000).toString();
+        var jumlah_pinjaman = ((val[2] / 1000000).round()).toString();
         var return_keuntungan = (val[3]).toString();
         var lama_pinjaman = (val[4]).toString();
         listPendanaanModel.add(Pendanaan(
@@ -751,9 +751,7 @@ class _HomeState extends State<Home> {
                                               },
                                               child: const Text(
                                                   "Riwayat Transaksi"),
-                                            ),
-                                            flag == 0
-                                                ? Container(
+                                            ),Container(
                                                     height: 4,
                                                     width: 80,
                                                     decoration: BoxDecoration(
@@ -768,73 +766,13 @@ class _HomeState extends State<Home> {
                                                               103),
                                                     ),
                                                   )
-                                                : Container(
-                                                    height: 4,
-                                                    width: 80,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              0, 218, 65, 103),
-                                                    ))
-                                          ]),
-                                      Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            TextButton(
-                                              style: TextButton.styleFrom(
-                                                foregroundColor: Colors.white,
-                                                textStyle: GoogleFonts.outfit(
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  flag = 1;
-                                                });
-                                              },
-                                              child:
-                                                  const Text("Riwayat Video"),
-                                            ),
-                                            flag == 1
-                                                ? Container(
-                                                    height: 4,
-                                                    width: 80,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              255,
-                                                              218,
-                                                              65,
-                                                              103),
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    height: 4,
-                                                    width: 80,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              0, 218, 65, 103),
-                                                    ))
                                           ]),
                                     ],
                                   ),
                                 ),
                                 // end button select
                                 // start pengeluaran
-                                flag == 0
-                                    ? Column(
+                                Column(
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.fromLTRB(
@@ -1275,120 +1213,7 @@ class _HomeState extends State<Home> {
                                           )
                                         ],
                                       )
-                                    : ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: listHistoryVideo.length,
-                                        itemBuilder:
-                                            (contextListHistoryVideo, index) {
-                                          return Column(
-                                            children: [
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: 10),
-                                                    child: Image.asset(
-                                                      '${listHistoryVideo[index].thumbnail}',
-                                                      width: 153,
-                                                      height: 86,
-                                                    ),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .topLeft,
-                                                            child: Text(
-                                                              "${listHistoryVideo[index].judul}",
-                                                              style: GoogleFonts
-                                                                  .rubik(
-                                                                color: Color(
-                                                                    0xFFFFFFFF),
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 4,
-                                                          ),
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .topLeft,
-                                                            child: Text(
-                                                              "Rp 5jt | 10% | 3 bln",
-                                                              style: GoogleFonts
-                                                                  .outfit(
-                                                                color: Color(
-                                                                    0xFFFFFFFF),
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 4,
-                                                          ),
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .topLeft,
-                                                            child: Text(
-                                                              "716K ditonton",
-                                                              style: GoogleFonts
-                                                                  .outfit(
-                                                                color: Color(
-                                                                    0xFFFFFFFF),
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 4,
-                                                          ),
-                                                          Align(
-                                                            alignment: Alignment
-                                                                .topLeft,
-                                                            child: Text(
-                                                              "219 disukai",
-                                                              style: GoogleFonts
-                                                                  .outfit(
-                                                                color: Color(
-                                                                    0xFFFFFFFF),
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      ),
+
                                 //end pemasukan
                               ],
                             ),

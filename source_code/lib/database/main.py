@@ -293,7 +293,10 @@ def get_user(id_user: int):
     finally:
         con.close()
 
-    return {"nama": existing_item[1], "email": existing_item[2], "saldo_dana": existing_item[8], "foto_profile": existing_item[5], "role": existing_item[6]}
+    if existing_item:
+        return {"nama": existing_item[1], "email": existing_item[2], "saldo_dana": existing_item[8], "foto_profile": existing_item[5], "role": existing_item[6]}
+    else:
+        return {}
 
 
 @app.get("/get_umkm/{id_user}")
@@ -401,7 +404,8 @@ def history_pengeluaran_lender(id_user: int):
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT user.foto_profile, umkm.nama_umkm, transaksi.jumlah_transaksi, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, transaksi.waktu_transaksi, pinjaman.judul_pinjaman
+            SELECT user.foto_profile, umkm.nama_umkm, transaksi.jumlah_transaksi, pinjaman.return_keuntungan, 
+            pinjaman.lama_pinjaman, transaksi.waktu_transaksi, pinjaman.judul_pinjaman
             FROM transaksi
             JOIN pendanaan ON transaksi.id_transaksi = pendanaan.id_transaksi
             JOIN investasi ON pendanaan.id_investasi = investasi.id_investasi
@@ -428,7 +432,8 @@ def history_pemasukan_lender(id_user: int):
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT user.foto_profile, umkm.nama_umkm, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, transaksi.waktu_transaksi, pinjaman.judul_pinjaman, transaksi.jumlah_transaksi
+            SELECT user.foto_profile, umkm.nama_umkm, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, 
+            pinjaman.lama_pinjaman, transaksi.waktu_transaksi, pinjaman.judul_pinjaman, transaksi.jumlah_transaksi
             FROM pengembalian
             JOIN user ON user.id_user = pengembalian.id_user_borrower
             JOIN umkm ON umkm.id_user_borrower = pengembalian.id_user_borrower
@@ -472,6 +477,33 @@ def history_pengembalian(id_user: int):
     return {"data": recs}
 
 
+@app.get("/detail_history_pengembalian_borrower/{id_user}")
+def history_pengembalian(id_user: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        recs = []
+        for row in cur.execute("""
+            SELECT user.foto_profile, umkm.nama_umkm, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, 
+            pinjaman.lama_pinjaman, transaksi.waktu_transaksi, pinjaman.judul_pinjaman, transaksi.jumlah_transaksi
+            FROM pengembalian
+            JOIN user ON user.id_user = pengembalian.id_user_borrower
+            JOIN umkm ON umkm.id_user_borrower = pengembalian.id_user_borrower
+            JOIN transaksi ON transaksi.id_transaksi = pengembalian.id_transaksi
+            JOIN investasi ON investasi.id_investasi = pengembalian.id_investasi
+            JOIN pinjaman ON pinjaman.id_pinjaman = investasi.id_pinjaman
+            WHERE pengembalian.id_user_borrower = ?
+            ORDER BY pengembalian.id_pengembalian DESC
+        """, (id_user,)):
+            recs.append(row)
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+    return {"data": recs}
+
+
 @app.get("/list_pinjaman/")
 def list_pinjaman():
     try:
@@ -480,12 +512,34 @@ def list_pinjaman():
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT user.foto_profile, user.nama, pinjaman.judul_pinjaman, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, pinjaman.link_vidio, umkm.nama_umkm, user.saldo_dana
+            SELECT user.foto_profile, user.nama, pinjaman.judul_pinjaman, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, pinjaman.link_vidio, umkm.nama_umkm, user.saldo_dana, pinjaman.id_pinjaman, user.id_user, pinjaman.tanggal_pengajuan, umkm.kategori, umkm.kelas
             FROM pinjaman
             JOIN user ON pinjaman.id_user_borrower = user.id_user
             JOIN umkm ON user.id_user = umkm.id_user_borrower
             WHERE pinjaman.status = "Belum"
         """):
+            recs.append(row)
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+    return {"data": recs}
+
+
+@app.get("/cari_umkm/{nama_umkm}")
+def cari_umkm(nama_umkm: str):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        recs = []
+        for row in cur.execute("""
+            SELECT user.foto_profile, user.nama, pinjaman.judul_pinjaman, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, pinjaman.link_vidio, umkm.nama_umkm, user.saldo_dana, pinjaman.id_pinjaman, user.id_user
+            FROM pinjaman
+            JOIN user ON pinjaman.id_user_borrower = user.id_user
+            JOIN umkm ON user.id_user = umkm.id_user_borrower
+            WHERE umkm.nama_umkm = ? and pinjaman.status = "Belum"
+        """, (nama_umkm,)):
             recs.append(row)
     except:
         return ({"status": "terjadi error"})
@@ -548,63 +602,62 @@ def get_investor_pinjaman(id_pinjaman: int):
 
     return existing_item
 
-
-class Modalin(BaseModel):
-    tanggal_investasi: str
-    id_pinjaman: int
-    id_user_lender: int
-
-
-@app.post("/modalin/", response_model=Modalin, status_code=201)
-def modalin(m: Modalin, response: Response, request: Request):
+@app.get("/get_list_investasi/{id_user}")
+def get_investor_pinjaman(id_user: int):
     try:
         DB_NAME = "modalin.db"
         con = sqlite3.connect(DB_NAME)
         cur = con.cursor()
-        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
-        cur.execute("""insert into investasi (tanggal_investasi,id_pinjaman,id_user_lender) values ( "{}",{},{})""".format(
-            m.tanggal_investasi, m.id_pinjaman, m.id_user_lender))
-        con.commit()
+
+        recs = []
+
+        for row in cur.execute("""
+            select user.foto_profile, umkm.nama_umkm, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman 
+            from investasi 
+            JOIN pinjaman on pinjaman.id_pinjaman = investasi.id_pinjaman
+            JOIN user ON user.id_user = pinjaman.id_user_borrower
+            JOIN umkm ON umkm.id_user_borrower = user.id_user
+            where investasi.id_user_lender = ?""", (id_user,)):
+            recs.append(row)
     except:
-        print("oioi error")
         return ({"status": "terjadi error"})
     finally:
         con.close()
-    # response.headers["Location"] = "/user/{}".format(m.username)
-    return m
+
+    return {"data": recs}
 
 
-class Nego(BaseModel):
-    tanggal_investasi: str
-    id_pinjaman: int
-    id_user_lender: int
-    return_keuntungan: int
-    lama_pinjaman: int
+# class Nego(BaseModel):
+#     tanggal_investasi: str
+#     id_pinjaman: int
+#     id_user_lender: int
+#     return_keuntungan: int
+#     lama_pinjaman: int
 
 
-@app.post("/nego/", response_model=Nego, status_code=201)
-def nego(m: Nego, response: Response, request: Request):
-    try:
-        DB_NAME = "modalin.db"
-        con = sqlite3.connect(DB_NAME)
-        cur = con.cursor()
+# @app.post("/nego/", response_model=Nego, status_code=201)
+# def nego(m: Nego, response: Response, request: Request):
+#     try:
+#         DB_NAME = "modalin.db"
+#         con = sqlite3.connect(DB_NAME)
+#         cur = con.cursor()
 
-        cur.execute(
-            "UPDATE pinjaman SET return_keuntungan = ?, lama_pinjaman = ? WHERE id_pinjaman = ?",
-            (m.return_keuntungan, m.lama_pinjaman, m.id_pinjaman)
-        )
-        con.commit()
-        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
-        cur.execute("""insert into investasi (tanggal_investasi,id_pinjaman,id_user_lender) values ( "{}",{},{})""".format(
-            m.tanggal_investasi, m.id_pinjaman, m.id_user_lender))
-        con.commit()
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail="Terjadi exception: {}".format(str(e)))
-    finally:
-        con.close()
-    # response.headers["Location"] = "/user/{}".format(m.username)
-    return m
+#         cur.execute(
+#             "UPDATE pinjaman SET return_keuntungan = ?, lama_pinjaman = ? WHERE id_pinjaman = ?",
+#             (m.return_keuntungan, m.lama_pinjaman, m.id_pinjaman)
+#         )
+#         con.commit()
+#         # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+#         cur.execute("""insert into investasi (tanggal_investasi,id_pinjaman,id_user_lender) values ( "{}",{},{})""".format(
+#             m.tanggal_investasi, m.id_pinjaman, m.id_user_lender))
+#         con.commit()
+#     except Exception as e:
+#         raise HTTPException(
+#             status_code=500, detail="Terjadi exception: {}".format(str(e)))
+#     finally:
+#         con.close()
+#     # response.headers["Location"] = "/user/{}".format(m.username)
+#     return m
 
 
 # khusus untuk patch, jadi boleh tidak ada
@@ -765,8 +818,8 @@ def tambah_chat(m: Chat, response: Response, request: Request):
     return m
 
 
-@app.get("/get_chat_belum_terbaca/{id_user_pengirim}")
-def get_chat_belum_terbaca(id_user_pengirim: int):
+@app.get("/get_chat_belum_terbaca/{id_user_penerima}")
+def get_chat_belum_terbaca(id_user_penerima: int):
     try:
         DB_NAME = "modalin.db"
         con = sqlite3.connect(DB_NAME)
@@ -775,12 +828,12 @@ def get_chat_belum_terbaca(id_user_pengirim: int):
         recs = []
 
         for row in cur.execute("""
-            SELECT user.foto_profile, user.username, chat.isi_chat, MAX(id_chat), Count(*), chat.id_user_penerima, chat.id_user_pengirim
+            SELECT user.foto_profile, user.username, chat.isi_chat, MAX(id_chat), Count(*), chat.id_user_penerima, chat.id_user_pengirim, chat.tanggal_chat
             FROM chat
-            JOIN user on chat.id_user_penerima = user.id_user
-            where id_user_pengirim = ? AND chat.status = 'Terkirim'
-            GROUP BY id_user_penerima
-            """, (id_user_pengirim,)):
+            JOIN user on chat.id_user_pengirim = user.id_user
+            where id_user_penerima = ? AND chat.status = 'Terkirim'
+            GROUP BY id_user_pengirim
+            """, (id_user_penerima,)):
             recs.append(row)
     except:
         return ({"status": "terjadi error"})
@@ -788,6 +841,7 @@ def get_chat_belum_terbaca(id_user_pengirim: int):
         con.close()
 
     return {"data": recs}
+
 
 @app.get("/get_chat_semua/{id_user_pengirim}")
 def get_chat_semua(id_user_pengirim: int):
@@ -802,7 +856,7 @@ def get_chat_semua(id_user_pengirim: int):
             SELECT user.foto_profile, user.username, chat.isi_chat, MAX(id_chat), chat.id_user_penerima, chat.id_user_pengirim
             FROM chat
             JOIN user on chat.id_user_penerima = user.id_user
-            where id_user_pengirim = ?
+            where id_user_pengirim = ? 
             GROUP BY id_user_penerima
             """, (id_user_pengirim,)):
             recs.append(row)
@@ -844,6 +898,7 @@ class Pengembalian(BaseModel):
     id_user_lender: int
     id_user_borrower: int
 
+
 @app.post("/add_pengembalian/", response_model=Pengembalian, status_code=201)
 def add_pengembalian(m: Pengembalian, response: Response, request: Request):
     try:
@@ -861,6 +916,7 @@ def add_pengembalian(m: Pengembalian, response: Response, request: Request):
         con.close()
     # response.headers["Location"] = "/user/{}".format(m.username)
     return m
+
 
 @app.post("/pembayaran/{id_pinjaman}/{id_user_lender}", response_model=TopupWithdraw, status_code=201)
 def pembayaran(m: TopupWithdraw, id_pinjaman: int, id_user_lender: int, response: Response, request: Request):
@@ -882,16 +938,17 @@ def pembayaran(m: TopupWithdraw, id_pinjaman: int, id_user_lender: int, response
             """update pinjaman set status = 'Selesai' where id_pinjaman = ?""", (id_pinjaman,))
         con.commit()
     except Exception as e:
-            raise HTTPException(
-                status_code=500, detail="Terjadi exception: {}".format(str(e)))
+        raise HTTPException(
+            status_code=500, detail="Terjadi exception: {}".format(str(e)))
 
     finally:
         con.close()
     # response.headers["Location"] = "/user/{}".format(m.username)
     return m
 
+
 @app.get("/getLastTransaksi/{id_user}")
-def validator_login(id_user: int):
+def get_last_transaksi(id_user: int):
     try:
         DB_NAME = "modalin.db"
         con = sqlite3.connect(DB_NAME)
@@ -908,3 +965,124 @@ def validator_login(id_user: int):
         return existing_item[0]
     else:
         return 0
+
+
+@app.get("/getLastInvestasi/{id_user}")
+def get_last_investasi(id_user: int):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+
+        cur.execute("""
+            SELECT * FROM investasi where investasi.id_user_lender = ? ORDER BY id_investasi DESC LIMIT 1""", (id_user,))
+        existing_item = cur.fetchone()
+    except:
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+    if existing_item:
+        return existing_item[0]
+    else:
+        return 0
+
+
+class Pendanaan(BaseModel):
+    id_investasi: int
+    id_transaksi: int
+    id_user_lender: int
+    id_user_borrower: int
+
+
+@app.post("/add_pendanaan/", response_model=Pendanaan, status_code=201)
+def add_pendanaan(m: Pendanaan, response: Response, request: Request):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+        cur.execute("""insert into pendanaan (id_investasi,id_transaksi,id_user_lender,id_user_borrower) values ({},{},{},{})""".format(
+            m.id_investasi, m.id_transaksi, m.id_user_lender, m.id_user_borrower))
+        con.commit()
+    except:
+        print("oioi error")
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+    # response.headers["Location"] = "/user/{}".format(m.username)
+    return m
+
+
+@app.post("/transaksi_modalin/{id_pinjaman}/{id_user_borrower}", response_model=TopupWithdraw, status_code=201)
+def transaksi_modalin(m: TopupWithdraw, id_pinjaman: int, id_user_borrower: int, response: Response, request: Request):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+        cur.execute(
+            """update user set saldo_dana = saldo_dana + {} where id_user = {}""".format(m.jumlah_transaksi, id_user_borrower))
+        con.commit()
+        cur.execute(
+            """update user set saldo_dana = saldo_dana - {} where id_user = {}""".format(m.jumlah_transaksi, m.id_user))
+        con.commit()
+        cur.execute("""insert into transaksi (jumlah_transaksi,jenis_transaksi,waktu_transaksi,id_user) values ({},"Pendanaan","{}",{})""".format(
+            m.jumlah_transaksi, m.waktu_transaksi, m.id_user))
+        con.commit()
+        cur.execute(
+            """update pinjaman set status = 'Sedang' where id_pinjaman = ?""", (id_pinjaman,))
+        con.commit()
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail="Terjadi exception: {}".format(str(e)))
+
+    finally:
+        con.close()
+    # response.headers["Location"] = "/user/{}".format(m.username)
+    return m
+
+
+class Investasi(BaseModel):
+    tanggal_investasi: str
+    id_pinjaman: int
+    id_user_lender: int
+
+
+@app.post("/modalin/", response_model=Investasi, status_code=201)
+def modalin(m: Investasi, response: Response, request: Request):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+        cur.execute("""insert into investasi (tanggal_investasi,id_pinjaman,id_user_lender) values ( "{}",{},{})""".format(
+            m.tanggal_investasi, m.id_pinjaman, m.id_user_lender))
+        con.commit()
+    except:
+        print("oioi error")
+        return ({"status": "terjadi error"})
+    finally:
+        con.close()
+    # response.headers["Location"] = "/user/{}".format(m.username)
+    return m
+
+
+@app.post("/update_chat_terbaca/{id_pengirim}/{id_penerima}", status_code=201)
+def update_chat_terbaca(id_pengirim: int, id_penerima: int, response: Response, request: Request):
+    try:
+        DB_NAME = "modalin.db"
+        con = sqlite3.connect(DB_NAME)
+        cur = con.cursor()
+        # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
+        cur.execute(
+            """update chat set status = "Terbaca" where id_user_pengirim = {} and id_user_penerima = {}""".format(id_penerima, id_pengirim))
+        con.commit()
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail="Terjadi exception: {}".format(str(e)))
+
+    finally:
+        con.close()
+    # response.headers["Location"] = "/user/{}".format(m.username)
+    return 0

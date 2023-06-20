@@ -998,81 +998,33 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                          textStyle: GoogleFonts.outfit(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            flag = 0;
-                                          });
-                                        },
-                                        child: const Text("UMKM"),
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        textStyle: GoogleFonts.outfit(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500),
                                       ),
-                                      flag == 0
-                                          ? Container(
-                                              height: 4,
-                                              width: 80,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: const Color.fromARGB(
-                                                    255, 218, 65, 103),
-                                              ),
-                                            )
-                                          : Container(
-                                              height: 4,
-                                              width: 80,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: const Color.fromARGB(
-                                                    0, 218, 65, 103),
-                                              ))
-                                    ]),
-                                Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                          textStyle: GoogleFonts.outfit(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500),
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            flag = 1;
-                                          });
-                                        },
-                                        child: const Text("Video"),
+                                      onPressed: () {
+                                        setState(() {
+                                          flag = 0;
+                                        });
+                                      },
+                                      child: const Text("UMKM"),
+                                    ),
+                                    Container(
+                                      height: 4,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: const Color.fromARGB(
+                                            255, 218, 65, 103),
                                       ),
-                                      flag == 1
-                                          ? Container(
-                                              height: 4,
-                                              width: 80,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: const Color.fromARGB(
-                                                    255, 218, 65, 103),
-                                              ),
-                                            )
-                                          : Container(
-                                              height: 4,
-                                              width: 80,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: const Color.fromARGB(
-                                                    0, 218, 65, 103),
-                                              ))
-                                    ]),
+                                    )
+                                  ],
+                                ),
                               ],
                             ),
                           ),
@@ -1081,77 +1033,152 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                           ),
                           Expanded(
                             child: Container(
-                              margin: flag == 0
-                                  ? EdgeInsets.symmetric(horizontal: 55.0)
-                                  : EdgeInsets.symmetric(horizontal: 28.0),
-                              child: flag == 0
-                                  ? Column(
+                                margin: EdgeInsets.symmetric(horizontal: 55.0),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "${umkm.nama_umkm}",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return AlertDialog(
-                                                        // title: Text("Edit Profil"),
-                                                        actionsAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius
-                                                                .circular(16)),
-                                                        backgroundColor:
-                                                            const Color
-                                                                    .fromARGB(
-                                                                255,
-                                                                131,
-                                                                33,
-                                                                79),
-                                                        content: SizedBox(
-                                                            width: double
-                                                                .maxFinite,
-                                                            height: 318,
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              // crossAxisAlignment:
-                                                              //     CrossAxisAlignment.center,
+                                        Text(
+                                          "${umkm.nama_umkm}",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                    // title: Text("Edit Profil"),
+                                                    actionsAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        16)),
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 131, 33, 79),
+                                                    content: SizedBox(
+                                                        width: double.maxFinite,
+                                                        height: 318,
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          // crossAxisAlignment:
+                                                          //     CrossAxisAlignment.center,
+                                                          children: [
+                                                            Text(
+                                                              "Edit Data UMKM",
+                                                              style: GoogleFonts.rubik(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 12,
+                                                            ),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
                                                               children: [
                                                                 Text(
-                                                                  "Edit Data UMKM",
-                                                                  style: GoogleFonts.rubik(
-                                                                      fontSize:
-                                                                          16,
+                                                                    "Nama UMKM",
+                                                                    style: GoogleFonts.rubik(
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .w200,
+                                                                        fontSize:
+                                                                            12,
+                                                                        color: Colors
+                                                                            .white)),
+                                                                SizedBox(
+                                                                  height: 32,
+                                                                  width: 224,
+                                                                  child:
+                                                                      TextFormField(
+                                                                    controller:
+                                                                        _umkmController,
+                                                                    validator:
+                                                                        (value) {
+                                                                      if (value ==
+                                                                              null ||
+                                                                          value
+                                                                              .isEmpty) {
+                                                                        return 'Masukkan Nama UMKM!';
+                                                                      }
+                                                                      return null;
+                                                                    },
+                                                                    style: GoogleFonts
+                                                                        .rubik(
                                                                       fontWeight:
                                                                           FontWeight
-                                                                              .w600,
-                                                                      color: Colors
-                                                                          .white),
+                                                                              .w500,
+                                                                      color: const Color(
+                                                                          0xFFFFFFFF),
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                      border:
+                                                                          OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(26),
+                                                                      ),
+                                                                      filled:
+                                                                          true,
+                                                                      fillColor:
+                                                                          const Color(
+                                                                              0x7FF0EFF4),
+                                                                      labelText:
+                                                                          'Membuka Lahan Baru',
+                                                                      labelStyle:
+                                                                          GoogleFonts
+                                                                              .rubik(
+                                                                        fontWeight:
+                                                                            FontWeight.w200,
+                                                                        color: const Color(
+                                                                            0xFFFFFFFF),
+                                                                        fontSize:
+                                                                            13,
+                                                                      ),
+                                                                      contentPadding:
+                                                                          const EdgeInsets
+                                                                              .symmetric(
+                                                                        vertical:
+                                                                            25,
+                                                                        horizontal:
+                                                                            18,
+                                                                      ),
+                                                                      floatingLabelBehavior:
+                                                                          FloatingLabelBehavior
+                                                                              .never, // Remove label animation
+                                                                    ),
+                                                                  ),
                                                                 ),
                                                                 const SizedBox(
-                                                                  height: 12,
-                                                                ),
+                                                                    height: 8),
                                                                 Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
                                                                           .start,
                                                                   children: [
                                                                     Text(
-                                                                        "Nama UMKM",
+                                                                        "Tahun Berdiri",
                                                                         style: GoogleFonts.rubik(
                                                                             fontWeight: FontWeight
                                                                                 .w200,
@@ -1166,13 +1193,19 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                                           224,
                                                                       child:
                                                                           TextFormField(
+                                                                        keyboardType:
+                                                                            TextInputType.number,
+                                                                        inputFormatters: [
+                                                                          FilteringTextInputFormatter
+                                                                              .digitsOnly,
+                                                                        ],
                                                                         controller:
-                                                                            _umkmController,
+                                                                            _tahunBerdiriController,
                                                                         validator:
                                                                             (value) {
                                                                           if (value == null ||
                                                                               value.isEmpty) {
-                                                                            return 'Masukkan Nama UMKM!';
+                                                                            return 'Masukkan Tahun Berdiri!';
                                                                           }
                                                                           return null;
                                                                         },
@@ -1197,7 +1230,7 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                                           fillColor:
                                                                               const Color(0x7FF0EFF4),
                                                                           labelText:
-                                                                              'Membuka Lahan Baru',
+                                                                              '2023',
                                                                           labelStyle:
                                                                               GoogleFonts.rubik(
                                                                             fontWeight:
@@ -1219,25 +1252,196 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            8),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 8),
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                        "Lokasi UMKM",
+                                                                        style: GoogleFonts.rubik(
+                                                                            fontWeight: FontWeight
+                                                                                .w200,
+                                                                            fontSize:
+                                                                                12,
+                                                                            color:
+                                                                                Colors.white)),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          32,
+                                                                      width:
+                                                                          224,
+                                                                      child:
+                                                                          TextFormField(
+                                                                        controller:
+                                                                            _lokasiController,
+                                                                        validator:
+                                                                            (value) {
+                                                                          if (value == null ||
+                                                                              value.isEmpty) {
+                                                                            return 'Masukkan Lokasi UMKM!';
+                                                                          }
+                                                                          return null;
+                                                                        },
+                                                                        style: GoogleFonts
+                                                                            .rubik(
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                          color:
+                                                                              const Color(0xFFFFFFFF),
+                                                                          fontSize:
+                                                                              14,
+                                                                        ),
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          border:
+                                                                              OutlineInputBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(26),
+                                                                          ),
+                                                                          filled:
+                                                                              true,
+                                                                          fillColor:
+                                                                              const Color(0x7FF0EFF4),
+                                                                          labelText:
+                                                                              'Bandung',
+                                                                          labelStyle:
+                                                                              GoogleFonts.rubik(
+                                                                            fontWeight:
+                                                                                FontWeight.w200,
+                                                                            color:
+                                                                                const Color(0xFFFFFFFF),
+                                                                            fontSize:
+                                                                                13,
+                                                                          ),
+                                                                          contentPadding:
+                                                                              const EdgeInsets.symmetric(
+                                                                            vertical:
+                                                                                25,
+                                                                            horizontal:
+                                                                                18,
+                                                                          ),
+                                                                          floatingLabelBehavior:
+                                                                              FloatingLabelBehavior.never, // Remove label animation
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 8),
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                        "Deskripsi",
+                                                                        style: GoogleFonts.rubik(
+                                                                            fontWeight: FontWeight
+                                                                                .w200,
+                                                                            fontSize:
+                                                                                12,
+                                                                            color:
+                                                                                Colors.white)),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          44,
+                                                                      width:
+                                                                          224,
+                                                                      child:
+                                                                          TextFormField(
+                                                                        controller:
+                                                                            _deskripsiController,
+                                                                        validator:
+                                                                            (value) {
+                                                                          if (value == null ||
+                                                                              value.isEmpty) {
+                                                                            return 'Masukkan Deskripsi UMKM!';
+                                                                          }
+                                                                          return null;
+                                                                        },
+                                                                        style: GoogleFonts
+                                                                            .rubik(
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                          color:
+                                                                              const Color(0xFFFFFFFF),
+                                                                          fontSize:
+                                                                              14,
+                                                                        ),
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          border:
+                                                                              OutlineInputBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(26),
+                                                                          ),
+                                                                          filled:
+                                                                              true,
+                                                                          fillColor:
+                                                                              const Color(0x7FF0EFF4),
+                                                                          labelText:
+                                                                              'UMKM adalah..',
+                                                                          labelStyle:
+                                                                              GoogleFonts.rubik(
+                                                                            fontWeight:
+                                                                                FontWeight.w200,
+                                                                            color:
+                                                                                const Color(0xFFFFFFFF),
+                                                                            fontSize:
+                                                                                13,
+                                                                          ),
+                                                                          contentPadding:
+                                                                              const EdgeInsets.symmetric(
+                                                                            vertical:
+                                                                                25,
+                                                                            horizontal:
+                                                                                18,
+                                                                          ),
+                                                                          floatingLabelBehavior:
+                                                                              FloatingLabelBehavior.never, // Remove label animation
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 8),
+                                                                Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                        "Omset",
+                                                                        style: GoogleFonts.rubik(
+                                                                            fontWeight: FontWeight
+                                                                                .w200,
+                                                                            fontSize:
+                                                                                12,
+                                                                            color:
+                                                                                Colors.white)),
+                                                                    Row(
                                                                       children: [
                                                                         Text(
-                                                                            "Tahun Berdiri",
+                                                                            "Rp",
                                                                             style: GoogleFonts.rubik(
-                                                                                fontWeight: FontWeight.w200,
-                                                                                fontSize: 12,
+                                                                                fontWeight: FontWeight.w500,
+                                                                                fontSize: 16,
                                                                                 color: Colors.white)),
+                                                                        const SizedBox(
+                                                                            width:
+                                                                                5),
                                                                         SizedBox(
                                                                           height:
                                                                               32,
                                                                           width:
-                                                                              224,
+                                                                              196,
                                                                           child:
                                                                               TextFormField(
                                                                             keyboardType:
@@ -1246,11 +1450,11 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                                               FilteringTextInputFormatter.digitsOnly,
                                                                             ],
                                                                             controller:
-                                                                                _tahunBerdiriController,
+                                                                                _omsetController,
                                                                             validator:
                                                                                 (value) {
                                                                               if (value == null || value.isEmpty) {
-                                                                                return 'Masukkan Tahun Berdiri!';
+                                                                                return 'Masukkan Jumlah!';
                                                                               }
                                                                               return null;
                                                                             },
@@ -1267,7 +1471,7 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                                               ),
                                                                               filled: true,
                                                                               fillColor: const Color(0x7FF0EFF4),
-                                                                              labelText: '2023',
+                                                                              labelText: '3.000.000',
                                                                               labelStyle: GoogleFonts.rubik(
                                                                                 fontWeight: FontWeight.w200,
                                                                                 color: const Color(0xFFFFFFFF),
@@ -1280,504 +1484,238 @@ class ProfileBorrowerState extends State<ProfileBorrower> {
                                                                               floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            8),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                            "Lokasi UMKM",
-                                                                            style: GoogleFonts.rubik(
-                                                                                fontWeight: FontWeight.w200,
-                                                                                fontSize: 12,
-                                                                                color: Colors.white)),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              32,
-                                                                          width:
-                                                                              224,
-                                                                          child:
-                                                                              TextFormField(
-                                                                            controller:
-                                                                                _lokasiController,
-                                                                            validator:
-                                                                                (value) {
-                                                                              if (value == null || value.isEmpty) {
-                                                                                return 'Masukkan Lokasi UMKM!';
-                                                                              }
-                                                                              return null;
-                                                                            },
-                                                                            style:
-                                                                                GoogleFonts.rubik(
-                                                                              fontWeight: FontWeight.w500,
-                                                                              color: const Color(0xFFFFFFFF),
-                                                                              fontSize: 14,
-                                                                            ),
-                                                                            decoration:
-                                                                                InputDecoration(
-                                                                              border: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(26),
-                                                                              ),
-                                                                              filled: true,
-                                                                              fillColor: const Color(0x7FF0EFF4),
-                                                                              labelText: 'Bandung',
-                                                                              labelStyle: GoogleFonts.rubik(
-                                                                                fontWeight: FontWeight.w200,
-                                                                                color: const Color(0xFFFFFFFF),
-                                                                                fontSize: 13,
-                                                                              ),
-                                                                              contentPadding: const EdgeInsets.symmetric(
-                                                                                vertical: 25,
-                                                                                horizontal: 18,
-                                                                              ),
-                                                                              floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            8),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                            "Deskripsi",
-                                                                            style: GoogleFonts.rubik(
-                                                                                fontWeight: FontWeight.w200,
-                                                                                fontSize: 12,
-                                                                                color: Colors.white)),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              44,
-                                                                          width:
-                                                                              224,
-                                                                          child:
-                                                                              TextFormField(
-                                                                            controller:
-                                                                                _deskripsiController,
-                                                                            validator:
-                                                                                (value) {
-                                                                              if (value == null || value.isEmpty) {
-                                                                                return 'Masukkan Deskripsi UMKM!';
-                                                                              }
-                                                                              return null;
-                                                                            },
-                                                                            style:
-                                                                                GoogleFonts.rubik(
-                                                                              fontWeight: FontWeight.w500,
-                                                                              color: const Color(0xFFFFFFFF),
-                                                                              fontSize: 14,
-                                                                            ),
-                                                                            decoration:
-                                                                                InputDecoration(
-                                                                              border: OutlineInputBorder(
-                                                                                borderRadius: BorderRadius.circular(26),
-                                                                              ),
-                                                                              filled: true,
-                                                                              fillColor: const Color(0x7FF0EFF4),
-                                                                              labelText: 'UMKM adalah..',
-                                                                              labelStyle: GoogleFonts.rubik(
-                                                                                fontWeight: FontWeight.w200,
-                                                                                color: const Color(0xFFFFFFFF),
-                                                                                fontSize: 13,
-                                                                              ),
-                                                                              contentPadding: const EdgeInsets.symmetric(
-                                                                                vertical: 25,
-                                                                                horizontal: 18,
-                                                                              ),
-                                                                              floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    const SizedBox(
-                                                                        height:
-                                                                            8),
-                                                                    Column(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Text(
-                                                                            "Omset",
-                                                                            style: GoogleFonts.rubik(
-                                                                                fontWeight: FontWeight.w200,
-                                                                                fontSize: 12,
-                                                                                color: Colors.white)),
-                                                                        Row(
-                                                                          children: [
-                                                                            Text("Rp",
-                                                                                style: GoogleFonts.rubik(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white)),
-                                                                            const SizedBox(width: 5),
-                                                                            SizedBox(
-                                                                              height: 32,
-                                                                              width: 196,
-                                                                              child: TextFormField(
-                                                                                keyboardType: TextInputType.number,
-                                                                                inputFormatters: [
-                                                                                  FilteringTextInputFormatter.digitsOnly,
-                                                                                ],
-                                                                                controller: _omsetController,
-                                                                                validator: (value) {
-                                                                                  if (value == null || value.isEmpty) {
-                                                                                    return 'Masukkan Jumlah!';
-                                                                                  }
-                                                                                  return null;
-                                                                                },
-                                                                                style: GoogleFonts.rubik(
-                                                                                  fontWeight: FontWeight.w500,
-                                                                                  color: const Color(0xFFFFFFFF),
-                                                                                  fontSize: 14,
-                                                                                ),
-                                                                                decoration: InputDecoration(
-                                                                                  border: OutlineInputBorder(
-                                                                                    borderRadius: BorderRadius.circular(26),
-                                                                                  ),
-                                                                                  filled: true,
-                                                                                  fillColor: const Color(0x7FF0EFF4),
-                                                                                  labelText: '3.000.000',
-                                                                                  labelStyle: GoogleFonts.rubik(
-                                                                                    fontWeight: FontWeight.w200,
-                                                                                    color: const Color(0xFFFFFFFF),
-                                                                                    fontSize: 13,
-                                                                                  ),
-                                                                                  contentPadding: const EdgeInsets.symmetric(
-                                                                                    vertical: 25,
-                                                                                    horizontal: 18,
-                                                                                  ),
-                                                                                  floatingLabelBehavior: FloatingLabelBehavior.never, // Remove label animation
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          ],
                                                                         ),
                                                                       ],
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ],
-                                                            )),
-                                                        actions: [
-                                                          ElevatedButton(
-                                                              onPressed: () {
-                                                                _submitFormUpdateUmkm();
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              style: ButtonStyle(
-                                                                  backgroundColor:
-                                                                      MaterialStateProperty.all<
-                                                                          Color>(const Color
+                                                            ),
+                                                          ],
+                                                        )),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            _submitFormUpdateUmkm();
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          style: ButtonStyle(
+                                                              backgroundColor:
+                                                                  MaterialStateProperty.all<
+                                                                          Color>(
+                                                                      const Color
                                                                               .fromARGB(
                                                                           255,
                                                                           218,
                                                                           65,
                                                                           103))),
-                                                              child: Text(
-                                                                "Edit",
-                                                                style: GoogleFonts.rubik(
-                                                                    fontSize:
-                                                                        13,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                    color: Colors
-                                                                        .white),
-                                                              )),
-                                                          IconButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              icon: const Icon(Icons
-                                                                  .cancel_outlined),
-                                                              color: const Color
-                                                                      .fromARGB(
-                                                                  255,
-                                                                  218,
-                                                                  65,
-                                                                  103)),
-                                                        ]);
-                                                  },
-                                                );
+                                                          child: Text(
+                                                            "Edit",
+                                                            style: GoogleFonts.rubik(
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: Colors
+                                                                    .white),
+                                                          )),
+                                                      IconButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          icon: const Icon(Icons
+                                                              .cancel_outlined),
+                                                          color: const Color
+                                                                  .fromARGB(255,
+                                                              218, 65, 103)),
+                                                    ]);
                                               },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color.fromARGB(
-                                                        255, 218, 65, 103),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            17)),
-                                                minimumSize: const Size(73, 28),
-                                              ),
-                                              child: Text(
-                                                "Edit UMKM",
-                                                style: GoogleFonts.outfit(
-                                                    fontSize: 10,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 12,
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: RichText(
-                                            textAlign: TextAlign.justify,
-                                            text: TextSpan(
-                                              text: "${umkm.deskripsi}",
-                                              style: GoogleFonts.outfit(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                color: Color(0xFFFFFFFF),
-                                              ),
-                                            ),
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 218, 65, 103),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(17)),
+                                            minimumSize: const Size(73, 28),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Tahun Berdiri",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            Text(
-                                              "${umkm.tahun_berdiri}",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Omset per tahun",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            Text(
-                                              "Rp. ${umkm.omset}jt",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Lokasi",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            Text(
-                                              "${umkm.lokasi}",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Kategori",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            Text(
-                                              "${umkm.kategori}",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 8,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Kelas",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            Text(
-                                              "${umkm.kelas}",
-                                              style: GoogleFonts.outfit(
-                                                color: Color(0xFFFFFFFF),
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  : Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              margin:
-                                                  EdgeInsets.only(right: 10),
-                                              child: Image.asset(
-                                                'assets/images/thumbnail.png',
-                                                width: 153,
-                                                height: 86,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                      child: Text(
-                                                        "RENOVIN - UMKM yang bergerak pada bidang...",
-                                                        style:
-                                                            GoogleFonts.rubik(
-                                                          color:
-                                                              Color(0xFFFFFFFF),
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 4,
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                      child: Text(
-                                                        "Rp 5jt | 10% | 3 bln",
-                                                        style:
-                                                            GoogleFonts.outfit(
-                                                          color:
-                                                              Color(0xFFFFFFFF),
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 4,
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                      child: Text(
-                                                        "716K ditonton",
-                                                        style:
-                                                            GoogleFonts.outfit(
-                                                          color:
-                                                              Color(0xFFFFFFFF),
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 4,
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.topLeft,
-                                                      child: Text(
-                                                        "219 disukai",
-                                                        style:
-                                                            GoogleFonts.outfit(
-                                                          color:
-                                                              Color(0xFFFFFFFF),
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                          child: Text(
+                                            "Edit UMKM",
+                                            style: GoogleFonts.outfit(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500),
+                                          ),
                                         ),
                                       ],
                                     ),
-                            ),
+                                    SizedBox(
+                                      height: 12,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: RichText(
+                                        textAlign: TextAlign.justify,
+                                        text: TextSpan(
+                                          text: "${umkm.deskripsi}",
+                                          style: GoogleFonts.outfit(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: Color(0xFFFFFFFF),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Tahun Berdiri",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${umkm.tahun_berdiri}",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Omset per tahun",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Rp. ${umkm.omset}",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Lokasi",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${umkm.lokasi}",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Kategori",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${umkm.kategori}",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Kelas",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${umkm.kelas}",
+                                          style: GoogleFonts.outfit(
+                                            color: Color(0xFFFFFFFF),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                
+                                ),
+                                
                           ),
+                          const SizedBox(height: 14),
+                          TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/login');
+                          },
+                          child: Text(
+                            "Logout",
+                            style: GoogleFonts.rubik(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500
+                            ),
+                          )
+                          )
                         ],
                       );
                     },

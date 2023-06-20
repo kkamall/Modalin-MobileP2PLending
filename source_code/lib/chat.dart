@@ -144,6 +144,96 @@ class ChatState extends State<ChatNotif> {
   int flag = 0;
   String id_user = "";
 
+  Future<int> updateChatTerbaca(
+      String id_user_pengirim, String id_user_penerima) async {
+    final responseUpdateChatTerbaca = await http.post(Uri.parse(
+        "http://localhost:8000/update_chat_terbaca/" +
+            id_user_pengirim +
+            '/' +
+            id_user_penerima));
+
+    return responseUpdateChatTerbaca.statusCode; //sukses kalau 201
+  }
+
+  Future<int> checkUser() async {
+    String get_user = "http://127.0.0.1:8000/get_user/";
+    String cek_pinjaman_belum_selesai =
+        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/";
+
+    final responseUser = await http.get(Uri.parse(get_user + id_user));
+    Map<String, dynamic> user = jsonDecode(responseUser.body);
+
+    if (id_user == "0") {
+      Navigator.pushNamed(
+        context,
+        '/aktivitas_guest',
+        arguments: id_user,
+      );
+    } else {
+      // Cek pinjaman (udah mengajukan apa belum)
+      final responseCekPinjamanBelumSelesai =
+          await http.get(Uri.parse(cek_pinjaman_belum_selesai + id_user));
+      List jsonCekPinjamanBelumSelesai =
+          jsonDecode(responseCekPinjamanBelumSelesai.body);
+
+      if (user['role'] == "Lender") {
+        Navigator.pushNamed(
+          context,
+          '/home',
+          arguments: id_user,
+        );
+      } else {
+        if (jsonCekPinjamanBelumSelesai[0] == "Tidak Ada") {
+          Navigator.pushNamed(context, '/home_borrower', arguments: id_user);
+        } else if (jsonCekPinjamanBelumSelesai[0] == "Ada") {
+          Navigator.pushNamed(
+            context,
+            '/home_borrower_dapat_pinjaman',
+            arguments: {
+              'id_user': id_user,
+              'id_pinjaman': jsonCekPinjamanBelumSelesai[1].toString(),
+            },
+          );
+        }
+      }
+    }
+
+    return responseUser.statusCode;
+  }
+
+  Future<int> checkUserProfile() async {
+    String get_user = "http://127.0.0.1:8000/get_user/";
+    String cek_pinjaman_belum_selesai =
+        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/";
+
+    final responseUser = await http.get(Uri.parse(get_user + id_user));
+    Map<String, dynamic> user = jsonDecode(responseUser.body);
+
+    if (id_user == "0") {
+      Navigator.pushNamed(
+        context,
+        '/aktivitas_guest',
+        arguments: id_user,
+      );
+    } else {
+      if (user['role'] == "Lender") {
+        Navigator.pushNamed(
+          context,
+          '/profile_investor',
+          arguments: id_user,
+        );
+      } else {
+        Navigator.pushNamed(
+          context,
+          '/profile_borrower',
+          arguments: id_user,
+        );
+      }
+    }
+
+    return responseUser.statusCode;
+  }
+
   @override
   Widget build(BuildContext context) {
     id_user = ModalRoute.of(context)!.settings.arguments as String;
@@ -213,7 +303,8 @@ class ChatState extends State<ChatNotif> {
                                               iconSize: 38,
                                               onPressed: () {
                                                 Navigator.pushNamed(
-                                                    context, '/notifikasi');
+                                                    context, '/notifikasi',
+                                                    arguments: id_user);
                                               },
                                               icon: const Icon(
                                                   Icons.notifications),
@@ -221,11 +312,9 @@ class ChatState extends State<ChatNotif> {
                                           IconButton(
                                               iconSize: 38,
                                               onPressed: () {
-                                                Navigator.pushNamed(context,
-                                                    '/profile_investor');
+                                                checkUserProfile();
                                               },
-                                              icon: const Icon(
-                                                  Icons.account_circle),
+                                              icon: const Icon(Icons.person),
                                               color: Colors.white)
                                         ],
                                       ),
@@ -307,7 +396,7 @@ class ChatState extends State<ChatNotif> {
                                               },
                                               child: const Text("Semua"),
                                             ),
-                                            flag == 0
+                                            flag == 1
                                                 ? Container(
                                                     height: 5,
                                                     width: 82,
@@ -338,7 +427,7 @@ class ChatState extends State<ChatNotif> {
                                     ],
                                   )),
                               // end button filter chat
-                              flag == 0
+                              flag == 1
                                   // start listview builder all chat
                                   ? ListView.builder(
                                       shrinkWrap: true,
@@ -350,6 +439,15 @@ class ChatState extends State<ChatNotif> {
                                                 20, 0, 20, 6),
                                             child: GestureDetector(
                                               onTap: () {
+                                                updateChatTerbaca(
+                                                    listChatSemua
+                                                        .listChatSemuaModel[
+                                                            index]
+                                                        .id_user_pengirim,
+                                                    listChatSemua
+                                                        .listChatSemuaModel[
+                                                            index]
+                                                        .id_user_penerima);
                                                 Navigator.pushNamed(
                                                   context,
                                                   '/chat_detail',
@@ -438,6 +536,118 @@ class ChatState extends State<ChatNotif> {
                                                               ),
                                                             ],
                                                           ),
+                                                        ],
+                                                      ))),
+                                            ));
+                                      })
+                                  // end listview builder all chat
+                                  // start listview builder unread chat
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: listChatBelumTerbaca
+                                          .listChatBelumTerbacaModel.length,
+                                      itemBuilder:
+                                          (contextListChatBelumTerbaca, index) {
+                                        return Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                20, 0, 20, 6),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                updateChatTerbaca(
+                                                    listChatBelumTerbaca
+                                                        .listChatBelumTerbacaModel[
+                                                            index]
+                                                        .id_user_penerima,
+                                                    listChatBelumTerbaca
+                                                        .listChatBelumTerbacaModel[
+                                                            index]
+                                                        .id_user_pengirim);
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  '/chat_detail',
+                                                  arguments: {
+                                                    'id_user_penerima':
+                                                        listChatBelumTerbaca
+                                                            .listChatBelumTerbacaModel[
+                                                                index]
+                                                            .id_user_pengirim,
+                                                    'id_user_pengirim':
+                                                        listChatBelumTerbaca
+                                                            .listChatBelumTerbacaModel[
+                                                                index]
+                                                            .id_user_penerima
+                                                  },
+                                                );
+                                              },
+                                              child: Container(
+                                                  width: 308,
+                                                  height: 42,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      border: Border.all(
+                                                        width: 1,
+                                                        color: const Color
+                                                                .fromARGB(
+                                                            255, 218, 65, 103),
+                                                      )),
+                                                  child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .fromLTRB(
+                                                          14, 0, 14, 0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .fromLTRB(
+                                                                        0,
+                                                                        0,
+                                                                        0,
+                                                                        0),
+                                                                child: SizedBox(
+                                                                    width: 24,
+                                                                    height: 24,
+                                                                    child:
+                                                                        ClipOval(
+                                                                      child: Image
+                                                                          .asset(
+                                                                        'assets/images/${listChatBelumTerbaca.listChatBelumTerbacaModel[index].foto}',
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                      ),
+                                                                    )),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 15,
+                                                              ),
+                                                              Text(
+                                                                listChatBelumTerbaca
+                                                                    .listChatBelumTerbacaModel[
+                                                                        index]
+                                                                    .nama,
+                                                                style:
+                                                                    GoogleFonts
+                                                                        .rubik(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
                                                           Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -447,8 +657,8 @@ class ChatState extends State<ChatNotif> {
                                                                     12,
                                                                     0),
                                                             child: Text(
-                                                              listChatSemua
-                                                                  .listChatSemuaModel[
+                                                              listChatBelumTerbaca
+                                                                  .listChatBelumTerbacaModel[
                                                                       index]
                                                                   .lastChat,
                                                               style: GoogleFonts
@@ -462,108 +672,29 @@ class ChatState extends State<ChatNotif> {
                                                               ),
                                                             ),
                                                           ),
-                                                        ],
-                                                      ))),
-                                            ));
-                                      })
-                                  // end listview builder all chat
-                                  // start listview builder unread chat
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: listChatBelumTerbaca
-                                          .listChatBelumTerbacaModel.length,
-                                      itemBuilder: (context, index) {
-                                        return Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                20, 0, 20, 6),
-                                            child: int.parse(listChatBelumTerbaca
-                                                        .listChatBelumTerbacaModel[
-                                                            index]
-                                                        .chat) >
-                                                    0
-                                                ? Container(
-                                                    width: 308,
-                                                    height: 42,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        border: Border.all(
-                                                          width: 1,
-                                                          color: const Color
-                                                                  .fromARGB(255,
-                                                              218, 65, 103),
-                                                        )),
-                                                    child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .fromLTRB(
-                                                                14, 0, 14, 0),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .fromLTRB(
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0),
-                                                                  child: SizedBox(
-                                                                      width: 24,
-                                                                      height: 24,
-                                                                      child: ClipOval(
-                                                                        child: Image
-                                                                            .asset(
-                                                                          'assets/images/${listChatBelumTerbaca.listChatBelumTerbacaModel[index].foto}',
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                        ),
-                                                                      )),
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 15,
-                                                                ),
-                                                                Text(
-                                                                  listChatBelumTerbaca
-                                                                      .listChatBelumTerbacaModel[
-                                                                          index]
-                                                                      .nama,
-                                                                  style:
-                                                                      GoogleFonts
-                                                                          .rubik(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .fromLTRB(
-                                                                      12,
-                                                                      0,
-                                                                      12,
-                                                                      0),
+                                                          Container(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              width: 20,
+                                                              height: 20,
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15),
+                                                                  color: const Color
+                                                                          .fromARGB(
+                                                                      255,
+                                                                      218,
+                                                                      65,
+                                                                      103)),
                                                               child: Text(
                                                                 listChatBelumTerbaca
                                                                     .listChatBelumTerbacaModel[
                                                                         index]
-                                                                    .lastChat,
+                                                                    .chat
+                                                                    .toString(),
                                                                 style:
                                                                     GoogleFonts
                                                                         .rubik(
@@ -574,45 +705,10 @@ class ChatState extends State<ChatNotif> {
                                                                       FontWeight
                                                                           .w100,
                                                                 ),
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                width: 20,
-                                                                height: 20,
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            15),
-                                                                    color: const Color
-                                                                            .fromARGB(
-                                                                        255,
-                                                                        218,
-                                                                        65,
-                                                                        103)),
-                                                                child: Text(
-                                                                  listChatBelumTerbaca
-                                                                      .listChatBelumTerbacaModel[
-                                                                          index]
-                                                                      .chat
-                                                                      .toString(),
-                                                                  style:
-                                                                      GoogleFonts
-                                                                          .rubik(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w100,
-                                                                  ),
-                                                                ))
-                                                          ],
-                                                        )))
-                                                : const SizedBox());
+                                                              ))
+                                                        ],
+                                                      ))),
+                                            ));
                                       }),
                               // end listview builder unread chat
                             ]),
@@ -637,7 +733,8 @@ class ChatState extends State<ChatNotif> {
                         IconButton(
                           iconSize: 26,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/explore');
+                            Navigator.pushNamed(context, '/explore',
+                                arguments: id_user);
                           },
                           icon: const Icon(Icons.explore_rounded),
                           color: Colors.white,
@@ -645,7 +742,7 @@ class ChatState extends State<ChatNotif> {
                         IconButton(
                           iconSize: 24,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/home');
+                            checkUser();
                           },
                           icon: const Icon(Icons.home),
                           color: Colors.white,

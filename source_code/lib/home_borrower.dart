@@ -188,15 +188,12 @@ class _HomeBorrowerState extends State<HomeBorrower> {
   }
 
   Future<int> getIdPinjaman() async {
-    // Mendapatkan id pinjaman yang terakhir
-    String url = "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/" + id_user;
-    print(url);
-    final responseIdPinjaman = await http.get(Uri.parse(
-        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/" + id_user));
+    final responseIdPinjaman = await http.get(Uri.parse("http://127.0.0.1:8000/cek_pinjaman_belum_selesai/" + id_user));
     List hasilResponseIdPinjaman = jsonDecode(responseIdPinjaman.body);
-    id_pinjaman = hasilResponseIdPinjaman[1].toString();
+    print(hasilResponseIdPinjaman[0]);
+    id_pinjaman = (hasilResponseIdPinjaman[1]).toString();
 
-    return responseIdPinjaman.statusCode; //sukses kalau 201
+    return responseIdPinjaman.statusCode;
   }
 
   @override
@@ -220,9 +217,6 @@ class _HomeBorrowerState extends State<HomeBorrower> {
     return_keuntungan = int.parse(_returnPercentageController.text);
     lama_pinjaman = int.parse(_loanDurationController.text);
     tanggal_pengajuan = DateTime.now();
-
-    respPostAddPinjaman = insertDataPinjaman();
-    respGetIdPinjaman = getIdPinjaman();
   }
 
   @override
@@ -247,7 +241,7 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                 SingleChildScrollView(
                   child: Container(
                     width: 360,
-                    height: 640,
+                    height: 700,
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         colors: [Color(0xFF3D2645), Color(0xFF000000)],
@@ -817,7 +811,7 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                           255, 131, 33, 79),
                                                   content: SizedBox(
                                                       width: double.maxFinite,
-                                                      height: 293,
+                                                      height: 299,
                                                       child: Column(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
@@ -844,7 +838,7 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                                     .start,
                                                             children: [
                                                               Text(
-                                                                  "Judul Video",
+                                                                  "Judul Pinjaman",
                                                                   style: GoogleFonts.rubik(
                                                                       fontWeight:
                                                                           FontWeight
@@ -1274,18 +1268,23 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                     ElevatedButton(
                                                         onPressed: () {
                                                           _submitFormAddPinjaman();
+                                                          insertDataPinjaman();
                                                           Navigator.of(context)
                                                               .pop();
                                                           Navigator.pushNamed(
                                                             context,
-                                                            '/home_borrower_dapat_pinjaman',
-                                                            arguments: {
-                                                              'id_user':
-                                                                  id_user,
-                                                              'id_pinjaman':
-                                                                  id_pinjaman,
-                                                            },
-                                                          );
+                                                            '/profile_borrower', arguments: id_user);
+                                                          // getIdPinjaman();
+                                                          // Navigator.pushNamed(
+                                                          //   context,
+                                                          //   '/home_borrower_dapat_pinjaman',
+                                                          //   arguments: {
+                                                          //     'id_user':
+                                                          //         id_user,
+                                                          //     'id_pinjaman':
+                                                          //         id_pinjaman,
+                                                          //   },
+                                                          // );
                                                         },
                                                         style: ButtonStyle(
                                                             backgroundColor:
@@ -1342,7 +1341,7 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                 padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
                                 child: Container(
                                   width: 308,
-                                  height: 190,
+                                  height: 205,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(16),
                                       gradient: const LinearGradient(
@@ -1507,25 +1506,34 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                   const SizedBox(
                                                     height: 10,
                                                   ),
-                                                  if (pengembalian
-                                                          .listPengembalianModel
-                                                          .length >
-                                                      3) ...{
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      child: Text(
-                                                          "Lihat Lainnya",
-                                                          style:
-                                                              GoogleFonts.rubik(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w300)),
-                                                    )
-                                                  }
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: GestureDetector(
+                                                                  onTap: () {
+                                                                    Navigator.pushNamed(
+                                                                        context,
+                                                                        '/riwayat',
+                                                                        arguments: {
+                                                                          "jenis":
+                                                                              "PENGEMBALIAN",
+                                                                          "id_user":
+                                                                              id_user,
+                                                                          "total": "0"
+                                                                        });
+                                                                  },
+                                                                  child: Text(
+                                                                    "Lihat Lainnya",
+                                                                    style: GoogleFonts.outfit(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w500),
+                                                                  ),
+                                                                ),
+                                                  )
                                                 ],
                                               ),
                                       ],
@@ -1559,7 +1567,8 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                         IconButton(
                           iconSize: 24,
                           onPressed: () {
-                            Navigator.pushNamed(context, '/explore', arguments: id_user);
+                            Navigator.pushNamed(context, '/explore',
+                                arguments: id_user);
                           },
                           icon: const Icon(Icons.explore_rounded),
                           color: Colors.white,

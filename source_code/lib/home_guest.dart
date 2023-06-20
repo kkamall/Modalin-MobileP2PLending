@@ -62,7 +62,7 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                         IconButton(
                             iconSize: 30,
                             onPressed: () {
-                              Navigator.pushNamed(context, '/notifikasi');
+                              Navigator.pushNamed(context, '/notifikasi_guest');
                             },
                             icon: const Icon(Icons.notifications),
                             color: Colors.white),
@@ -185,7 +185,8 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                       IconButton(
                         iconSize: 24,
                         onPressed: () {
-                          Navigator.pushNamed(context, '/explore', arguments: "0");
+                          Navigator.pushNamed(context, '/explore',
+                              arguments: "0");
                         },
                         icon: const Icon(Icons.explore_rounded),
                         color: Colors.white,

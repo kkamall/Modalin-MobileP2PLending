@@ -19,6 +19,7 @@ import 'metodePembayaran.dart';
 import 'metodeWithdraw.dart';
 import 'riwayat_pamasukan.dart';
 import 'explore.dart';
+import 'notifikasi_guest.dart';
 
 void main() {
   runApp(MyApp());
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         "/home_borrower_dapat_pinjaman": (context) =>
             HomeBorrowerDapatPinjaman(),
         "/riwayat": (context) => Riwayat(),
+        "/notifikasi_guest": (context) => NotifikasiGuest(),
       },
       initialRoute: "/aktivitas_guest",
     );

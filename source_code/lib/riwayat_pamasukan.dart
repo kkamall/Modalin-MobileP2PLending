@@ -54,7 +54,7 @@ class ListPendanaanCubit extends Cubit<ListPendanaanModel> {
 
     for (var val in data) {
       // Tanggal Pengajuan
-      String dateTimeWaktuTransaksi = val[5];
+      String dateTimeWaktuTransaksi = val[5].toString();
       String stringWaktuTransaksi = await formatDateTime(
           dateTimeWaktuTransaksi); // Panggil sebagai method statis
       total_pengeluaran_int += val[2].toInt();
@@ -76,6 +76,7 @@ class ListPendanaanCubit extends Cubit<ListPendanaanModel> {
         judul_pinjaman: judul_pinjaman,
       ));
     }
+    print("asdasd");
     String total_pengeluaran = total_pengeluaran_int.toString();
     emit(ListPendanaanModel(
         listPendanaanModel: listPendanaanModel,
@@ -86,6 +87,9 @@ class ListPendanaanCubit extends Cubit<ListPendanaanModel> {
     String urlHistoryPendanaan = "";
     if (jenis == "PENGELUARAN") {
       urlHistoryPendanaan = "http://127.0.0.1:8000/history_pengeluaran_lender/";
+    } else if (jenis == "PENGEMBALIAN") {
+      urlHistoryPendanaan =
+          "http://127.0.0.1:8000/detail_history_pengembalian_borrower/";
     } else {
       urlHistoryPendanaan = "http://127.0.0.1:8000/history_pemasukan_lender/";
     }
@@ -109,6 +113,52 @@ class _HomeState extends State<Riwayat> {
   String jenis = "";
   String total = "";
   String id_user = "";
+
+  Future<int> checkUser() async {
+    String get_user = "http://127.0.0.1:8000/get_user/";
+    String cek_pinjaman_belum_selesai =
+        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/";
+
+    final responseUser = await http.get(Uri.parse(get_user + id_user));
+    Map<String, dynamic> user = jsonDecode(responseUser.body);
+
+    if (id_user == "0") {
+      Navigator.pushNamed(
+        context,
+        '/aktivitas_guest',
+        arguments: id_user,
+      );
+    } else {
+      // Cek pinjaman (udah mengajukan apa belum)
+      final responseCekPinjamanBelumSelesai =
+          await http.get(Uri.parse(cek_pinjaman_belum_selesai + id_user));
+      List jsonCekPinjamanBelumSelesai =
+          jsonDecode(responseCekPinjamanBelumSelesai.body);
+
+      if (user['role'] == "Lender") {
+        Navigator.pushNamed(
+          context,
+          '/home',
+          arguments: id_user,
+        );
+      } else {
+        if (jsonCekPinjamanBelumSelesai[0] == "Tidak Ada") {
+          Navigator.pushNamed(context, '/home_borrower', arguments: id_user);
+        } else if (jsonCekPinjamanBelumSelesai[0] == "Ada") {
+          Navigator.pushNamed(
+            context,
+            '/home_borrower_dapat_pinjaman',
+            arguments: {
+              'id_user': id_user,
+              'id_pinjaman': jsonCekPinjamanBelumSelesai[1].toString(),
+            },
+          );
+        }
+      }
+    }
+
+    return responseUser.statusCode;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,6 +185,7 @@ class _HomeState extends State<Riwayat> {
                   .fetchData(id_user, jenis);
               return SingleChildScrollView(
                 child: Container(
+                  height: listPendanaan.listPendanaanModel.length < 2 ? 640 : null,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -164,7 +215,7 @@ class _HomeState extends State<Riwayat> {
                                 IconButton(
                                     iconSize: 40,
                                     onPressed: () {
-                                      Navigator.pushNamed(context, '/home');
+                                      checkUser();
                                     },
                                     icon: const Icon(Icons.home),
                                     color: Colors.white)
@@ -184,29 +235,36 @@ class _HomeState extends State<Riwayat> {
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            Text(
-                              "Rp$total",
-                              style: GoogleFonts.outfit(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700),
-                            ),
+                            if (jenis != "PENGEMBALIAN") ...{
+                              Text(
+                                "Rp$total",
+                                style: GoogleFonts.outfit(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                            }
                           ],
                         ),
                         Align(
-                          alignment: Alignment.centerLeft,
-                          child: jenis == "PEMASUKAN"
-                              ? Text("Untung dari Investasi",
-                                  style: GoogleFonts.outfit(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400))
-                              : Text("Investasi",
-                                  style: GoogleFonts.outfit(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400)),
-                        ),
+                            alignment: Alignment.centerLeft,
+                            child: jenis == "PEMASUKAN"
+                                ? Text("Untung dari Investasi",
+                                    style: GoogleFonts.outfit(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
+                                : jenis == "PENGELUARAN"
+                                    ? Text("Investasi",
+                                        style: GoogleFonts.outfit(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400))
+                                    : Text("Pinjaman",
+                                        style: GoogleFonts.outfit(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400))),
                         SizedBox(height: 10.0),
                         Column(
                           //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -316,37 +374,64 @@ class _HomeState extends State<Riwayat> {
                                           ),
                                           SizedBox(height: 3),
                                           Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: jenis == "PEMASUKAN"
-                                                ? Text(
-                                                    'Keuntungan: Rp' +
-                                                        (int.parse(listPendanaan
-                                                                    .listPendanaanModel[
-                                                                        index]
-                                                                    .jumlah_pinjaman) *
-                                                                int.parse(listPendanaan
-                                                                    .listPendanaanModel[
-                                                                        index]
-                                                                    .return_keuntungan) /
-                                                                100)
-                                                            .toString(),
-                                                    style: GoogleFonts.rubik(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Color(0xFFFFFFFF),
-                                                      fontSize: 12,
-                                                    ),
-                                                  )
-                                                : Text(
-                                                    'Pengeluaran: Rp${listPendanaan.listPendanaanModel[index].jumlah_pinjaman}',
-                                                    style: GoogleFonts.rubik(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Color(0xFFFFFFFF),
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                          ),
+                                              alignment: Alignment.centerLeft,
+                                              child: jenis == "PEMASUKAN"
+                                                  ? Text(
+                                                      'Keuntungan: Rp' +
+                                                          (int.parse(listPendanaan
+                                                                      .listPendanaanModel[
+                                                                          index]
+                                                                      .jumlah_pinjaman) *
+                                                                  int.parse(listPendanaan
+                                                                      .listPendanaanModel[
+                                                                          index]
+                                                                      .return_keuntungan) /
+                                                                  100)
+                                                              .toString(),
+                                                      style: GoogleFonts.rubik(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color:
+                                                            Color(0xFFFFFFFF),
+                                                        fontSize: 12,
+                                                      ),
+                                                    )
+                                                  : jenis == "PENGELUARAN"
+                                                      ? Text(
+                                                          'Pengeluaran: Rp${listPendanaan.listPendanaanModel[index].jumlah_pinjaman}',
+                                                          style:
+                                                              GoogleFonts.rubik(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: Color(
+                                                                0xFFFFFFFF),
+                                                            fontSize: 12,
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          'Pengembalian: Rp' +
+                                                              (int.parse(listPendanaan
+                                                                          .listPendanaanModel[
+                                                                              index]
+                                                                          .jumlah_pinjaman) +
+                                                                      int.parse(listPendanaan
+                                                                              .listPendanaanModel[
+                                                                                  index]
+                                                                              .jumlah_pinjaman) *
+                                                                          int.parse(listPendanaan
+                                                                              .listPendanaanModel[index]
+                                                                              .return_keuntungan) /
+                                                                          100)
+                                                                  .toString(),
+                                                          style:
+                                                              GoogleFonts.rubik(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: Color(
+                                                                0xFFFFFFFF),
+                                                            fontSize: 12,
+                                                          ),
+                                                        )),
                                         ],
                                       ),
                                       SizedBox(height: 5.0),

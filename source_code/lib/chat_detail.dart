@@ -73,7 +73,6 @@ class ChatDetailState extends State<ChatDetail> {
   late Future<int> respPost; //201 artinya berhasil
 
   Future<int> insertChat(String message) async {
-    print("Masuk");
     print(message);
     //data disimpan di body
     DateTime now = DateTime.now();
@@ -101,6 +100,52 @@ class ChatDetailState extends State<ChatDetail> {
     respPostAddChat = insertChat(_messageController.text);
 
     _messageController.clear();
+  }
+
+  Future<int> checkUser() async {
+    String get_user = "http://127.0.0.1:8000/get_user/";
+    String cek_pinjaman_belum_selesai =
+        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/";
+
+    final responseUser = await http.get(Uri.parse(get_user + id_user_pengirim));
+    Map<String, dynamic> user = jsonDecode(responseUser.body);
+
+    if (id_user_pengirim == "0") {
+      Navigator.pushNamed(
+        context,
+        '/aktivitas_guest',
+        arguments: id_user_pengirim,
+      );
+    } else {
+      // Cek pinjaman (udah mengajukan apa belum)
+      final responseCekPinjamanBelumSelesai =
+          await http.get(Uri.parse(cek_pinjaman_belum_selesai + id_user_pengirim));
+      List jsonCekPinjamanBelumSelesai =
+          jsonDecode(responseCekPinjamanBelumSelesai.body);
+
+      if (user['role'] == "Lender") {
+        Navigator.pushNamed(
+          context,
+          '/home',
+          arguments: id_user_pengirim,
+        );
+      } else {
+        if (jsonCekPinjamanBelumSelesai[0] == "Tidak Ada") {
+          Navigator.pushNamed(context, '/home_borrower', arguments: id_user_pengirim);
+        } else if (jsonCekPinjamanBelumSelesai[0] == "Ada") {
+          Navigator.pushNamed(
+            context,
+            '/home_borrower_dapat_pinjaman',
+            arguments: {
+              'id_user': id_user_pengirim,
+              'id_pinjaman': jsonCekPinjamanBelumSelesai[1].toString(),
+            },
+          );
+        }
+      }
+    }
+
+    return responseUser.statusCode;
   }
 
   @override
@@ -160,8 +205,7 @@ class ChatDetailState extends State<ChatDetail> {
                                       IconButton(
                                           iconSize: 42,
                                           onPressed: () {
-                                            Navigator.pushNamed(
-                                                context, '/home');
+                                            checkUser();
                                           },
                                           icon: const Icon(Icons.home),
                                           color: Colors.white)
