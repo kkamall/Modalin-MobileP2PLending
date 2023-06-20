@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 // class untuk menampung data user
 class Pengembalian {
@@ -79,9 +80,15 @@ class SaldoCubit extends Cubit<SaldoModel> {
   String url = "http://127.0.0.1:8000/get_user/";
   SaldoCubit() : super(SaldoModel(saldo_dana: ""));
 
+  String formatAngka(int angka) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(angka);
+  }
+
   //map dari json ke atribut
   void setFromJson(Map<String, dynamic> json) {
     String saldo_dana = json['saldo_dana'].toString();
+
     emit(SaldoModel(saldo_dana: saldo_dana));
   }
 
@@ -188,7 +195,8 @@ class _HomeBorrowerState extends State<HomeBorrower> {
   }
 
   Future<int> getIdPinjaman() async {
-    final responseIdPinjaman = await http.get(Uri.parse("http://127.0.0.1:8000/cek_pinjaman_belum_selesai/" + id_user));
+    final responseIdPinjaman = await http.get(Uri.parse(
+        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/" + id_user));
     List hasilResponseIdPinjaman = jsonDecode(responseIdPinjaman.body);
     print(hasilResponseIdPinjaman[0]);
     id_pinjaman = (hasilResponseIdPinjaman[1]).toString();
@@ -1075,6 +1083,8 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                                             floatingLabelBehavior:
                                                                                 FloatingLabelBehavior.never, // Remove label animation
                                                                           ),
+                                                                          maxLines:
+                                                                              1, // Hanya menampilkan 1 baris teks
                                                                         ),
                                                                       ),
                                                                     ],
@@ -1272,8 +1282,10 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                           Navigator.of(context)
                                                               .pop();
                                                           Navigator.pushNamed(
-                                                            context,
-                                                            '/profile_borrower', arguments: id_user);
+                                                              context,
+                                                              '/profile_borrower',
+                                                              arguments:
+                                                                  id_user);
                                                           // getIdPinjaman();
                                                           // Navigator.pushNamed(
                                                           //   context,
@@ -1510,29 +1522,29 @@ class _HomeBorrowerState extends State<HomeBorrower> {
                                                     alignment:
                                                         Alignment.centerRight,
                                                     child: GestureDetector(
-                                                                  onTap: () {
-                                                                    Navigator.pushNamed(
-                                                                        context,
-                                                                        '/riwayat',
-                                                                        arguments: {
-                                                                          "jenis":
-                                                                              "PENGEMBALIAN",
-                                                                          "id_user":
-                                                                              id_user,
-                                                                          "total": "0"
-                                                                        });
-                                                                  },
-                                                                  child: Text(
-                                                                    "Lihat Lainnya",
-                                                                    style: GoogleFonts.outfit(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w500),
-                                                                  ),
-                                                                ),
+                                                      onTap: () {
+                                                        Navigator.pushNamed(
+                                                            context, '/riwayat',
+                                                            arguments: {
+                                                              "jenis":
+                                                                  "PENGEMBALIAN",
+                                                              "id_user":
+                                                                  id_user,
+                                                              "total": "0"
+                                                            });
+                                                      },
+                                                      child: Text(
+                                                        "Lihat Lainnya",
+                                                        style:
+                                                            GoogleFonts.outfit(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                      ),
+                                                    ),
                                                   )
                                                 ],
                                               ),

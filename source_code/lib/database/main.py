@@ -534,7 +534,7 @@ def cari_umkm(nama_umkm: str):
         cur = con.cursor()
         recs = []
         for row in cur.execute("""
-            SELECT user.foto_profile, user.nama, pinjaman.judul_pinjaman, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, pinjaman.link_vidio, umkm.nama_umkm, user.saldo_dana, pinjaman.id_pinjaman, user.id_user
+            SELECT user.foto_profile, user.nama, pinjaman.judul_pinjaman, pinjaman.jumlah_pinjaman, pinjaman.return_keuntungan, pinjaman.lama_pinjaman, pinjaman.link_vidio, umkm.nama_umkm, user.saldo_dana, pinjaman.id_pinjaman, user.id_user, pinjaman.tanggal_pengajuan, umkm.kategori, umkm.kelas
             FROM pinjaman
             JOIN user ON pinjaman.id_user_borrower = user.id_user
             JOIN umkm ON user.id_user = umkm.id_user_borrower
@@ -926,7 +926,7 @@ def pembayaran(m: TopupWithdraw, id_pinjaman: int, id_user_lender: int, response
         cur = con.cursor()
         # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
         cur.execute(
-            """update user set saldo_dana = saldo_dana + {} where id_user = {}""".format(m.jumlah_transaksi, id_user_lender))
+            """update user set saldo_dana = saldo_dana + {} - 2500 where id_user = {}""".format(m.jumlah_transaksi, id_user_lender))
         con.commit()
         cur.execute(
             """update user set saldo_dana = saldo_dana - {} where id_user = {}""".format(m.jumlah_transaksi, m.id_user))
@@ -1021,7 +1021,7 @@ def transaksi_modalin(m: TopupWithdraw, id_pinjaman: int, id_user_borrower: int,
         cur = con.cursor()
         # hanya untuk test, rawal sql injecttion, gunakan spt SQLAlchemy
         cur.execute(
-            """update user set saldo_dana = saldo_dana + {} where id_user = {}""".format(m.jumlah_transaksi, id_user_borrower))
+            """update user set saldo_dana = saldo_dana + {} - 2500 where id_user = {}""".format(m.jumlah_transaksi, id_user_borrower))
         con.commit()
         cur.execute(
             """update user set saldo_dana = saldo_dana - {} where id_user = {}""".format(m.jumlah_transaksi, m.id_user))

@@ -185,7 +185,8 @@ class _HomeState extends State<Riwayat> {
                   .fetchData(id_user, jenis);
               return SingleChildScrollView(
                 child: Container(
-                  height: listPendanaan.listPendanaanModel.length < 2 ? 640 : null,
+                  height:
+                      listPendanaan.listPendanaanModel.length < 2 ? 640 : null,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [

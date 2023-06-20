@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 // class untuk menampung data user
 class Investasi {
@@ -88,6 +89,7 @@ class ProfileCubit extends Cubit<ProfileModel> {
     String email = json['email'];
     String saldo_dana = json['saldo_dana'].toString();
     String foto_profile = json['foto_profile'];
+
     emit(ProfileModel(
         nama: nama,
         email: email,
@@ -169,6 +171,11 @@ class ProfileInvestorState extends State<ProfileInvestor> {
   int flag = 0;
   int flagAmbil = 0;
 
+  String formatAngka(int angka) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(angka);
+  }
+
   @override
   Widget build(BuildContext context) {
     id_user = ModalRoute.of(context)!.settings.arguments as String;
@@ -188,8 +195,9 @@ class ProfileInvestorState extends State<ProfileInvestor> {
           home: Scaffold(
               body: SingleChildScrollView(
             child: Container(
+              constraints: const BoxConstraints(minHeight: 640),
               width: 360,
-              height: 640,
+              // height: 640,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -496,7 +504,10 @@ class ProfileInvestorState extends State<ProfileInvestor> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "Saldo Rp. ${profile.saldo_dana}",
+                                        "Saldo Rp. " +
+                                            formatAngka(int.parse(
+                                                    profile.saldo_dana))
+                                                .toString(),
                                         style: GoogleFonts.outfit(
                                             fontSize: 15,
                                             color: Colors.white,
@@ -965,7 +976,7 @@ class ProfileInvestorState extends State<ProfileInvestor> {
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 14,
                           ),
                           ListView.builder(
@@ -973,76 +984,87 @@ class ProfileInvestorState extends State<ProfileInvestor> {
                               itemCount:
                                   listInvestasi.listInvestasiModel.length,
                               itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(32, 0, 32, 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                              width: 23,
-                                              height: 22,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          100),
-                                                  border: Border.all(
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              255, 61, 38, 69),
-                                                      width: 2)),
-                                              child: ClipOval(
-                                                child: Image.asset(
-                                                  'images/${listInvestasi.listInvestasiModel[index].foto_profile}',
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              )),
-                                          Container(
-                                            width: 160,
-                                            padding:
-                                                const EdgeInsets.only(left: 18),
-                                            child: Text(
-                                              "${listInvestasi.listInvestasiModel[index].nama_umkm}",
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                return listInvestasi.listInvestasiModel.isEmpty
+                                    ? Text(
+                                        "Nampaknya anda belum melakukan investasi",
+                                        style: GoogleFonts.rubik(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500))
+                                    : Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            32, 0, 32, 8),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                    width: 23,
+                                                    height: 22,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(100),
+                                                        border: Border.all(
+                                                            color: const Color
+                                                                    .fromARGB(
+                                                                255,
+                                                                61,
+                                                                38,
+                                                                69),
+                                                            width: 2)),
+                                                    child: ClipOval(
+                                                      child: Image.asset(
+                                                        'images/${listInvestasi.listInvestasiModel[index].foto_profile}',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    )),
+                                                Container(
+                                                  width: 130,
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 18),
+                                                  child: Text(
+                                                    "${listInvestasi.listInvestasiModel[index].nama_umkm}",
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts.outfit(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            Text(
+                                              "Rp ${listInvestasi.listInvestasiModel[index].jumlah_pinjaman} jt | ${listInvestasi.listInvestasiModel[index].return_keuntungan}% | ${listInvestasi.listInvestasiModel[index].lama_pinjaman} bln",
                                               style: GoogleFonts.outfit(
                                                   color: Colors.white,
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w500),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Text(
-                                        "Rp ${listInvestasi.listInvestasiModel[index].jumlah_pinjaman} jt | ${listInvestasi.listInvestasiModel[index].return_keuntungan}% | ${listInvestasi.listInvestasiModel[index].lama_pinjaman} bln",
-                                        style: GoogleFonts.outfit(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500),
-                                      )
-                                    ],
-                                  ),
-                                );
+                                            )
+                                          ],
+                                        ),
+                                      );
                               }),
                           const SizedBox(height: 14),
                           TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/login');
-                          },
-                          child: Text(
-                            "Logout",
-                            style: GoogleFonts.rubik(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500
-                            ),
-                          )
-                          )
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/login');
+                              },
+                              child: Text(
+                                "Logout",
+                                style: GoogleFonts.rubik(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500),
+                              ))
                         ]);
                   });
                 },

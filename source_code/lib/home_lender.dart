@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 // class untuk menampung data user
 class Pendanaan {
@@ -35,6 +36,7 @@ class Pengembalian {
 class ListPendanaanModel {
   List<Pendanaan> listPendanaanModel = <Pendanaan>[];
   String total_pengeluaran = "";
+
   ListPendanaanModel(
       {required this.listPendanaanModel, required this.total_pengeluaran});
 }
@@ -42,6 +44,7 @@ class ListPendanaanModel {
 class ListPengembalianModel {
   List<Pengembalian> listPengembalianModel = <Pengembalian>[];
   String total_keuntungan = "";
+
   ListPengembalianModel(
       {required this.listPengembalianModel, required this.total_keuntungan});
 }
@@ -73,7 +76,7 @@ class ListPendanaanCubit extends Cubit<ListPendanaanModel> {
         flag += 1;
       }
     }
-    String total_pengeluaran = total_pengeluaran_int.toString();
+    String total_pengeluaran = (total_pengeluaran_int).toString();
     emit(ListPendanaanModel(
         listPendanaanModel: listPendanaanModel,
         total_pengeluaran: total_pengeluaran));
@@ -108,6 +111,7 @@ class ListPengembalianCubit extends Cubit<ListPengembalianModel> {
         var foto_profile = val[0];
         var nama_umkm = val[1];
         var keuntungan = (val[7] - val[2]).toString();
+
         listPengembalianModel.add(Pengembalian(
             foto_profile: foto_profile,
             nama_umkm: nama_umkm,
@@ -149,6 +153,7 @@ class ProfileCubit extends Cubit<ProfileModel> {
   //map dari json ke atribut
   void setFromJson(Map<String, dynamic> json) {
     String saldo_dana = json['saldo_dana'].toString();
+
     emit(ProfileModel(saldo_dana: saldo_dana));
   }
 
@@ -751,21 +756,17 @@ class _HomeState extends State<Home> {
                                               },
                                               child: const Text(
                                                   "Riwayat Transaksi"),
-                                            ),Container(
-                                                    height: 4,
-                                                    width: 80,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
-                                                      color:
-                                                          const Color.fromARGB(
-                                                              255,
-                                                              218,
-                                                              65,
-                                                              103),
-                                                    ),
-                                                  )
+                                            ),
+                                            Container(
+                                              height: 4,
+                                              width: 80,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: const Color.fromARGB(
+                                                    255, 218, 65, 103),
+                                              ),
+                                            )
                                           ]),
                                     ],
                                   ),
@@ -773,124 +774,159 @@ class _HomeState extends State<Home> {
                                 // end button select
                                 // start pengeluaran
                                 Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 24, 0, 0),
-                                            child: Container(
-                                              width: 308,
-                                              height: 190,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  gradient:
-                                                      const LinearGradient(
-                                                          begin: Alignment
-                                                              .topCenter,
-                                                          end: Alignment
-                                                              .bottomCenter,
-                                                          colors: [
-                                                        Color.fromARGB(
-                                                            65, 218, 65, 103),
-                                                        Color.fromARGB(
-                                                            65, 61, 38, 69)
-                                                      ])),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        18, 14, 18, 10),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          "PENGELUARAN",
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 24, 0, 0),
+                                      child: Container(
+                                        width: 308,
+                                        height: 190,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            gradient: const LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Color.fromARGB(
+                                                      65, 218, 65, 103),
+                                                  Color.fromARGB(65, 61, 38, 69)
+                                                ])),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              18, 14, 18, 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "PENGELUARAN",
+                                                    style: GoogleFonts.outfit(
+                                                        color: Colors.white,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  if (modelListPendanaan
+                                                          .listPendanaanModel
+                                                          .length >
+                                                      0) ...{
+                                                    Text(
+                                                      "Rp ${modelListPendanaan.total_pengeluaran}",
+                                                      style: GoogleFonts.outfit(
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  }
+                                                ],
+                                              ),
+                                              modelListPendanaan
+                                                          .listPendanaanModel
+                                                          .length ==
+                                                      0
+                                                  ? Expanded(
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Nampaknya kamu belum memiliki pengeluaran",
                                                           style: GoogleFonts
                                                               .outfit(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                            color: Colors.white,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w200,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
                                                         ),
-                                                        if (modelListPendanaan
-                                                                .listPendanaanModel
-                                                                .length >
-                                                            0) ...{
-                                                          Text(
-                                                            "Rp ${modelListPendanaan.total_pengeluaran}",
+                                                      ),
+                                                    )
+                                                  : Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        const SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        Text("Investasi",
                                                             style: GoogleFonts.outfit(
                                                                 color: Colors
                                                                     .white,
-                                                                fontSize: 16,
+                                                                fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .bold),
-                                                          ),
-                                                        }
-                                                      ],
-                                                    ),
-                                                    modelListPendanaan
-                                                                .listPendanaanModel
-                                                                .length ==
-                                                            0
-                                                        ? Expanded(
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Nampaknya kamu belum memiliki pengeluaran",
-                                                                style:
-                                                                    GoogleFonts
-                                                                        .outfit(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w200,
-                                                                ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                              ),
-                                                            ),
-                                                          )
-                                                        : Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              const SizedBox(
-                                                                height: 2,
-                                                              ),
-                                                              Text("Investasi",
-                                                                  style: GoogleFonts.outfit(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w200)),
-                                                              const SizedBox(
-                                                                height: 2,
-                                                              ),
-                                                              ListView.builder(
-                                                                shrinkWrap:
-                                                                    true,
-                                                                itemCount:
-                                                                    modelListPendanaan
-                                                                        .listPendanaanModel
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return Padding(
+                                                                        .w200)),
+                                                        const SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        ListView.builder(
+                                                          shrinkWrap: true,
+                                                          itemCount:
+                                                              modelListPendanaan
+                                                                  .listPendanaanModel
+                                                                  .length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            return Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .fromLTRB(
+                                                                        0,
+                                                                        6,
+                                                                        0,
+                                                                        0),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.fromLTRB(
+                                                                              0,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                          child: SizedBox(
+                                                                              width: 24,
+                                                                              height: 24,
+                                                                              child: ClipOval(
+                                                                                child: Image.asset(
+                                                                                  'assets/images/${modelListPendanaan.listPendanaanModel[index].foto_profile}',
+                                                                                  fit: BoxFit.cover,
+                                                                                ),
+                                                                              )),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              9,
+                                                                        ),
+                                                                        Text(
+                                                                          "${modelListPendanaan.listPendanaanModel[index].nama_umkm}",
+                                                                          style:
+                                                                              GoogleFonts.rubik(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Padding(
                                                                       padding:
                                                                           const EdgeInsets.fromLTRB(
                                                                               0,
@@ -898,219 +934,221 @@ class _HomeState extends State<Home> {
                                                                               0,
                                                                               0),
                                                                       child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.start,
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                                                child: SizedBox(
-                                                                                    width: 24,
-                                                                                    height: 24,
-                                                                                    child: ClipOval(
-                                                                                      child: Image.asset(
-                                                                                        'assets/images/${modelListPendanaan.listPendanaanModel[index].foto_profile}',
-                                                                                        fit: BoxFit.cover,
-                                                                                      ),
-                                                                                    )),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: 9,
-                                                                              ),
-                                                                              Text(
-                                                                                "${modelListPendanaan.listPendanaanModel[index].nama_umkm}",
-                                                                                style: GoogleFonts.rubik(
-                                                                                  color: Colors.white,
-                                                                                  fontSize: 14,
-                                                                                  fontWeight: FontWeight.w500,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          Padding(
-                                                                            padding: const EdgeInsets.fromLTRB(
-                                                                                0,
-                                                                                6,
-                                                                                0,
-                                                                                0),
-                                                                            child:
-                                                                                Text(
-                                                                              "Rp ${modelListPendanaan.listPendanaanModel[index].jumlah_pinjaman}Jt | ${modelListPendanaan.listPendanaanModel[index].return_keuntungan}% | ${modelListPendanaan.listPendanaanModel[index].lama_pinjaman} bln",
-                                                                              style: GoogleFonts.rubik(
-                                                                                color: Colors.white,
-                                                                                fontSize: 14,
-                                                                                fontWeight: FontWeight.w100,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ));
-                                                                },
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 10,
-                                                              ),
-                                                              Align(
-                                                                alignment: Alignment
-                                                                    .bottomRight,
-                                                                child:
-                                                                    GestureDetector(
-                                                                  onTap: () {
-                                                                    Navigator.pushNamed(
-                                                                        context,
-                                                                        '/riwayat',
-                                                                        arguments: {
-                                                                          "jenis":
-                                                                              "PENGELUARAN",
-                                                                          "id_user":
-                                                                              id_user,
-                                                                          "total":
-                                                                              modelListPendanaan.total_pengeluaran
-                                                                        });
-                                                                  },
-                                                                  child: Text(
-                                                                    "Lihat Lainnya",
-                                                                    style: GoogleFonts.outfit(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w500),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
+                                                                          Text(
+                                                                        "Rp ${modelListPendanaan.listPendanaanModel[index].jumlah_pinjaman}Jt | ${modelListPendanaan.listPendanaanModel[index].return_keuntungan}% | ${modelListPendanaan.listPendanaanModel[index].lama_pinjaman} bln",
+                                                                        style: GoogleFonts
+                                                                            .rubik(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.w100,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ));
+                                                          },
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .bottomRight,
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.pushNamed(
+                                                                  context,
+                                                                  '/riwayat',
+                                                                  arguments: {
+                                                                    "jenis":
+                                                                        "PENGELUARAN",
+                                                                    "id_user":
+                                                                        id_user,
+                                                                    "total":
+                                                                        modelListPendanaan
+                                                                            .total_pengeluaran
+                                                                  });
+                                                            },
+                                                            child: Text(
+                                                              "Lihat Lainnya",
+                                                              style: GoogleFonts.outfit(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
+                                                            ),
                                                           ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
+                                                        )
+                                                      ],
+                                                    ),
+                                            ],
                                           ),
-                                          // end pengeluaran
-                                          //start pemasukan
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 24, 0, 0),
-                                            child: Container(
-                                              width: 308,
-                                              height: 190,
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                  gradient:
-                                                      const LinearGradient(
-                                                          begin: Alignment
-                                                              .topCenter,
-                                                          end: Alignment
-                                                              .bottomCenter,
-                                                          colors: [
-                                                        Color.fromARGB(
-                                                            65, 13, 133, 201),
-                                                        Color.fromARGB(
-                                                            65, 61, 38, 69)
-                                                      ])),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.fromLTRB(
-                                                        18, 14, 18, 10),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          "PEMASUKAN",
+                                        ),
+                                      ),
+                                    ),
+                                    // end pengeluaran
+                                    //start pemasukan
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 24, 0, 0),
+                                      child: Container(
+                                        width: 308,
+                                        height: 190,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            gradient: const LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Color.fromARGB(
+                                                      65, 13, 133, 201),
+                                                  Color.fromARGB(65, 61, 38, 69)
+                                                ])),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              18, 14, 18, 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "PEMASUKAN",
+                                                    style: GoogleFonts.outfit(
+                                                        color: Colors.white,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  if (modelListPengembalian
+                                                          .listPengembalianModel
+                                                          .length >
+                                                      0) ...{
+                                                    Text(
+                                                      "Rp ${modelListPengembalian.total_keuntungan}",
+                                                      style: GoogleFonts.outfit(
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  }
+                                                ],
+                                              ),
+                                              modelListPengembalian
+                                                          .listPengembalianModel
+                                                          .length ==
+                                                      0
+                                                  ? Expanded(
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Nampaknya kamu belum menyelesaikan transaksi",
                                                           style: GoogleFonts
                                                               .outfit(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                            color: Colors.white,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w200,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
                                                         ),
-                                                        if (modelListPengembalian
-                                                                .listPengembalianModel
-                                                                .length >
-                                                            0) ...{
-                                                          Text(
-                                                            "Rp ${modelListPengembalian.total_keuntungan}",
+                                                      ),
+                                                    )
+                                                  : Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        const SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        Text(
+                                                            "Untung dari Investasi",
                                                             style: GoogleFonts.outfit(
                                                                 color: Colors
                                                                     .white,
-                                                                fontSize: 16,
+                                                                fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
-                                                                        .bold),
-                                                          ),
-                                                        }
-                                                      ],
-                                                    ),
-                                                    modelListPengembalian
-                                                                .listPengembalianModel
-                                                                .length ==
-                                                            0
-                                                        ? Expanded(
-                                                            child: Center(
-                                                              child: Text(
-                                                                "Nampaknya kamu belum menyelesaikan transaksi",
-                                                                style:
-                                                                    GoogleFonts
-                                                                        .outfit(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w200,
-                                                                ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                              ),
-                                                            ),
-                                                          )
-                                                        : Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              const SizedBox(
-                                                                height: 2,
-                                                              ),
-                                                              Text(
-                                                                  "Untung dari Investasi",
-                                                                  style: GoogleFonts.outfit(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w200)),
-                                                              const SizedBox(
-                                                                height: 2,
-                                                              ),
-                                                              ListView.builder(
-                                                                shrinkWrap:
-                                                                    true,
-                                                                itemCount:
-                                                                    modelListPengembalian
-                                                                        .listPengembalianModel
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
-                                                                  return Padding(
+                                                                        .w200)),
+                                                        const SizedBox(
+                                                          height: 2,
+                                                        ),
+                                                        ListView.builder(
+                                                          shrinkWrap: true,
+                                                          itemCount:
+                                                              modelListPengembalian
+                                                                  .listPengembalianModel
+                                                                  .length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            return Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .fromLTRB(
+                                                                        0,
+                                                                        6,
+                                                                        0,
+                                                                        0),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.fromLTRB(
+                                                                              0,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                          child: SizedBox(
+                                                                              width: 24,
+                                                                              height: 24,
+                                                                              child: ClipOval(
+                                                                                child: Image.asset(
+                                                                                  'assets/images/${modelListPengembalian.listPengembalianModel[index].foto_profile}',
+                                                                                  fit: BoxFit.cover,
+                                                                                ),
+                                                                              )),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              9,
+                                                                        ),
+                                                                        Text(
+                                                                          modelListPengembalian
+                                                                              .listPengembalianModel[index]
+                                                                              .nama_umkm,
+                                                                          style:
+                                                                              GoogleFonts.rubik(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Padding(
                                                                       padding:
                                                                           const EdgeInsets.fromLTRB(
                                                                               0,
@@ -1118,101 +1156,66 @@ class _HomeState extends State<Home> {
                                                                               0,
                                                                               0),
                                                                       child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          Row(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.start,
-                                                                            children: [
-                                                                              Padding(
-                                                                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                                                child: SizedBox(
-                                                                                    width: 24,
-                                                                                    height: 24,
-                                                                                    child: ClipOval(
-                                                                                      child: Image.asset(
-                                                                                        'assets/images/${modelListPengembalian.listPengembalianModel[index].foto_profile}',
-                                                                                        fit: BoxFit.cover,
-                                                                                      ),
-                                                                                    )),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: 9,
-                                                                              ),
-                                                                              Text(
-                                                                                listPemasukan[index].nama,
-                                                                                style: GoogleFonts.rubik(
-                                                                                  color: Colors.white,
-                                                                                  fontSize: 14,
-                                                                                  fontWeight: FontWeight.w500,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          Padding(
-                                                                            padding: const EdgeInsets.fromLTRB(
-                                                                                0,
-                                                                                6,
-                                                                                0,
-                                                                                0),
-                                                                            child:
-                                                                                Text(
-                                                                              "Rp ${modelListPengembalian.listPengembalianModel[index].keuntungan}",
-                                                                              style: GoogleFonts.rubik(
-                                                                                color: Colors.white,
-                                                                                fontSize: 14,
-                                                                                fontWeight: FontWeight.w100,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ));
-                                                                },
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 10,
-                                                              ),
-                                                              Align(
-                                                                alignment: Alignment
-                                                                    .bottomRight,
-                                                                child:
-                                                                    GestureDetector(
-                                                                  onTap: () {
-                                                                    Navigator.pushNamed(
-                                                                        context,
-                                                                        '/riwayat',
-                                                                        arguments: {
-                                                                          "jenis":
-                                                                              "PEMASUKAN",
-                                                                          "id_user":
-                                                                              id_user,
-                                                                          "total":
-                                                                              modelListPengembalian.total_keuntungan
-                                                                        });
-                                                                  },
-                                                                  child: Text(
-                                                                    "Lihat Lainnya",
-                                                                    style: GoogleFonts.outfit(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w500),
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
+                                                                          Text(
+                                                                        "Rp ${modelListPengembalian.listPengembalianModel[index].keuntungan}",
+                                                                        style: GoogleFonts
+                                                                            .rubik(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.w100,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ));
+                                                          },
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .bottomRight,
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              Navigator.pushNamed(
+                                                                  context,
+                                                                  '/riwayat',
+                                                                  arguments: {
+                                                                    "jenis":
+                                                                        "PEMASUKAN",
+                                                                    "id_user":
+                                                                        id_user,
+                                                                    "total":
+                                                                        modelListPengembalian
+                                                                            .total_keuntungan
+                                                                  });
+                                                            },
+                                                            child: Text(
+                                                              "Lihat Lainnya",
+                                                              style: GoogleFonts.outfit(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500),
+                                                            ),
                                                           ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      )
+                                                        )
+                                                      ],
+                                                    ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
 
                                 //end pemasukan
                               ],

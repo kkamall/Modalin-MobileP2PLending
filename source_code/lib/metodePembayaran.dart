@@ -78,6 +78,40 @@ class MetodePembayaran extends State<Pembayaran> {
     return response.statusCode; //sukses kalau 201
   }
 
+  Future<int> checkUser() async {
+    final responseGetUser = await http
+        .get(Uri.parse("http://127.0.0.1:8000/get_user/" + id_user.toString()));
+    Map<String, dynamic> jsonGetUser = jsonDecode(responseGetUser.body);
+
+    final responseCekPinjamanBelumSelesai = await http.get(Uri.parse(
+        "http://127.0.0.1:8000/cek_pinjaman_belum_selesai/" +
+            id_user.toString()));
+    List jsonCekPinjamanBelumSelesai =
+        jsonDecode(responseCekPinjamanBelumSelesai.body);
+
+    if (responseGetUser.statusCode == 200) {
+      if (jsonGetUser['role'] == "Borrower") {
+        if (jsonCekPinjamanBelumSelesai[0] == "Tidak Ada") {
+          Navigator.pushNamed(context, '/home_borrower', arguments: id_user);
+        } else if (jsonCekPinjamanBelumSelesai[0] == "Ada") {
+          Navigator.pushNamed(
+            context,
+            '/home_borrower_dapat_pinjaman',
+            arguments: {
+              'id_user': id_user,
+              'id_pinjaman': jsonCekPinjamanBelumSelesai[1].toString(),
+            },
+          );
+        }
+      } else {
+        Navigator.pushNamed(context, '/home', arguments: id_user);
+      }
+    } else {
+      throw Exception('Gagal load');
+    }
+    return responseGetUser.statusCode;
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> arguments =
@@ -353,7 +387,9 @@ class MetodePembayaran extends State<Pembayaran> {
                                 iconSize: 10,
                                 splashRadius: 12.5,
                                 icon: Image.asset('/images/Cancel.png'),
-                                onPressed: () {},
+                                onPressed: () {
+                                  checkUser();
+                                },
                               ),
                             ],
                           ),

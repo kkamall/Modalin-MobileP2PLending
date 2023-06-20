@@ -133,6 +133,7 @@ class ListPinjamanCubit extends Cubit<ListPinjamanModel> {
   }
 
   void fetchData(id_user, cari_umkm) async {
+    print(cari_umkm);
     String urlListPinjaman = "";
     if (cari_umkm != "") {
       urlListPinjaman = "http://127.0.0.1:8000/cari_umkm/" + cari_umkm;
@@ -391,7 +392,7 @@ class ExploreState extends State<Explore> {
                                     listPinjaman.listPinjamanModel.length,
                                 itemBuilder: (contextListVideo, index) {
                                   return
-                                    // start thumbnail video
+                                      // start thumbnail video
                                       Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -479,12 +480,12 @@ class ExploreState extends State<Explore> {
                                                           Radius.circular(16),
                                                     ),
                                                     color: Color(0xffd9d9d9),
-                                                    image: DecorationImage(
-                                                      fit: BoxFit.cover,
-                                                      image: AssetImage(
-                                                        'assets/images/thumbnail.png',
-                                                      ),
-                                                    ),
+                                                    // image: DecorationImage(
+                                                    //   fit: BoxFit.cover,
+                                                    //   image: AssetImage(
+                                                    //     'assets/images/thumbnail.png',
+                                                    //   ),
+                                                    // ),
                                                   ),
                                                   child: Container(
                                                     padding: const EdgeInsets
@@ -494,32 +495,6 @@ class ExploreState extends State<Explore> {
                                                       mainAxisAlignment:
                                                           MainAxisAlignment.end,
                                                       children: [
-                                                        // durasi video
-                                                        // Container(
-                                                        //   decoration:
-                                                        //       const BoxDecoration(
-                                                        //     color: Color(
-                                                        //         0x7f000000),
-                                                        //   ),
-                                                        //   height: 16,
-                                                        //   child: Text(
-                                                        //     listVideo[index]
-                                                        //         .durasi,
-                                                        //     textAlign: TextAlign
-                                                        //         .center,
-                                                        //     style: GoogleFonts
-                                                        //         .rubik(
-                                                        //       fontSize: 12,
-                                                        //       fontWeight:
-                                                        //           FontWeight
-                                                        //               .w400,
-                                                        //       height: 1,
-                                                        //       color: const Color(
-                                                        //           0xffffffff),
-                                                        //     ),
-                                                        //   ),
-                                                        // ),
-
                                                         // detail return
                                                         Container(
                                                           decoration:
@@ -793,8 +768,6 @@ class _DetailPageState extends State<DetailPage> {
   String modalin = "http://127.0.0.1:8000/modalin/";
 
   Future<int> insertPendanaan(int jumlahUang, int id_borrower) async {
-    print("Masuk Pak Budi");
-
     //data disimpan di body
     DateTime now = DateTime.now();
     String waktuTransaksi = now.toString();
@@ -844,6 +817,11 @@ class _DetailPageState extends State<DetailPage> {
     return response.statusCode; //sukses kalau 201
   }
 
+  String formatAngka(int angka) {
+    final formatter = NumberFormat('#,###');
+    return formatter.format(angka);
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> arguments =
@@ -880,7 +858,7 @@ class _DetailPageState extends State<DetailPage> {
         child: MaterialApp(
           home: YoutubePlayerBuilder(
               player: YoutubePlayer(
-                  controller: _videoController!,
+                  controller: _videoController,
                   showVideoProgressIndicator: true,
                   progressIndicatorColor:
                       const Color.fromARGB(255, 131, 33, 79),
@@ -1293,15 +1271,15 @@ class _DetailPageState extends State<DetailPage> {
                                                                 ),
                                                                 color: Color(
                                                                     0xffd9d9d9),
-                                                                image:
-                                                                    DecorationImage(
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                  image:
-                                                                      AssetImage(
-                                                                    'assets/images/thumbnail.png',
-                                                                  ),
-                                                                ),
+                                                                // image:
+                                                                //     DecorationImage(
+                                                                //   fit: BoxFit
+                                                                //       .cover,
+                                                                //   image:
+                                                                //       AssetImage(
+                                                                //     'assets/images/thumbnail.png',
+                                                                //   ),
+                                                                // ),
                                                               ),
                                                               child: Container(
                                                                 padding:
@@ -1316,36 +1294,6 @@ class _DetailPageState extends State<DetailPage> {
                                                                       MainAxisAlignment
                                                                           .end,
                                                                   children: [
-                                                                    // durasi video
-                                                                    // Container(
-                                                                    //   decoration:
-                                                                    //       const BoxDecoration(
-                                                                    //     color: Color(
-                                                                    //         0x7f000000),
-                                                                    //   ),
-                                                                    //   height: 16,
-                                                                    //   child: Text(
-                                                                    //     listVideo[
-                                                                    //             index]
-                                                                    //         .durasi,
-                                                                    //     textAlign:
-                                                                    //         TextAlign
-                                                                    //             .center,
-                                                                    //     style:
-                                                                    //         GoogleFonts
-                                                                    //             .rubik(
-                                                                    //       fontSize:
-                                                                    //           12,
-                                                                    //       fontWeight:
-                                                                    //           FontWeight
-                                                                    //               .w400,
-                                                                    //       height: 1,
-                                                                    //       color: const Color(
-                                                                    //           0xffffffff),
-                                                                    //     ),
-                                                                    //   ),
-                                                                    // ),
-
                                                                     // detail return
                                                                     Container(
                                                                       decoration:
@@ -1672,7 +1620,7 @@ class _DetailPageState extends State<DetailPage> {
                                                                         ),
                                                                         Text(
                                                                           'Rp ' +
-                                                                              (int.parse(jumlah_pinjaman) * 1000000).toString(),
+                                                                              formatAngka(int.parse(jumlah_pinjaman) * 1000000).toString(),
                                                                           style:
                                                                               GoogleFonts.rubik(
                                                                             fontSize:
@@ -1707,8 +1655,7 @@ class _DetailPageState extends State<DetailPage> {
                                                                           ),
                                                                         ),
                                                                         Text(
-                                                                          '$return_keuntungan% = Rp ' +
-                                                                              ((int.parse(jumlah_pinjaman) * 1000000) * int.parse(return_keuntungan) / 100).toString(),
+                                                                          '$return_keuntungan%',
                                                                           style:
                                                                               GoogleFonts.rubik(
                                                                             fontSize:
@@ -1814,7 +1761,8 @@ class _DetailPageState extends State<DetailPage> {
                                                                         ),
                                                                         Text(
                                                                           'Rp ' +
-                                                                              (int.parse(jumlah_pinjaman) * 1000000 + 2500).toString(),
+                                                                              formatAngka(int.parse(jumlah_pinjaman) * 1000000 + 2500).toString(),
+                                                                          // (int.parse(jumlah_pinjaman) * 1000000 + 2500).toString(),
                                                                           style:
                                                                               GoogleFonts.rubik(
                                                                             fontSize:
@@ -1855,7 +1803,7 @@ class _DetailPageState extends State<DetailPage> {
                                                                                   ),
                                                                                 ),
                                                                                 Text(
-                                                                                  'Rp $saldo_dana',
+                                                                                  'Rp ' + formatAngka(int.parse(saldo_dana)).toString(),
                                                                                   style: GoogleFonts.rubik(
                                                                                     fontSize: 14,
                                                                                     fontWeight: FontWeight.w600,
@@ -1879,7 +1827,8 @@ class _DetailPageState extends State<DetailPage> {
                                                                                   ),
                                                                                 ),
                                                                                 Text(
-                                                                                  'Rp ' + (int.parse(saldo_dana) - int.parse(jumlah_pinjaman) * 1000000 - 2500).toString(),
+                                                                                  'Rp ' + formatAngka(int.parse(saldo_dana) - int.parse(jumlah_pinjaman) * 1000000 - 2500).toString(),
+                                                                                  // (int.parse(saldo_dana) - int.parse(jumlah_pinjaman) * 1000000 - 2500).toString(),
                                                                                   style: GoogleFonts.rubik(
                                                                                     fontSize: 14,
                                                                                     fontWeight: FontWeight.w600,

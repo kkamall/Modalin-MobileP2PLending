@@ -29,11 +29,17 @@ class AddUmkmState extends State<AddUmkm> {
   String id_user_borrower = "";
 
   // Dropdown Kategori
-  List<String> listKategori = ['Properti', 'Makanan', 'Saham'];
+  List<String> listKategori = [
+    'Properti',
+    'Food & Beverages',
+    'Fashion',
+    'Handcraft',
+    'Produk Digital'
+  ];
   String? kategori;
 
   // Dropdown Kelas
-  List<String> listKelas = ['Mikro', 'Makro'];
+  List<String> listKelas = ['Menengah', 'Kecil', 'Mikro'];
   String? kelas;
 
   late Future<int> respPost; //201 artinya berhasil

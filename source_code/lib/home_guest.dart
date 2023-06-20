@@ -89,23 +89,7 @@ class AktivitasGuestState extends State<AktivitasGuest> {
                             fontWeight: FontWeight.w500,
                             color: Colors.white),
                       ),
-                      Text(
-                        "Riwayat Video",
-                        style: GoogleFonts.rubik(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white),
-                      ),
                     ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    margin: EdgeInsets.only(left: 45, top: 5),
-                    width: 80,
-                    height: 4,
-                    color: Color(0xFFDA4167),
                   ),
                 ),
                 Expanded(
